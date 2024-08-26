@@ -2,4 +2,9 @@
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.jetbrains.kotlin.android) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.jetbrains.kotlin.jvm) apply false
+    alias(libs.plugins.googleKsp) apply false
+    alias(libs.plugins.hilt) apply false
+    id("com.vanniktech.dependency.graph.generator") version "0.7.0"
 }

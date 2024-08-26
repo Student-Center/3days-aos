@@ -1,4 +1,4 @@
-package com.studentcenter.weave
+package com.studentcenter.core
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
