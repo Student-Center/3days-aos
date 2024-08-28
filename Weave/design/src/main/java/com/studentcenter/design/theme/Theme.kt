@@ -1,4 +1,4 @@
-package com.studentcenter.weave.ui.theme
+package com.studentcenter.design.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

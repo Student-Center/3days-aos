@@ -1,4 +1,4 @@
-package com.studentcenter.weave.ui.theme
+package com.studentcenter.design.theme
 
 import androidx.compose.ui.graphics.Color
 
