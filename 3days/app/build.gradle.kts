@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -5,6 +7,8 @@ plugins {
     alias(libs.plugins.hilt.plugin)
     id("com.google.gms.google-services")
 }
+
+val properties = gradleLocalProperties(rootDir, providers)
 
 android {
     namespace = "com.weave.a3days"
@@ -41,8 +45,7 @@ android {
         create("release") {
             keyAlias = properties["SIGNED_KEY_ALIAS"] as String?
             keyPassword = properties["SIGNED_KEY_PASSWORD"] as String?
-//            storeFile = properties["SIGNED_STORE_FILE"]?.let { file(it) }
-            storeFile = file("$rootDir/app/keystore.jks")
+            storeFile = properties["SIGNED_STORE_FILE"]?.let { file(it) }
             storePassword = properties["SIGNED_STORE_PASSWORD"] as String?
         }
     }
