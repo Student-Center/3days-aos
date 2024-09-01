@@ -1,7 +1,7 @@
 name: Versioning, Build And Deployment to Firebase App Distribution
 on:
   push:
-    branches: [ feature/weav-19 ]
+    branches: [ develop ]
   workflow_dispatch:
 
 jobs:
