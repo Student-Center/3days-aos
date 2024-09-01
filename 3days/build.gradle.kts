@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.hilt.plugin) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 
+    id("com.google.gms.google-services") version "4.4.2" apply false
     id("org.openapi.generator") version "7.8.0" apply true
 }
 
@@ -85,6 +86,10 @@ tasks.register<Sync>("downloadOpenApiSpec") {
             println("[Task End] Cloning failed with exit code: ${execResult.exitValue}")
         } else {
             println("[Task End] Completed successfully: OpenAPI Spec files have been created.")
+            println("Cleaning up unnecessary files...")
+            file("${outputDir.path}/.git").deleteRecursively()
+            file("${outputDir.path}/.gitignore").delete()
+            println("Cleanup completed.")
         }
         println("========".repeat(10))
     }
