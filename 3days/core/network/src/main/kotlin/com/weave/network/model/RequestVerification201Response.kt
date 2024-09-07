@@ -19,20 +19,17 @@ package com.weave.network.model
 import com.google.gson.annotations.SerializedName
 
 /**
- * 사용자 프로필 정보
+ * 
  *
- * @param name 
- * @param email 
+ * @param verificationId 인증 요청에 대한 고유 식별자 (UUID 형식)
  */
 
 
-data class Profile (
+data class RequestVerification201Response (
 
-    @SerializedName("name")
-    val name: kotlin.String,
-
-    @SerializedName("email")
-    val email: kotlin.String
+    /* 인증 요청에 대한 고유 식별자 (UUID 형식) */
+    @SerializedName("verificationId")
+    val verificationId: java.util.UUID? = null
 
 ) {
 

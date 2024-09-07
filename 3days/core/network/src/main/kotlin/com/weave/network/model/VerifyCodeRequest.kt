@@ -19,16 +19,17 @@ package com.weave.network.model
 import com.google.gson.annotations.SerializedName
 
 /**
- * 휴대폰 번호 인증 요청 정보
+ * 
  *
- * @param phone 
+ * @param verificationCode 사용자가 입력한 SMS 인증 코드 (6자리 숫자)
  */
 
 
-data class PhoneRequest (
+data class VerifyCodeRequest (
 
-    @SerializedName("phone")
-    val phone: kotlin.String
+    /* 사용자가 입력한 SMS 인증 코드 (6자리 숫자) */
+    @SerializedName("verificationCode")
+    val verificationCode: kotlin.String? = null
 
 ) {
 

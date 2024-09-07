@@ -1,0 +1,3 @@
+[submodule "3days/core/3days-oas"]
+	path = 3days/core/3days-oas
+	url = https://github.com/Student-Center/3days-oas.git

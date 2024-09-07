@@ -19,20 +19,17 @@ package com.weave.network.model
 import com.google.gson.annotations.SerializedName
 
 /**
- * 인증 코드 확인 요청 정보
+ * 
  *
- * @param phone 
- * @param code 
+ * @param refreshToken 유효한 리프레시 토큰
  */
 
 
-data class VerificationRequest (
+data class RefreshTokenRequest (
 
-    @SerializedName("phone")
-    val phone: kotlin.String,
-
-    @SerializedName("code")
-    val code: kotlin.String
+    /* 유효한 리프레시 토큰 */
+    @SerializedName("refreshToken")
+    val refreshToken: kotlin.String? = null
 
 ) {
 

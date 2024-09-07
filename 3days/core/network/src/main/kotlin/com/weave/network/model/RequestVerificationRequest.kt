@@ -19,16 +19,17 @@ package com.weave.network.model
 import com.google.gson.annotations.SerializedName
 
 /**
- * 토큰 갱신 요청 정보
+ * 
  *
- * @param refreshToken 
+ * @param phoneNumber 사용자의 전화번호 (한국 휴대폰 번호 형식)
  */
 
 
-data class RefreshRequest (
+data class RequestVerificationRequest (
 
-    @SerializedName("refreshToken")
-    val refreshToken: kotlin.String
+    /* 사용자의 전화번호 (한국 휴대폰 번호 형식) */
+    @SerializedName("phoneNumber")
+    val phoneNumber: kotlin.String? = null
 
 ) {
 
