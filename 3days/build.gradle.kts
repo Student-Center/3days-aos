@@ -59,14 +59,15 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("gen
 }
 
 tasks.register<Sync>("updateSubModule") {
+    println("========".repeat(10))
+    println("[Task Start] Update Submodule...")
 
     exec {
-        println("========".repeat(10))
-        println("[Task Start] Update Submodule...")
         commandLine("git", "submodule", "update", "--remote")
-    }.let { execResult ->
-        if (execResult.exitValue != 0) {
-            println("[Task End] Update failed with exit code: ${execResult.exitValue}")
+        isIgnoreExitValue = true
+    }.let {
+        if (it.exitValue != 0) {
+            println("[Task End] Update failed with exit code: ${it.exitValue}")
         } else {
             println("[Task End] Completed successfully: OpenAPI Spec files have been updated.")
         }

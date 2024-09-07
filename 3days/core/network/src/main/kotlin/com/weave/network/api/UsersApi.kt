@@ -44,7 +44,7 @@ interface UsersApi {
     suspend fun registerUser(@Body userRegistration: UserRegistration): Response<TokenResponse>
 
     /**
-     * SMS 인증 요청 ffff
+     * SMS 인증 요청
      * - 회원 가입 또는 로그인 토큰 발급을 위한 SMS 인증을 요청합니다. 
      * Responses:
      *  - 201: 인증 요청 성공
