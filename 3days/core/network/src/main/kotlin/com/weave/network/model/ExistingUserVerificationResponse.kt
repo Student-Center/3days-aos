@@ -19,7 +19,7 @@ package com.weave.network.model
 import com.google.gson.annotations.SerializedName
 
 /**
- * 토큰 발급 응답
+ * 기존 사용자 인증 응답
  *
  * @param accessToken 액세스 토큰
  * @param refreshToken 리프레시 토큰
@@ -27,7 +27,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 
-data class TokenResponse (
+data class ExistingUserVerificationResponse (
 
     /* 액세스 토큰 */
     @SerializedName("accessToken")

@@ -16,10 +16,10 @@ buildscript {
     }
 }
 
-val targetDir = "${rootDir.path.replace("\\", "/")}/core/openapi"
+val targetDir = "${rootDir.path.replace("\\", "/")}/core/3days-oas"
 
 tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("generateOpenAPI") {
-    dependsOn("downloadOpenApiSpec")
+    dependsOn("updateSubModule")
 
     doFirst {
         val outputDir = File("$rootDir/core/network")
@@ -33,14 +33,13 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("gen
     }
 
     generatorName.set("kotlin")
-    inputSpec.set("$targetDir/source/openapi.yaml")
+    inputSpec.set("$targetDir/openapi.yaml")
     outputDir.set("$rootDir/core/network")
 
     packageName.set("com.weave.network")
     apiPackage.set("com.weave.network.api")
     modelPackage.set("com.weave.network.model")
-    templateDir.set("$targetDir/template")
-    ignoreFileOverride.set("${rootDir.path.replace("\\", "/")}/core/network/.openapi-generator-ignore")
+    templateDir.set("$rootDir/core/utils/src/main/java/com/weave/utils/oas")
 
     generateApiTests.set(false)
     generateModelTests.set(false)
@@ -59,37 +58,17 @@ tasks.register<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>("gen
     )
 }
 
-tasks.register<Sync>("downloadOpenApiSpec") {
-    val repoUrl = "https://github.com/Student-Center/3days-oas.git"
-    val outputDir = file("${rootDir.path.replace("\\", "/")}/core/openapi/source")
-
-    println()
-    println("========".repeat(10))
-    println("[Task Start] Downloading OpenAPI Specification YAML Files...")
-    println("OutputDir path: ${outputDir.path}")
-    println("========".repeat(10))
-
-    if (outputDir.exists()) {
-        println("OpenAPI Spec files already exist. Removing existing files...")
-        outputDir.deleteRecursively()
-    }
+tasks.register<Sync>("updateSubModule") {
 
     exec {
-        println("[$repoUrl] Cloning repository...")
-        commandLine("git", "clone", repoUrl, outputDir.absolutePath)
-        standardOutput = System.out
-        errorOutput = System.err
-        isIgnoreExitValue = true
-    }.let { execResult ->
         println("========".repeat(10))
+        println("[Task Start] Update Submodule...")
+        commandLine("git", "submodule", "update", "--remote")
+    }.let { execResult ->
         if (execResult.exitValue != 0) {
-            println("[Task End] Cloning failed with exit code: ${execResult.exitValue}")
+            println("[Task End] Update failed with exit code: ${execResult.exitValue}")
         } else {
-            println("[Task End] Completed successfully: OpenAPI Spec files have been created.")
-            println("Cleaning up unnecessary files...")
-            file("${outputDir.path}/.git").deleteRecursively()
-            file("${outputDir.path}/.gitignore").delete()
-            println("Cleanup completed.")
+            println("[Task End] Completed successfully: OpenAPI Spec files have been updated.")
         }
         println("========".repeat(10))
     }

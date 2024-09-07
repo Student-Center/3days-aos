@@ -15,30 +15,21 @@
 
 package com.weave.network.model
 
-import com.weave.network.model.RegisterTokenResponse
-import com.weave.network.model.TokenResponse
 
 import com.google.gson.annotations.SerializedName
 
 /**
- * 
+ * 새 사용자 인증 응답
  *
- * @param accessToken 
- * @param refreshToken 
- * @param registerToken 
+ * @param registerToken 회원 가입을 위한 토큰
  */
 
 
-data class AuthVerifyPost200Response (
+data class NewUserVerificationResponse (
 
-    @SerializedName("accessToken")
-    val accessToken: kotlin.String,
-
-    @SerializedName("refreshToken")
-    val refreshToken: kotlin.String,
-
+    /* 회원 가입을 위한 토큰 */
     @SerializedName("registerToken")
-    val registerToken: kotlin.String
+    val registerToken: kotlin.String? = null
 
 ) {
 

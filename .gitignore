@@ -33,5 +33,5 @@ google-services.json
 *.hprof
 
 # OpenAPI Generator
-openapi/
 infrastructure/
+/3days/core/3days-oas
