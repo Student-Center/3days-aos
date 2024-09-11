@@ -15,9 +15,6 @@
 
 package com.weave.network.model
 
-import com.weave.network.model.UserDesiredPartner
-import com.weave.network.model.UserProfile
-
 import com.google.gson.annotations.SerializedName
 
 /**

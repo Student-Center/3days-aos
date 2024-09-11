@@ -15,9 +15,6 @@
 
 package com.weave.network.model
 
-import com.weave.network.model.ExistingUserVerificationResponse
-import com.weave.network.model.NewUserVerificationResponse
-
 import com.google.gson.annotations.SerializedName
 
 /**
