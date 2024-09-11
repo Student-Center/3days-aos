@@ -67,9 +67,6 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
-    buildFeatures {
-        compose = true
-    }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.14"
     }
@@ -79,6 +76,7 @@ android {
         }
     }
     buildFeatures {
+        compose = true
         buildConfig = true
     }
 }
@@ -93,6 +91,7 @@ dependencies {
     implementation(libs.hilt.compose)
     ksp(libs.hilt.android.compiler)
 
+    implementation(project(":core:design-system"))
     implementation(project(":feat:splash"))
     implementation(project(":data"))
 }
