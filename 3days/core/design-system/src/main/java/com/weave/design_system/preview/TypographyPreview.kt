@@ -8,23 +8,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.weave.design_system.ui.theme.DaysTypography
+import com.weave.design_system.DaysTheme
 
 @Composable
 fun DaysTypographyPreview() {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "enMedium16", style = DaysTypography.enMedium16)
-        Text(text = "enMedium20", style = DaysTypography.enMedium20)
-        Text(text = "medium14", style = DaysTypography.medium14)
-        Text(text = "medium14Center", style = DaysTypography.medium14Center)
-        Text(text = "medium16Right", style = DaysTypography.medium16Right)
-        Text(text = "regular12", style = DaysTypography.regular12)
-        Text(text = "regular14", style = DaysTypography.regular14)
-        Text(text = "regular15", style = DaysTypography.regular15)
-        Text(text = "semiBold14", style = DaysTypography.semiBold14)
-        Text(text = "semiBold18", style = DaysTypography.semiBold18)
-        Text(text = "semiBold24", style = DaysTypography.semiBold24)
-        Text(text = "semiBold28", style = DaysTypography.semiBold28)
+    with(DaysTheme.typography){
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "enMedium16", style = enMedium16.toTextStyle())
+            Text(text = "enMedium20", style = enMedium20.toTextStyle())
+
+            Text(text = "medium14", style = medium14.toTextStyle())
+            Text(text = "medium16", style = medium16.toTextStyle())
+            Text(text = "medium18", style = medium18.toTextStyle())
+
+            Text(text = "regular12", style = regular12.toTextStyle())
+            Text(text = "regular14", style = regular14.toTextStyle())
+            Text(text = "regular15", style = regular15.toTextStyle())
+
+            Text(text = "semiBold14", style = semiBold14.toTextStyle())
+            Text(text = "semiBold18", style = semiBold18.toTextStyle())
+            Text(text = "semiBold24", style = semiBold24.toTextStyle())
+            Text(text = "semiBold28", style = semiBold28.toTextStyle())
+        }
     }
 }
 
