@@ -54,7 +54,8 @@ fun pressedColorFor(color: Color) = DaysTheme.colors.pressedColorFor(color)
 private fun DaysColorScheme.pressedColorFor(color: Color): Color {
     return when (color) {
         grey100 -> grey500
-        else -> color
+        // Add more color cases as needed 
+        else -> color.copy(alpha = 0.7f)
     }
 }
 
