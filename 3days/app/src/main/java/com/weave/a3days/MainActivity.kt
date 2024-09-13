@@ -4,7 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.weave.design_system.ui.theme._3daysTheme
+import androidx.compose.material3.Text
+import com.weave.design_system.DaysTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -14,7 +15,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            _3daysTheme {
+            DaysTheme {
+                Text(text = "Hello 3days")
             }
         }
     }
