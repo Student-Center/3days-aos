@@ -1,13 +1,9 @@
 package com.weave.design_system
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ProvideTextStyle
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.weave.design_system.foundation.DaysColorScheme
 import com.weave.design_system.foundation.DaysTypography
