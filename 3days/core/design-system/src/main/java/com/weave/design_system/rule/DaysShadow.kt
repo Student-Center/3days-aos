@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+@Immutable
 data class DaysShadowValue(
     val offsetX: Dp = 0.dp,
     val offsetY: Dp = 0.dp,
