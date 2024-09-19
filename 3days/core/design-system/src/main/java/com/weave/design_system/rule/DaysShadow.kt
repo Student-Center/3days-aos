@@ -24,7 +24,7 @@ data class DaysShadow(
     val alert: DaysShadowValue = DaysShadowValue(
         offsetY = 4.dp,
         blur = 8.dp,
-        shadowColor = Color(android.graphics.Color.parseColor("#F2597F")).copy(alpha = 0.08f)
+        shadowColor = Color(0xFFF2597F).copy(alpha = 0.08f)
     )
 )
 
