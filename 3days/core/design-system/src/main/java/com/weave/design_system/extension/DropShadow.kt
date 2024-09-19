@@ -65,10 +65,9 @@ fun Modifier.dropShadow(
  * @param shape 그림자의 모양.
  * @param shadowType 적용할 `DaysShadow` 유형.
  */
-@Composable
 fun Modifier.applyShadow(
     shape: Shape,
-    shadowType: DaysShadowValue = DaysTheme.shadow.default
+    shadowType: DaysShadowValue = DaysShadow().default
 ): Modifier {
     return this.then(
         Modifier.dropShadow(
