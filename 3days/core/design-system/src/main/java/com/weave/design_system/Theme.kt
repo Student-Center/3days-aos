@@ -10,6 +10,8 @@ import com.weave.design_system.foundation.DaysTypography
 import com.weave.design_system.foundation.Local3DaysColorScheme
 import com.weave.design_system.foundation.Local3DaysContentColor
 import com.weave.design_system.foundation.Local3DaysTypography
+import com.weave.design_system.rule.DaysShadow
+import com.weave.design_system.rule.Local3DaysShadow
 
 @Composable
 fun DaysTheme(
@@ -20,6 +22,7 @@ fun DaysTheme(
         Local3DaysColorScheme provides theme.colors,
         Local3DaysTypography provides theme.typography,
         Local3DaysContentColor provides theme.contentColor,
+        Local3DaysShadow provides theme.shadow,
     ) {
         ProvideTextStyle(value = theme.typography.medium14.toTextStyle()) {
             content()
@@ -42,4 +45,9 @@ object DaysTheme {
         @Composable
         @ReadOnlyComposable
         get() = Local3DaysContentColor.current
+
+    val shadow: DaysShadow
+        @Composable
+        @ReadOnlyComposable
+        get() = Local3DaysShadow.current
 }
