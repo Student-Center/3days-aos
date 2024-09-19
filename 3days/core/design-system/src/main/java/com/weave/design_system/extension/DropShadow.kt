@@ -1,6 +1,7 @@
 package com.weave.design_system.extension
 
 import android.graphics.BlurMaskFilter
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Size
@@ -11,6 +12,8 @@ import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.weave.design_system.DaysTheme
+import com.weave.design_system.rule.DaysShadowValue
 
 /**
 * 컴포저블에 그림자 효과를 추가합니다.
@@ -55,3 +58,25 @@ fun Modifier.dropShadow(
         canvas.restore()
     }
 }
+
+/**
+ * 정의된 `DaysShadow` 값을 기반으로 그림자를 적용합니다.
+ *
+ * @param shape 그림자의 모양.
+ * @param shadowType 적용할 `DaysShadow` 유형.
+ */
+fun Modifier.applyShadow(
+    shape: Shape,
+    shadowType: DaysShadowValue = DaysShadow().default
+): Modifier {
+    return this.then(
+        Modifier.dropShadow(
+            shape = shape,
+            color = shadowType.shadowColor,
+            blur = shadowType.blur,
+            offsetX = shadowType.offsetX,
+            offsetY = shadowType.offsetY
+        )
+    )
+}
+
