@@ -111,7 +111,7 @@ fun TooltipTextBox(text: AnnotatedString) {
 @Composable
 fun TooltipArrow(direction: TooltipDirection) {
     Canvas(modifier = Modifier.size(10.dp)) {
-        drawTooltipArrow(this, Color(0xFF5E5E5E), direction)
+        drawTooltipArrow(Color(0xFF5E5E5E), direction)
     }
 }
 
