@@ -88,7 +88,7 @@ dependencies {
     testImplementation(libs.junit)
 
     implementation(libs.hilt.android)
-    implementation(libs.hilt.compose)
+    implementation(libs.hilt.compose.navigation)
     ksp(libs.hilt.android.compiler)
 
     implementation(project(":core:design-system"))

@@ -19,7 +19,6 @@ fun DaysTypographyPreview() {
 
             Text(text = "medium14", style = medium14.toTextStyle())
             Text(text = "medium16", style = medium16.toTextStyle())
-            Text(text = "medium18", style = medium18.toTextStyle())
 
             Text(text = "regular12", style = regular12.toTextStyle())
             Text(text = "regular14", style = regular14.toTextStyle())

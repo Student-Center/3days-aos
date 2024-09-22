@@ -7,10 +7,12 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -46,6 +48,13 @@ data class DaysTextStyle(
         fontWeight = fontWeight,
         fontSize = with(LocalDensity.current) { fontSize.toSp() },
         lineHeight = with(LocalDensity.current) { lineHeight.toSp() },
+        platformStyle = PlatformTextStyle(
+            includeFontPadding = false
+        ),
+        lineHeightStyle = LineHeightStyle(
+            alignment = LineHeightStyle.Alignment.Center,
+            trim = LineHeightStyle.Trim.None
+        ),
         letterSpacing = letterSpacing,
         color = color,
         textAlign = textAlign,
@@ -77,7 +86,7 @@ data class DaysTypography(
         fontWeight = FontWeight.W500,
         lineHeight = 16.dp,
         fontSize = 16.dp,
-        letterSpacing = (-0.01).em
+        letterSpacing = (-0.01).em,
     ),
 
     val enMedium20: DaysTextStyle = DaysTextStyle(
@@ -98,57 +107,57 @@ data class DaysTypography(
     val medium16: DaysTextStyle = DaysTextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight.W500,
-        lineHeight = 24.dp,
         fontSize = 16.dp,
+        lineHeight = 24.dp,
     ),
 
     val regular12: DaysTextStyle = DaysTextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight.W400,
-        lineHeight = 12.dp,
         fontSize = 12.dp,
+        lineHeight = 18.dp,
     ),
 
     val regular14: DaysTextStyle = DaysTextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight.W400,
+        fontSize = 14.dp,
         lineHeight = 21.dp,
-        fontSize = 14.dp
     ),
 
     val regular15: DaysTextStyle = DaysTextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight.W400,
-        lineHeight = (22.5).dp,
         fontSize = 15.dp,
+        lineHeight = (22.5).dp,
     ),
 
     val semiBold14: DaysTextStyle = DaysTextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight.W600,
-        lineHeight = 21.dp,
         fontSize = 14.dp,
+        lineHeight = 21.dp,
     ),
 
     val semiBold18: DaysTextStyle = DaysTextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight.W600,
+        fontSize = 18.dp,
         lineHeight = 27.dp,
-        fontSize = 18.dp
     ),
 
     val semiBold20: DaysTextStyle = DaysTextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight.W600,
+        fontSize = 20.dp,
         lineHeight = 30.dp,
-        fontSize = 20.dp
     ),
 
     val semiBold24: DaysTextStyle = DaysTextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight.W600,
-        lineHeight = 36.dp,
         fontSize = 24.dp,
+        lineHeight = 36.dp,
     ),
 
     val semiBold28: DaysTextStyle = DaysTextStyle(
