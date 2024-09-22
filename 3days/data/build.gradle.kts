@@ -12,6 +12,8 @@ android {
     compileSdk = 34
 
     defaultConfig {
+        minSdk = 26
+
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
         buildConfigField("String", "BASE_URL", "\"${properties.getProperty("BASE_URL")}\"")
@@ -42,6 +44,6 @@ dependencies {
     implementation(libs.gson.converter)
 
     implementation(libs.hilt.android)
-    implementation(libs.hilt.compose)
+    implementation(libs.hilt.compose.navigation)
     ksp(libs.hilt.android.compiler)
 }
