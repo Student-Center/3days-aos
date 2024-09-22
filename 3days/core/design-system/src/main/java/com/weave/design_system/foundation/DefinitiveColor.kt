@@ -3,50 +3,45 @@ package com.weave.design_system.foundation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import com.weave.design_system.DaysTheme
 
 @Immutable
 data class DaysColorScheme(
-    val black: Color = hexToColor("#1F1F1F"),
-    val white: Color = hexToColor("#FFFFFF"),
+    val black: Color = Color(0xFF1F1F1F),
+    val white: Color = Color(0xFFFFFFFF),
 
-    val grey500: Color = hexToColor("#454545"),
-    val grey400: Color = hexToColor("#5E5E5E"),
-    val grey300: Color = hexToColor("#848484"),
-    val grey200: Color = hexToColor("#A0A0A0"),
-    val grey100: Color = hexToColor("#CAC7C5"),
+    val grey500: Color = Color(0xFF454545),
+    val grey400: Color = Color(0xFF5E5E5E),
+    val grey300: Color = Color(0xFF848484),
+    val grey200: Color = Color(0xFFA0A0A0),
+    val grey100: Color = Color(0xFFCAC7C5),
+    val grey50: Color = Color(0xFFF2F1F1),
 
-    val gradientA: List<Color> = listOf(hexToColor("#FF8BAC"), hexToColor("#98C1FF")),
+    val gradientA: List<Color> = listOf(Color(0xFFFF8BAC), Color(0xFF98C1FF)),
 
-    val red300: Color = hexToColor("#F2597F"),
-    val blue300: Color = hexToColor("#408CFF"),
+    val yellow50: Color = Color(0xFFFEFDED),
+    val green50: Color = Color(0xFFF0F6EB),
+    val pink50: Color = Color(0xFFF6EBEF),
+    val blue50: Color = Color(0xFFEBF1F6),
 
-    val darkGreen: Color = hexToColor("#5B6654"),
-    val darkPink: Color = hexToColor("#846470"),
-    val darkBlue: Color = hexToColor("#606D8F"),
+    val yellow100: Color = Color(0xFFDFDBA5),
+    val green100: Color = Color(0xFFAFCA9A),
+    val pink100: Color = Color(0xFFE6B1C4),
 
-    val lightYellow: Color = hexToColor("#FEFDED"),
-    val lightGreen: Color = hexToColor("#F0F6EB"),
-    val lightPink: Color = hexToColor("#F6EBEF"),
-    val lightBlue: Color = hexToColor("#EBF1F6"),
+    val red300: Color = Color(0xFFF2597F),
+    val blue300: Color = Color(0xFF5E9BF7),
 
-    val background: Color = hexToColor("#F5F1EE")
+    val green500: Color = Color(0xFF5B6654),
+    val pink500: Color = Color(0xFF846470),
+    val blue500: Color = Color(0xFF606D8F),
+
+    val background: Color = Color(0xFFF5F1EE)
 )
 
-private val lightColorScheme = DaysColorScheme()
+val Local3DaysColorScheme = staticCompositionLocalOf { DaysColorScheme() }
 
-internal fun hexToColor(hex: String): Color {
-    return Color(android.graphics.Color.parseColor(hex))
-}
-
-val Local3DaysColorScheme = staticCompositionLocalOf { lightColorScheme }
-val Local3DaysContentColor = compositionLocalOf { lightColorScheme.black }
-
-
-// ripple effect
 @Composable
 @ReadOnlyComposable
 fun pressedColorFor(color: Color) = DaysTheme.colors.pressedColorFor(color)
