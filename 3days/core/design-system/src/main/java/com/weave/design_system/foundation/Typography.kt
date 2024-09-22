@@ -30,7 +30,6 @@ val RobotoSlab = FontFamily(
     Font(R.font.robotoslab_medium, FontWeight.W500),
 )
 
-// 폰트 사이즈를 Dp로 표현하기 위해 사용합니다.
 @Immutable
 data class DaysTextStyle(
     val fontFamily: FontFamily = Pretendard,
@@ -103,13 +102,6 @@ data class DaysTypography(
         fontSize = 16.dp,
     ),
 
-    val medium18: DaysTextStyle = DaysTextStyle(
-        fontFamily = Pretendard,
-        fontWeight = FontWeight.W500,
-        lineHeight = 27.dp,
-        fontSize = 18.dp
-    ),
-
     val regular12: DaysTextStyle = DaysTextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight.W400,
@@ -140,9 +132,16 @@ data class DaysTypography(
 
     val semiBold18: DaysTextStyle = DaysTextStyle(
         fontFamily = Pretendard,
-        fontWeight = FontWeight.W500,
+        fontWeight = FontWeight.W600,
         lineHeight = 27.dp,
         fontSize = 18.dp
+    ),
+
+    val semiBold20: DaysTextStyle = DaysTextStyle(
+        fontFamily = Pretendard,
+        fontWeight = FontWeight.W600,
+        lineHeight = 30.dp,
+        fontSize = 20.dp
     ),
 
     val semiBold24: DaysTextStyle = DaysTextStyle(

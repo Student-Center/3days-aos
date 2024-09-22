@@ -4,11 +4,9 @@ import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.ui.graphics.Color
 import com.weave.design_system.foundation.DaysColorScheme
 import com.weave.design_system.foundation.DaysTypography
 import com.weave.design_system.foundation.Local3DaysColorScheme
-import com.weave.design_system.foundation.Local3DaysContentColor
 import com.weave.design_system.foundation.Local3DaysTypography
 import com.weave.design_system.rule.DaysShadow
 import com.weave.design_system.rule.Local3DaysShadow
@@ -21,7 +19,6 @@ fun DaysTheme(
     CompositionLocalProvider(
         Local3DaysColorScheme provides theme.colors,
         Local3DaysTypography provides theme.typography,
-        Local3DaysContentColor provides theme.contentColor,
         Local3DaysShadow provides theme.shadow,
     ) {
         ProvideTextStyle(value = theme.typography.medium14.toTextStyle()) {
@@ -40,11 +37,6 @@ object DaysTheme {
         @Composable
         @ReadOnlyComposable
         get() = Local3DaysTypography.current
-
-    val contentColor: Color
-        @Composable
-        @ReadOnlyComposable
-        get() = Local3DaysContentColor.current
 
     val shadow: DaysShadow
         @Composable
