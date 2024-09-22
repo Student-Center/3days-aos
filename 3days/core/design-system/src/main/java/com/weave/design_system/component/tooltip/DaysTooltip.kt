@@ -115,7 +115,7 @@ fun TooltipArrow(direction: TooltipDirection) {
     }
 }
 
-fun DrawScope.drawTooltipArrow(scope: DrawScope, color: Color, direction: TooltipDirection) {
+fun DrawScope.drawTooltipArrow(color: Color, direction: TooltipDirection) {
     val path = Path().apply {
         when (direction) {
             TooltipDirection.Top -> {
@@ -144,7 +144,7 @@ fun DrawScope.drawTooltipArrow(scope: DrawScope, color: Color, direction: Toolti
         }
         close()
     }
-    scope.drawPath(
+    drawPath(
         path = path,
         color = color
     )
