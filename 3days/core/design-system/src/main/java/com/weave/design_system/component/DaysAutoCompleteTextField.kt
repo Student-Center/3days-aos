@@ -49,6 +49,7 @@ fun DaysAutoCompleteTextField(
     var inputText by remember { mutableStateOf("") }
     var isDropdownVisible by remember { mutableStateOf(false) }
     var selectedSuggestion by remember { mutableStateOf<String?>(null) }
+    var isFocusedState by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -63,8 +64,10 @@ fun DaysAutoCompleteTextField(
                 selectedSuggestion = null
             },
             selectedSuggestion = selectedSuggestion,
+            isFocused = isFocusedState,
             placeholderText = placeholderText,
             onFocusChange = { isFocused ->
+                isFocusedState = isFocused
                 isDropdownVisible = isFocused && inputText.isNotBlank()
             },
             focusManager = focusManager
@@ -95,6 +98,7 @@ private fun DaysAutoCompleteInputField(
     text: String,
     onTextChange: (String) -> Unit,
     selectedSuggestion: String?,
+    isFocused: Boolean,
     placeholderText: String,
     onFocusChange: (Boolean) -> Unit,
     focusManager: FocusManager
@@ -107,7 +111,7 @@ private fun DaysAutoCompleteInputField(
             .background(color = colors.white, shape = RoundedCornerShape(61.dp))
             .onFocusChanged { onFocusChange(it.isFocused) }
             .border(
-                BorderStroke(if (selectedSuggestion != null) 1.dp else 0.dp, colors.grey100),
+                BorderStroke(if (isFocused) 1.dp else 0.dp, colors.grey100),
                 shape = RoundedCornerShape(61.dp)
             )
             .padding(horizontal = 24.dp)
