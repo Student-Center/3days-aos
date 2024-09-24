@@ -296,43 +296,14 @@ private fun DropdownWithScrollbar(
     }
 }
 
-
-@Composable
-fun CustomTextFieldDemo(
-    focusManager: FocusManager
-) {
-    val items = listOf(
-        "Apple",
-        "Banana",
-        "Cherry",
-        "Date",
-        "Elderberry",
-        "Apple",
-        "Banana",
-        "Cherry",
-        "Date",
-        "Elderberry",
-        "Apple",
-        "Banana",
-        "Cherry",
-        "Date",
-        "Elderberry"
-    )
-
-    DaysAutoCompleteTextField(
-        suggestions = items,
-        onSuggestionSelected = { selectedItem ->
-            println("Selected: $selectedItem")
-        },
-        placeholderText = "내 회사 검색 혹은 직접 입력",
-        focusManager = focusManager,
-        allowDirectInput = true
-    )
-}
-
 @Preview(showBackground = true)
 @Composable
-fun CustomTextFieldPreview() {
+fun DaysAutoCompleteTextFieldPreview() {
+    val items = listOf(
+        "Apple", "Banana", "Cherry", "Date", "Elderberry", "Apple",
+        "Banana", "Cherry", "Date", "Elderberry", "Apple", "Banana", "Cherry", "Date", "Elderberry"
+    )
+
     DaysTheme {
         val focusManager = LocalFocusManager.current
 
@@ -342,7 +313,15 @@ fun CustomTextFieldPreview() {
                 .addFocusCleaner(focusManager)
         ) {
             Spacer(modifier = Modifier.height(100.dp))
-            CustomTextFieldDemo(focusManager)
+            DaysAutoCompleteTextField(
+                suggestions = items,
+                onSuggestionSelected = { selectedItem ->
+                    println("Selected: $selectedItem")
+                },
+                placeholderText = "내 회사 검색 혹은 직접 입력",
+                focusManager = focusManager,
+                allowDirectInput = true
+            )
         }
     }
 }
