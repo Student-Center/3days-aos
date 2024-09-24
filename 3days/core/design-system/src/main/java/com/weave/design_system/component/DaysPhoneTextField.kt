@@ -151,16 +151,21 @@ private fun isValidPhoneNumber(phoneNumber: String): Boolean {
 @Composable
 fun DaysPhoneTextFieldPreview() {
     val focusManager: FocusManager = LocalFocusManager.current
-    var phoneNumberState by remember { mutableStateOf(TextFieldValue("")) }
-
+    
     Column(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
     ) {
         DaysPhoneTextField(
             focusManager = focusManager,
-            phoneNumber = phoneNumberState,
-            onTextChange = { phoneNumberState = it }
+            phoneNumber = TextFieldValue(""),
+            onTextChange = {}
+        )
+        
+        DaysPhoneTextField(
+            focusManager = focusManager,
+            phoneNumber = TextFieldValue("01012345678"),
+            onTextChange = {}
         )
     }
 }
