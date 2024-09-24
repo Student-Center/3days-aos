@@ -59,6 +59,7 @@ import com.weave.design_system.extension.noRippleClickable
 fun DaysAutoCompleteTextField(
     modifier: Modifier = Modifier,
     suggestions: List<String>,
+    selectedSuggestion: String,
     onSuggestionSelected: (String) -> Unit,
     placeholderText: String = "",
     allowDirectInput: Boolean = false,
@@ -66,7 +67,6 @@ fun DaysAutoCompleteTextField(
 ) {
     var inputText by remember { mutableStateOf("") }
     var isDropdownVisible by remember { mutableStateOf(false) }
-    var selectedSuggestion by remember { mutableStateOf<String?>(null) }
     var isFocusedState by remember { mutableStateOf(false) }
 
     Column(
@@ -79,7 +79,7 @@ fun DaysAutoCompleteTextField(
             onTextChange = { newText ->
                 inputText = newText
                 isDropdownVisible = newText.isNotBlank()
-                selectedSuggestion = null
+                onSuggestionSelected("")
             },
             selectedSuggestion = selectedSuggestion,
             isFocused = isFocusedState,
@@ -100,7 +100,6 @@ fun DaysAutoCompleteTextField(
                 suggestions = suggestions.filter { it.contains(inputText, ignoreCase = true) },
                 onSuggestionClick = { clickedSuggestion ->
                     inputText = clickedSuggestion
-                    selectedSuggestion = clickedSuggestion
                     isDropdownVisible = false
                     onSuggestionSelected(clickedSuggestion)
 
@@ -115,7 +114,7 @@ fun DaysAutoCompleteTextField(
 private fun DaysAutoCompleteInputField(
     text: String,
     onTextChange: (String) -> Unit,
-    selectedSuggestion: String?,
+    selectedSuggestion: String,
     isFocused: Boolean,
     placeholderText: String,
     onFocusChange: (Boolean) -> Unit,
@@ -173,7 +172,7 @@ private fun DaysAutoCompleteInputField(
                 )
             }
             Spacer(modifier = Modifier.width(20.dp))
-            SuggestionIcon(selected = selectedSuggestion != null)
+            SuggestionIcon(selected = selectedSuggestion.isNotBlank())
         }
     }
 }
@@ -306,6 +305,7 @@ fun DaysAutoCompleteTextFieldPreview() {
 
     DaysTheme {
         val focusManager = LocalFocusManager.current
+        var selectedSuggestion by remember { mutableStateOf("") }
 
         Column(
             modifier = Modifier
@@ -315,8 +315,11 @@ fun DaysAutoCompleteTextFieldPreview() {
             Spacer(modifier = Modifier.height(100.dp))
             DaysAutoCompleteTextField(
                 suggestions = items,
+                selectedSuggestion = selectedSuggestion,
                 onSuggestionSelected = { selectedItem ->
-                    println("Selected: $selectedItem")
+                    selectedSuggestion = selectedItem
+
+                    println("Selected: $selectedSuggestion")
                 },
                 placeholderText = "내 회사 검색 혹은 직접 입력",
                 focusManager = focusManager,
