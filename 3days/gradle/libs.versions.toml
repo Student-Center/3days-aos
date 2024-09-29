@@ -1,6 +1,5 @@
 [versions]
 agp = "8.4.0"
-coreSplashscreen = "1.0.1"
 jetbrainsKotlinJvm = "1.9.24"
 kotlin = "1.9.24"
 kotlinxCoroutines = "1.9.0"
@@ -36,7 +35,6 @@ coil = "2.7.0"
 [libraries]
 androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
 androidx-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "runtime" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

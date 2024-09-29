@@ -11,11 +11,11 @@ import javax.inject.Inject
 
 data class SplashUiState(
     val isDataLoaded: Boolean = false,
-    val isSplashComplete: Boolean = false
+    val isValid: Boolean = false,
 )
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class SplashViewModel @Inject constructor(
 
 ) : ViewModel() {
 
@@ -29,7 +29,10 @@ class MainViewModel @Inject constructor(
     private fun loadData() {
         viewModelScope.launch {
             delay(1000L) // 추후 로그인 여부 체크 로직으로 수정
-            _uiState.value = _uiState.value.copy(isDataLoaded = true)
+            _uiState.value = _uiState.value.copy(
+                isDataLoaded = true,
+                isValid = false
+            )
         }
     }
 }

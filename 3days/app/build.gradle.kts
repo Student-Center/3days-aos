@@ -91,8 +91,6 @@ dependencies {
     implementation(libs.hilt.compose.navigation)
     ksp(libs.hilt.android.compiler)
 
-    implementation(libs.androidx.core.splashscreen)
-
     implementation(project(":core:design-system"))
     implementation(project(":feat:intro"))
     implementation(project(":data"))
