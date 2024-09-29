@@ -37,7 +37,11 @@ data class DaysColorScheme(
     val pink500: Color = Color(0xFF846470),
     val blue500: Color = Color(0xFF606D8F),
 
-    val background: Color = Color(0xFFF5F1EE)
+    val bgDefault: Color = Color(0xFFF5F1EE),
+    val bgSplashBrown: Color = Color(0xFFE4DED7),
+    val bgSplashGreen: Color = Color(0xFFDFE7D1),
+    val bgSplashPurple: Color = Color(0xFFD7D7EA),
+    val bgSplashPink: Color = Color(0xFFECDAE3)
 )
 
 val Local3DaysColorScheme = staticCompositionLocalOf { DaysColorScheme() }
