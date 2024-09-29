@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.weave.splash"
+    namespace = "com.weave.intro"
     compileSdk = 34
 
     defaultConfig {

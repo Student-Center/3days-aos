@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    [Android 문자열 명명 규칙]
+
+    1. **소문자 및 언더스코어 사용**
+       - 모든 이름은 소문자로 작성하고, 단어 사이에는 언더스코어(_)를 사용합니다.
+       - 예: login_title, welcome_message
+
+    2. **의미 있는 이름**
+       - 문자열의 용도와 의미를 명확히 나타냅니다.
+       - 예: error_network, button_submit
+
+    3. **컨텍스트 포함**
+       - 특정 화면이나 기능을 반영하여 이름을 작성합니다.
+       - 예: feature_onboarding_welcome_message
+
+    4. **접두사 사용**
+       - 기능이나 모듈을 구분하기 위해 접두사를 사용합니다.
+       - 예: feature_, module_
+       - 예: feature_login_button
+
+    5. **중복 방지**
+       - 여러 곳에서 사용될 수 있는 문자열은 일반적인 이름을 사용합니다.
+       - 예: error_generic, success_message
+
+    6. **다국어 지원 고려**
+       - 기본 문자열은 영어로 정의하고, 번역 시 이름은 변경하지 않습니다.
+       - 예: welcome_message
+
+    7. **정규화**
+       - 유사한 문자열은 일관된 패턴으로 정의합니다.
+       - 예: user_name, user_email
+
+    8. **예외 사항**
+       - 특정 규칙을 따르지 않는 경우 주석으로 설명합니다.
+-->
+
+<resources>
+    <!-- Splash Screen -->
+    <string name="splash_title">3일동안 딱 한 사람만 알아가는\n새로운 설렘의 시작</string>
+    <string name="splash_button_start">휴대폰 번호로 시작하기</string>
+
+    <string name="splash_logo_description">Splash Logo</string>
+    <string name="splash_day_1_description">Day 1</string>
+    <string name="splash_day_2_description">Day 2</string>
+    <string name="splash_day_3_description">Day 3</string>
+    <string name="splash_date_ticket_description">Date Ticket</string>
+
+</resources>
