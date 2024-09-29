@@ -48,7 +48,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import androidx.navigation.NavController
 import com.weave.design_system.DaysTheme
 import com.weave.design_system.extension.applyShadow
 import kotlinx.coroutines.delay
@@ -58,15 +57,15 @@ internal const val nextDuration = 750L
 
 @Composable
 fun IntroScreen(
-    navController: NavController
+    onClicked: () -> Unit
 ) {
     var currentScreen by remember { mutableIntStateOf(0) }
     val backgroundColors = listOf(
-        Color(0xFFDFE7D1),
-        Color(0xFFD7D7EA),
-        Color(0xFFECDAE3),
-        DaysTheme.colors.background,
-        DaysTheme.colors.background
+        DaysTheme.colors.bgSplashGreen,
+        DaysTheme.colors.bgSplashPurple,
+        DaysTheme.colors.bgSplashPink,
+        DaysTheme.colors.bgDefault,
+        DaysTheme.colors.bgDefault
     )
 
     val backgroundColorAnim by animateColorAsState(
@@ -92,17 +91,24 @@ fun IntroScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundColorAnim)
             .systemBarsPadding()
     ) {
+        Image(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backgroundColorAnim),
+            painter = painterResource(id = com.weave.design_system.R.drawable.texture_bg),
+            contentDescription = "Splash Background"
+        )
+
         when (currentScreen) {
             0 -> DayOneScreen()
             1 -> DayTwoScreen()
             2 -> DayThreeScreen()
             3 -> DayLayeredScreen()
-            4 -> DaySpreadScreen {
-                navController.navigate("mobile_auth")
-            }
+            4 -> DaySpreadScreen(
+                onClicked = onClicked
+            )
         }
     }
 }
