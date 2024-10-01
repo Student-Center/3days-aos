@@ -61,5 +61,5 @@
 
     <string name="mobile_auth_resend_message">코드를 재전송 했어요</string>
     <string name="mobile_auth_send_error_message">코드 전송에 실패 했어요</string>
-    <string name="mobile_auth_verify_error_message">"인증 실패: 잘못된 코드</string>
+    <string name="mobile_auth_verify_error_message">인증 실패: 잘못된 코드</string>
 </resources>
