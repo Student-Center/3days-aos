@@ -240,7 +240,9 @@ fun CodeInputRow(
                     .onKeyEvent { event: KeyEvent ->
                         if (event.key == Key.Backspace) {
                             if (code[index].isEmpty()) {
-                                focusRequesters[index - 1].requestFocus()
+                                if (index > 0) {
+                                    focusRequesters[index - 1].requestFocus()
+                                }
                             }
                             return@onKeyEvent true
                         }
