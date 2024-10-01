@@ -28,7 +28,14 @@ fun NavGraphBuilder.navGraphIntro(navController: NavController) {
             MobileEnterAuthScreen(
                 mobileNum = mobileNum,
                 onBackBtnClicked = { navController.popBackStack() },
-                onNextBtnClicked = { navController.navigate("") }
+                onNextBtnClicked = { navController.navigate("terms_agreement") }
+            )
+        }
+
+        composable("terms_agreement"){
+            TermsAgreementScreen(
+                onBackBtnClicked = { navController.popBackStack() },
+                onNextBtnClicked = { navController.navigate("my_profile") }
             )
         }
     }

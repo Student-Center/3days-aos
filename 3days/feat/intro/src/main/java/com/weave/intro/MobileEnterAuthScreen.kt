@@ -138,7 +138,7 @@ fun MobileEnterAuthScreen(
                     .fillMaxSize()
                     .background(DaysTheme.colors.bgDefault),
                 painter = painterResource(id = R.drawable.texture_bg),
-                contentDescription = stringResource(id = R.string.mobile_enter_bg_description)
+                contentDescription = stringResource(id = R.string.background_description)
             )
 
             Column(
