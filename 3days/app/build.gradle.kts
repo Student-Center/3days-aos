@@ -91,6 +91,7 @@ dependencies {
     implementation(libs.hilt.compose.navigation)
     ksp(libs.hilt.android.compiler)
 
+    implementation(project(":core:utils"))
     implementation(project(":core:design-system"))
     implementation(project(":feat:intro"))
     implementation(project(":data"))
