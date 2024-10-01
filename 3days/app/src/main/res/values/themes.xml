@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Theme._3days" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme._3days" parent="android:Theme.Material.Light.NoActionBar" >
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowSplashScreenBackground" tools:targetApi="s">#F5F1EE</item>
+        <item name="android:windowSplashScreenAnimationDuration" tools:targetApi="s">500</item>
+    </style>
 </resources>

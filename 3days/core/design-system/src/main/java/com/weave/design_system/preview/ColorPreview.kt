@@ -55,7 +55,11 @@ fun ColorPreview() {
             ColorBox("Green50", green50)
             ColorBox("Pink50", pink50)
             ColorBox("Blue50", blue50)
-            ColorBox("Background", background)
+            ColorBox("Background Default", bgDefault)
+            ColorBox("Background Green", bgSplashGreen)
+            ColorBox("Background Brown", bgSplashBrown)
+            ColorBox("Background Pink", bgSplashPink)
+            ColorBox("Background Purple", bgSplashPurple)
         }
     }
 }

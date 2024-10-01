@@ -27,10 +27,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
@@ -52,9 +48,10 @@ fun DaysPhoneTextField(
     modifier: Modifier = Modifier,
     focusManager: FocusManager,
     phoneNumber: TextFieldValue,
+    isValid: (Boolean) -> Unit,
     onTextChange: (TextFieldValue) -> Unit
 ) {
-    Box(modifier = modifier.padding(horizontal = 26.dp)) {
+    Box(modifier = modifier) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -112,7 +109,11 @@ fun DaysPhoneTextField(
                     )
                 }
                 Spacer(modifier = Modifier.width(20.dp))
-                if (isValidPhoneNumber(phoneNumber.text)) {
+
+                val phoneValid = isValidPhoneNumber(phoneNumber.text)
+                isValid(phoneValid)
+
+                if (phoneValid) {
                     ValidatedIcon()
                 }
             }
@@ -151,7 +152,7 @@ private fun isValidPhoneNumber(phoneNumber: String): Boolean {
 @Composable
 fun DaysPhoneTextFieldPreview() {
     val focusManager: FocusManager = LocalFocusManager.current
-    
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
@@ -159,12 +160,14 @@ fun DaysPhoneTextFieldPreview() {
         DaysPhoneTextField(
             focusManager = focusManager,
             phoneNumber = TextFieldValue(""),
+            isValid = {},
             onTextChange = {}
         )
-        
+
         DaysPhoneTextField(
             focusManager = focusManager,
             phoneNumber = TextFieldValue("01012345678"),
+            isValid = {},
             onTextChange = {}
         )
     }

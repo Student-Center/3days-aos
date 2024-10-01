@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -48,7 +47,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import androidx.navigation.NavController
 import com.weave.design_system.DaysTheme
 import com.weave.design_system.extension.applyShadow
 import kotlinx.coroutines.delay
@@ -58,15 +56,15 @@ internal const val nextDuration = 750L
 
 @Composable
 fun IntroScreen(
-    navController: NavController
+    onClicked: () -> Unit
 ) {
     var currentScreen by remember { mutableIntStateOf(0) }
     val backgroundColors = listOf(
-        Color(0xFFDFE7D1),
-        Color(0xFFD7D7EA),
-        Color(0xFFECDAE3),
-        DaysTheme.colors.background,
-        DaysTheme.colors.background
+        DaysTheme.colors.bgSplashGreen,
+        DaysTheme.colors.bgSplashPurple,
+        DaysTheme.colors.bgSplashPink,
+        DaysTheme.colors.bgDefault,
+        DaysTheme.colors.bgDefault
     )
 
     val backgroundColorAnim by animateColorAsState(
@@ -92,17 +90,23 @@ fun IntroScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundColorAnim)
-            .systemBarsPadding()
     ) {
+        Image(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backgroundColorAnim),
+            painter = painterResource(id = com.weave.design_system.R.drawable.texture_bg),
+            contentDescription = "Splash Background"
+        )
+
         when (currentScreen) {
             0 -> DayOneScreen()
             1 -> DayTwoScreen()
             2 -> DayThreeScreen()
             3 -> DayLayeredScreen()
-            4 -> DaySpreadScreen {
-                navController.navigate("mobile_auth")
-            }
+            4 -> DaySpreadScreen(
+                onClicked = onClicked
+            )
         }
     }
 }
@@ -156,7 +160,7 @@ fun DayOneScreen() {
     ) {
         DayImage(
             painter = painterResource(id = R.drawable.ic_day_1),
-            contentDescription = stringResource(id = com.weave.design_system.R.string.splash_day_1_description),
+            contentDescription = stringResource(id = com.weave.design_system.R.string.intro_day_1_description),
             alpha = alpha,
             rotation = -5.47f
         )
@@ -182,12 +186,12 @@ fun DayTwoScreen() {
     ) {
         DayImage(
             painter = painterResource(id = R.drawable.ic_day_1),
-            contentDescription = stringResource(id = com.weave.design_system.R.string.splash_day_1_description),
+            contentDescription = stringResource(id = com.weave.design_system.R.string.intro_day_1_description),
             rotation = -5.47f
         )
         DayImage(
             painter = painterResource(id = R.drawable.ic_day_2),
-            contentDescription = stringResource(id = com.weave.design_system.R.string.splash_day_2_description),
+            contentDescription = stringResource(id = com.weave.design_system.R.string.intro_day_2_description),
             alpha = alpha,
             rotation = 4.98f
         )
@@ -213,17 +217,17 @@ fun DayThreeScreen() {
     ) {
         DayImage(
             painter = painterResource(id = R.drawable.ic_day_1),
-            contentDescription = stringResource(id = com.weave.design_system.R.string.splash_day_1_description),
+            contentDescription = stringResource(id = com.weave.design_system.R.string.intro_day_1_description),
             rotation = -5.47f
         )
         DayImage(
             painter = painterResource(id = R.drawable.ic_day_2),
-            contentDescription = stringResource(id = com.weave.design_system.R.string.splash_day_2_description),
+            contentDescription = stringResource(id = com.weave.design_system.R.string.intro_day_2_description),
             rotation = 4.98f
         )
         DayImage(
             painter = painterResource(id = R.drawable.ic_day_3),
-            contentDescription = stringResource(id = com.weave.design_system.R.string.splash_day_3_description),
+            contentDescription = stringResource(id = com.weave.design_system.R.string.intro_day_3_description),
             alpha = alpha,
             rotation = 15.52f
         )
@@ -275,19 +279,19 @@ fun DayLayeredScreen() {
     ) {
         DayImage(
             painter = painterResource(id = R.drawable.ic_day_1),
-            contentDescription = stringResource(id = com.weave.design_system.R.string.splash_day_1_description),
+            contentDescription = stringResource(id = com.weave.design_system.R.string.intro_day_1_description),
             rotation = rotation1,
             offsetX = offset1X,
             offsetY = offset1Y
         )
         DayImage(
             painter = painterResource(id = R.drawable.ic_day_2),
-            contentDescription = stringResource(id = com.weave.design_system.R.string.splash_day_2_description),
+            contentDescription = stringResource(id = com.weave.design_system.R.string.intro_day_2_description),
             rotation = rotation2
         )
         DayImage(
             painter = painterResource(id = R.drawable.ic_day_3),
-            contentDescription = stringResource(id = com.weave.design_system.R.string.splash_day_3_description),
+            contentDescription = stringResource(id = com.weave.design_system.R.string.intro_day_3_description),
             rotation = rotation3,
             offsetX = offset3X,
             offsetY = offset3Y
@@ -338,7 +342,7 @@ fun DaySpreadScreen(
         ) {
             Text(
                 textAlign = TextAlign.Center,
-                text = stringResource(id = com.weave.design_system.R.string.splash_title),
+                text = stringResource(id = com.weave.design_system.R.string.intro_title),
                 style = DaysTheme.typography.semiBold24.toTextStyle(),
                 color = DaysTheme.colors.grey500
             )
@@ -352,17 +356,17 @@ fun DaySpreadScreen(
         ) {
             DayImage(
                 painter = painterResource(id = R.drawable.ic_day_1),
-                contentDescription = stringResource(id = com.weave.design_system.R.string.splash_day_1_description),
+                contentDescription = stringResource(id = com.weave.design_system.R.string.intro_day_1_description),
                 offsetX = offset1X,
                 offsetY = offset1Y,
             )
             DayImage(
                 painter = painterResource(id = R.drawable.ic_day_2),
-                contentDescription = stringResource(id = com.weave.design_system.R.string.splash_day_2_description),
+                contentDescription = stringResource(id = com.weave.design_system.R.string.intro_day_2_description),
             )
             DayImage(
                 painter = painterResource(id = R.drawable.ic_day_3),
-                contentDescription = stringResource(id = com.weave.design_system.R.string.splash_day_3_description),
+                contentDescription = stringResource(id = com.weave.design_system.R.string.intro_day_3_description),
                 offsetX = offset3X,
                 offsetY = offset3Y,
             )
@@ -402,7 +406,7 @@ fun DaySpreadScreen(
                     )
             ) {
                 Text(
-                    text = stringResource(id = com.weave.design_system.R.string.splash_button_start),
+                    text = stringResource(id = com.weave.design_system.R.string.intro_button_start),
                     style = DaysTheme.typography.semiBold18.copy(fontSize = 16.dp)
                         .toTextStyle(),
                     textAlign = TextAlign.Center
@@ -447,7 +451,7 @@ fun FadeInDropImage(
     ) {
         Image(
             painter = painter,
-            contentDescription = stringResource(id = com.weave.design_system.R.string.splash_date_ticket_description),
+            contentDescription = stringResource(id = com.weave.design_system.R.string.intro_date_ticket_description),
             contentScale = ContentScale.Crop,
             modifier = modifier
                 .alpha(alpha)

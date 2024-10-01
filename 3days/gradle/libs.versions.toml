@@ -1,6 +1,5 @@
 [versions]
 agp = "8.4.0"
-coreSplashscreen = "1.0.1"
 jetbrainsKotlinJvm = "1.9.24"
 kotlin = "1.9.24"
 kotlinxCoroutines = "1.9.0"
@@ -14,6 +13,9 @@ lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.2"
 composeBom = "2024.08.00"
 runtime = "1.7.2"
+
+playServicesAuth = "21.2.0"
+playServicesAuthApiPhone = "18.1.0"
 
 ksp = "1.9.24-1.0.20"
 hilt-compose-navigation = "1.2.0"
@@ -36,7 +38,6 @@ coil = "2.7.0"
 [libraries]
 androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
 androidx-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "runtime" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -69,6 +70,9 @@ okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhtt
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 gson-converter = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "gson-converter" }
+
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+play-services-auth-api-phone = { module = "com.google.android.gms:play-services-auth-api-phone", version.ref = "playServicesAuthApiPhone" }
 
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
