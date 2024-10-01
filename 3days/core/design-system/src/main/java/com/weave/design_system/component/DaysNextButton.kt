@@ -1,6 +1,5 @@
 package com.weave.design_system.component
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,8 +24,6 @@ fun DaysNextButton(
     isEnabled: Boolean = false,
     onClick: () -> Unit
 ) {
-    Log.i("Keyboard", type.toString())
-
     val buttonHeight = when (type) {
         BtnType.Tall -> 90.dp
         BtnType.Short -> 68.dp
