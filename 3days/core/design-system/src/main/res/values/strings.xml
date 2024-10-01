@@ -40,6 +40,7 @@
     <string name="app_name">3days</string>
 
     <!-- Common -->
+    <string name="background_description">Background Texture</string>
     <string name="next_button_message">다음</string>
 
     <!-- Intro Module -->
@@ -52,14 +53,14 @@
     <string name="intro_day_3_description">Day 3</string>
     <string name="intro_date_ticket_description">Date Ticket</string>
 
-    <string name="mobile_send_bg_description">MobileSendAuthScreen Background</string>
     <string name="mobile_send_title">전화번호를 입력해주세요</string>
 
-    <string name="mobile_enter_bg_description">MobileEnterAuthScreen Background</string>
     <string name="mobile_enter_title">인증 코드를 입력해 주세요</string>
     <string name="mobile_enter_resend">%s로 코드 재전송</string>
 
     <string name="mobile_auth_resend_message">코드를 재전송 했어요</string>
     <string name="mobile_auth_send_error_message">코드 전송에 실패 했어요</string>
     <string name="mobile_auth_verify_error_message">인증 실패: 잘못된 코드</string>
+
+    <string name="terms_agreement_title">인증이 완료되었어요!\n이용약관에 동의하면 끝나요</string>
 </resources>
