@@ -63,4 +63,7 @@
     <string name="mobile_auth_verify_error_message">인증 실패: 잘못된 코드</string>
 
     <string name="terms_agreement_title">인증이 완료되었어요!\n이용약관에 동의하면 끝나요</string>
+
+    <!-- My-Profile Module -->
+    <string name="my_profile_init_title">만나서 반가워요!\n당신이 어떤 사람인지 알려주세요.</string>
 </resources>
