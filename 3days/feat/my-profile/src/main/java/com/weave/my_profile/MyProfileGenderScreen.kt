@@ -1,4 +1,4 @@
-package com.weave.intro
+package com.weave.my_profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -18,43 +17,42 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.weave.design_system.DaysTheme
 import com.weave.design_system.R
 import com.weave.design_system.component.BtnType
+import com.weave.design_system.component.DaysGenderSelector
 import com.weave.design_system.component.DaysNextButton
 import com.weave.design_system.component.DaysOnlyBackAppbar
-import com.weave.design_system.component.DaysPhoneTextField
-import com.weave.design_system.extension.addFocusCleaner
+import com.weave.design_system.component.DaysStepIndicator
 import com.weave.utils.Keyboard
 import com.weave.utils.keyboardAsState
 
 @Composable
-fun MobileSendAuthScreen(
+fun MyProfileGenderScreen(
     onBackBtnClicked: () -> Unit,
-    onNextBtnClicked: (String) -> Unit
+    onNextBtnClicked: () -> Unit
 ) {
-    val focusManager = LocalFocusManager.current
     val isKeyboardVisible by keyboardAsState()
-
-    var phoneNumber by remember { mutableStateOf(TextFieldValue("")) }
     var isEnabled by remember { mutableStateOf(false) }
+    var genderState by remember { mutableStateOf("") }
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .addFocusCleaner(focusManager)
-            .imePadding(),
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             DaysOnlyBackAppbar(onBackPressed = onBackBtnClicked)
         }
-    ) { innerPadding ->
-        Box(modifier = Modifier.fillMaxSize()) {
+    ) {  innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    top = innerPadding.calculateTopPadding(),
+                )
+        ) {
             Image(
                 modifier = Modifier
                     .fillMaxSize()
@@ -65,34 +63,36 @@ fun MobileSendAuthScreen(
 
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        top = innerPadding.calculateTopPadding(),
-                        bottom = innerPadding.calculateBottomPadding(),
-                        start = 26.dp,
-                        end = 26.dp
-                    )
+                    .matchParentSize()
+                    .padding(horizontal = 26.dp)
             ) {
-                Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(12.dp))
+
+                DaysStepIndicator(currentStep = 1, totalStep = 5)
+
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
-                    text = stringResource(id = R.string.mobile_send_title),
+                    text = stringResource(id = R.string.my_profile_gender_sub_title),
+                    style = DaysTheme.typography.regular14.toTextStyle(),
+                    color = DaysTheme.colors.grey200
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = stringResource(id = R.string.my_profile_gender_title),
                     style = DaysTheme.typography.semiBold24.toTextStyle(),
                     color = DaysTheme.colors.grey500
                 )
 
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
-                DaysPhoneTextField(
-                    focusManager = focusManager,
-                    phoneNumber = phoneNumber,
-                    isValid = { isValid ->
-                        isEnabled = isValid
-                    },
-                    onTextChange = { newText ->
-                        if(newText.text.all { it.isDigit() }){
-                            phoneNumber = newText
-                        }
+                DaysGenderSelector(
+                    genderState = genderState,
+                    onChangedGender = { newValue ->
+                        genderState = newValue
+                        isEnabled = genderState.isNotEmpty()
                     }
                 )
             }
@@ -101,7 +101,7 @@ fun MobileSendAuthScreen(
                 message = stringResource(id = R.string.next_button_message),
                 type = if (isKeyboardVisible == Keyboard.Opened) BtnType.Short else BtnType.Tall,
                 isEnabled = isEnabled,
-                onClick = { onNextBtnClicked(phoneNumber.text) },
+                onClick = { onNextBtnClicked() },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(
@@ -112,11 +112,11 @@ fun MobileSendAuthScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-fun MobileAuthScreenPreview() {
-    MobileSendAuthScreen(
-        onBackBtnClicked = {},
-        onNextBtnClicked = {}
+fun MyProfileGenderScreenPreview(){
+    MyProfileGenderScreen(
+        onNextBtnClicked = {},
+        onBackBtnClicked = {}
     )
 }

@@ -93,6 +93,8 @@ dependencies {
 
     implementation(project(":core:utils"))
     implementation(project(":core:design-system"))
-    implementation(project(":feat:intro"))
     implementation(project(":data"))
+
+    implementation(project(":feat:intro"))
+    implementation(project(":feat:my-profile"))
 }

@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.weave.intro.navGraphIntro
+import com.weave.my_profile.navGraphMyProfile
 
 @Composable
 fun DaysNavGraph(navController: NavHostController) {
@@ -19,5 +20,6 @@ fun DaysNavGraph(navController: NavHostController) {
             )
         }
         navGraphIntro(navController)
+        navGraphMyProfile(navController)
     }
 }
