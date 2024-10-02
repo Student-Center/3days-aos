@@ -10,7 +10,13 @@ fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
         composable("my_profile_init") {
             MyProfileInitScreen(
                 onBackBtnClicked = { navController.popBackStack() },
-                onNextBtnClicked = { navController.navigate("gender") },
+                onNextBtnClicked = { navController.navigate("my_profile_gender") },
+            )
+        }
+        composable("my_profile_gender") {
+            MyProfileGenderScreen(
+                onBackBtnClicked = { navController.popBackStack() },
+                onNextBtnClicked = { navController.navigate("my_profile_age") }
             )
         }
     }

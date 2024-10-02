@@ -12,34 +12,40 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.weave.design_system.DaysTheme
 import com.weave.design_system.R
 import com.weave.design_system.component.BtnType
+import com.weave.design_system.component.DaysGenderSelector
 import com.weave.design_system.component.DaysNextButton
 import com.weave.design_system.component.DaysOnlyBackAppbar
+import com.weave.design_system.component.DaysStepIndicator
 import com.weave.utils.Keyboard
 import com.weave.utils.keyboardAsState
 
 @Composable
-fun MyProfileInitScreen(
+fun MyProfileGenderScreen(
     onBackBtnClicked: () -> Unit,
     onNextBtnClicked: () -> Unit
 ) {
     val isKeyboardVisible by keyboardAsState()
+    var isEnabled by remember { mutableStateOf(false) }
+    var genderState by remember { mutableStateOf("") }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             DaysOnlyBackAppbar(onBackPressed = onBackBtnClicked)
         }
-    ) { innerPadding ->
+    ) {  innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -56,22 +62,45 @@ fun MyProfileInitScreen(
             )
 
             Column(
-                modifier = Modifier.matchParentSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier
+                    .matchParentSize()
+                    .padding(horizontal = 26.dp)
             ) {
-                Spacer(modifier = Modifier.height(54.dp))
+                Spacer(modifier = Modifier.height(12.dp))
+
+                DaysStepIndicator(currentStep = 1, totalStep = 5)
+
+                Spacer(modifier = Modifier.height(20.dp))
+
                 Text(
-                    text = stringResource(id = R.string.my_profile_init_title),
+                    text = stringResource(id = R.string.my_profile_gender_sub_title),
+                    style = DaysTheme.typography.regular14.toTextStyle(),
+                    color = DaysTheme.colors.grey200
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = stringResource(id = R.string.my_profile_gender_title),
                     style = DaysTheme.typography.semiBold24.toTextStyle(),
-                    color = DaysTheme.colors.grey500,
-                    textAlign = TextAlign.Center
+                    color = DaysTheme.colors.grey500
+                )
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                DaysGenderSelector(
+                    genderState = genderState,
+                    onChangedGender = { newValue ->
+                        genderState = newValue
+                        isEnabled = genderState.isNotEmpty()
+                    }
                 )
             }
 
             DaysNextButton(
                 message = stringResource(id = R.string.next_button_message),
                 type = if (isKeyboardVisible == Keyboard.Opened) BtnType.Short else BtnType.Tall,
-                isEnabled = true,
+                isEnabled = isEnabled,
                 onClick = { onNextBtnClicked() },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -85,9 +114,9 @@ fun MyProfileInitScreen(
 
 @Preview
 @Composable
-fun MyProfileInitScreenPreview() {
-    MyProfileInitScreen(
-        onBackBtnClicked = {},
-        onNextBtnClicked = {}
+fun MyProfileGenderScreenPreview(){
+    MyProfileGenderScreen(
+        onNextBtnClicked = {},
+        onBackBtnClicked = {}
     )
 }
