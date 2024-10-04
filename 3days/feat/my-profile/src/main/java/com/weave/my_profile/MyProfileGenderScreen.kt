@@ -7,13 +7,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,9 +32,13 @@ import com.weave.design_system.component.BtnType
 import com.weave.design_system.component.DaysGenderSelector
 import com.weave.design_system.component.DaysNextButton
 import com.weave.design_system.component.DaysOnlyBackAppbar
+import com.weave.design_system.component.DaysSnackBar
 import com.weave.design_system.component.DaysStepIndicator
+import com.weave.design_system.component.SnackBarType
 import com.weave.utils.Keyboard
 import com.weave.utils.keyboardAsState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun MyProfileGenderScreen(
@@ -39,13 +48,29 @@ fun MyProfileGenderScreen(
     val isKeyboardVisible by keyboardAsState()
     var isEnabled by remember { mutableStateOf(false) }
     var genderState by remember { mutableStateOf("") }
+    val snackState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val noSelectedMessage = stringResource(id = R.string.my_profile_gender_no_selected_message)
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().imePadding(),
         topBar = {
             DaysOnlyBackAppbar(onBackPressed = onBackBtnClicked)
+        },
+        snackbarHost = {
+            SnackbarHost(
+                modifier = Modifier
+                    .padding(bottom = 110.dp)
+                    .imePadding(),
+                hostState = snackState,
+            ) { snackData ->
+                DaysSnackBar(
+                    message = snackData.visuals.message,
+                    type = if (snackData.visuals.actionLabel == SnackBarType.DEFAULT.toString()) SnackBarType.DEFAULT else SnackBarType.ERROR
+                )
+            }
         }
-    ) {  innerPadding ->
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -98,15 +123,28 @@ fun MyProfileGenderScreen(
             }
 
             DaysNextButton(
-                message = stringResource(id = R.string.next_button_message),
-                type = if (isKeyboardVisible == Keyboard.Opened) BtnType.Short else BtnType.Tall,
-                isEnabled = isEnabled,
-                onClick = { onNextBtnClicked() },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(
                         bottom = if (isKeyboardVisible == Keyboard.Closed) innerPadding.calculateBottomPadding() else 0.dp
-                    )
+                    ),
+                message = stringResource(id = R.string.next_button_message),
+                type = if (isKeyboardVisible == Keyboard.Opened) BtnType.Short else BtnType.Tall,
+                isEnabled = isEnabled,
+                onEnabledClick = onNextBtnClicked,
+                onDisabledClick = {
+                    scope.launch {
+                        val job = launch {
+                            snackState.showSnackbar(
+                                message = noSelectedMessage,
+                                actionLabel = SnackBarType.ERROR.toString(),
+                                duration = SnackbarDuration.Indefinite
+                            )
+                        }
+                        delay(3000L)
+                        job.cancel()
+                    }
+                }
             )
         }
     }
@@ -114,7 +152,7 @@ fun MyProfileGenderScreen(
 
 @Preview
 @Composable
-fun MyProfileGenderScreenPreview(){
+fun MyProfileGenderScreenPreview() {
     MyProfileGenderScreen(
         onNextBtnClicked = {},
         onBackBtnClicked = {}

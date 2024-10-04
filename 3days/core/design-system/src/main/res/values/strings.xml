@@ -69,4 +69,5 @@
 
     <string name="my_profile_gender_sub_title">만나서 반가워요!</string>
     <string name="my_profile_gender_title">당신의 성별을 무엇인가요?</string>
+    <string name="my_profile_gender_no_selected_message">성별을 선택해 주세요</string>
 </resources>
