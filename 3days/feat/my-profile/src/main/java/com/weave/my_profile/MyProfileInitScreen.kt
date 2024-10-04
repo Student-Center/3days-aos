@@ -72,7 +72,7 @@ fun MyProfileInitScreen(
                 message = stringResource(id = R.string.next_button_message),
                 type = if (isKeyboardVisible == Keyboard.Opened) BtnType.Short else BtnType.Tall,
                 isEnabled = true,
-                onClick = { onNextBtnClicked() },
+                onEnabledClick = { onNextBtnClicked() },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(
