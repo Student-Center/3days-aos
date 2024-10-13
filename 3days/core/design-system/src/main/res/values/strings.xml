@@ -70,4 +70,12 @@
     <string name="my_profile_gender_sub_title">만나서 반가워요!</string>
     <string name="my_profile_gender_title">당신의 성별을 무엇인가요?</string>
     <string name="my_profile_gender_no_selected_message">성별을 선택해 주세요</string>
+
+    <string name="my_profile_birth_year_sub_title">좋은 %s분 소개시켜 드릴께요!</string>
+    <string name="my_profile_birth_year_title">당신의 나이는 무엇인가요?</string>
+    <string name="my_profile_birth_year_suffix">년생</string>
+    <string name="my_profile_birth_year_description">가입 연령 확인하기</string>
+    <string name="my_profile_birth_year_tooltip">%s년 기준으로 %s년생(만 20살)부터 %s년생(만 35살)까지 가입할 수 있어요</string>
+    <string name="my_profile_birth_year_empty_input_message">나이를 입력해 주세요</string>
+    <string name="my_profile__birth_year_unsupported_input_message">가입이 불가한 연령이예요</string>
 </resources>
