@@ -22,7 +22,8 @@ fun DaysNextButton(
     message: String = "다음",
     type: BtnType = BtnType.Tall,
     isEnabled: Boolean = false,
-    onClick: () -> Unit
+    onDisabledClick: () -> Unit = {},
+    onEnabledClick: () -> Unit
 ) {
     val buttonHeight = when (type) {
         BtnType.Tall -> 90.dp
@@ -30,12 +31,14 @@ fun DaysNextButton(
     }
 
     Button(
-        onClick = onClick,
-        enabled = isEnabled,
+        onClick = {
+            if (isEnabled) onEnabledClick() else onDisabledClick()
+        },
+        enabled = true,
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         colors = ButtonColors(
-            containerColor = DaysTheme.colors.grey500,
-            contentColor = DaysTheme.colors.white,
+            containerColor = if (isEnabled) DaysTheme.colors.grey500 else DaysTheme.colors.grey100,
+            contentColor = if (isEnabled) DaysTheme.colors.white else DaysTheme.colors.white,
             disabledContainerColor = DaysTheme.colors.grey100,
             disabledContentColor = DaysTheme.colors.white,
         ),
