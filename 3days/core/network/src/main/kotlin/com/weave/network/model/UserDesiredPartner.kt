@@ -15,42 +15,34 @@
 
 package com.weave.network.model
 
+import com.weave.network.model.BirthYearRange
+import com.weave.network.model.JobOccupation
+import com.weave.network.model.PreferDistance
+
 import com.google.gson.annotations.SerializedName
 
 /**
  * 사용자가 원하는 파트너의 조건
  *
- * @param job 원하는 파트너의 직업
- * @param preferDistance 선호하는 거리 (내 지역만, 주변 지역 포함, 어디든)
+ * @param jobOccupations 
+ * @param preferDistance 
  * @param birthYearRange 
  */
 
 
 data class UserDesiredPartner (
 
-    /* 원하는 파트너의 직업 */
-    @SerializedName("job")
-    val job: kotlin.String,
+    @SerializedName("jobOccupations")
+    val jobOccupations: kotlin.collections.List<JobOccupation>,
 
-    /* 선호하는 거리 (내 지역만, 주변 지역 포함, 어디든) */
     @SerializedName("preferDistance")
-    val preferDistance: UserDesiredPartner.PreferDistance,
+    val preferDistance: PreferDistance,
 
     @SerializedName("birthYearRange")
-    val birthYearRange: UserDesiredPartnerBirthYearRange? = null
+    val birthYearRange: BirthYearRange? = null
 
 ) {
 
-    /**
-     * 선호하는 거리 (내 지역만, 주변 지역 포함, 어디든)
-     *
-     * Values: ONLY_MY_AREA,INCLUDE_SURROUNDING_REGIONS,ANYWHERE
-     */
-    enum class PreferDistance(val value: kotlin.String) {
-        @SerializedName(value = "ONLY_MY_AREA") ONLY_MY_AREA("ONLY_MY_AREA"),
-        @SerializedName(value = "INCLUDE_SURROUNDING_REGIONS") INCLUDE_SURROUNDING_REGIONS("INCLUDE_SURROUNDING_REGIONS"),
-        @SerializedName(value = "ANYWHERE") ANYWHERE("ANYWHERE");
-    }
 
 }
 

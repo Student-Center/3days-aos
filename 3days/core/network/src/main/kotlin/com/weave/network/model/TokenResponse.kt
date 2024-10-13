@@ -31,15 +31,15 @@ data class TokenResponse (
 
     /* 액세스 토큰 */
     @SerializedName("accessToken")
-    val accessToken: kotlin.String? = null,
+    val accessToken: kotlin.String,
 
     /* 리프레시 토큰 */
     @SerializedName("refreshToken")
-    val refreshToken: kotlin.String? = null,
+    val refreshToken: kotlin.String,
 
     /* 액세스 토큰의 유효 기간 (초 단위) */
     @SerializedName("expiresIn")
-    val expiresIn: kotlin.Int? = null
+    val expiresIn: kotlin.Int
 
 ) {
 

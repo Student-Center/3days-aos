@@ -29,7 +29,7 @@ data class VerifyCodeRequest (
 
     /* 사용자가 입력한 SMS 인증 코드 (6자리 숫자) */
     @SerializedName("verificationCode")
-    val verificationCode: kotlin.String? = null
+    val verificationCode: kotlin.String
 
 ) {
 

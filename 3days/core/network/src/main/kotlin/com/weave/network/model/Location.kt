@@ -21,15 +21,22 @@ import com.google.gson.annotations.SerializedName
 /**
  * 
  *
- * @param refreshToken 유효한 리프레시 토큰
+ * @param id 
+ * @param region 
+ * @param subRegion 
  */
 
 
-data class RefreshTokenRequest (
+data class Location (
 
-    /* 유효한 리프레시 토큰 */
-    @SerializedName("refreshToken")
-    val refreshToken: kotlin.String
+    @SerializedName("id")
+    val id: java.util.UUID,
+
+    @SerializedName("region")
+    val region: kotlin.String,
+
+    @SerializedName("subRegion")
+    val subRegion: kotlin.String
 
 ) {
 
