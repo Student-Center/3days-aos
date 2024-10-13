@@ -77,5 +77,5 @@
     <string name="my_profile_birth_year_description">가입 연령 확인하기</string>
     <string name="my_profile_birth_year_tooltip">%s년 기준으로 %s년생(만 20살)부터 %s년생(만 35살)까지 가입할 수 있어요</string>
     <string name="my_profile_birth_year_empty_input_message">나이를 입력해 주세요</string>
-    <string name="my_profile__birth_year_unsupported_input_message">가입이 불가한 연령이예요</string>
+    <string name="my_profile_birth_year_unsupported_input_message">가입이 불가한 연령이예요</string>
 </resources>
