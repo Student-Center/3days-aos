@@ -12,7 +12,7 @@ import javax.inject.Inject
 class MyProfileSharedViewModel @Inject constructor(
 
 ): ViewModel() {
-
+    var registerToken by mutableStateOf("")
     var genderState by mutableStateOf("")
     val birthYear = mutableStateListOf("", "", "", "")
 }

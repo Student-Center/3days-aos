@@ -8,17 +8,24 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.phone.SmsRetriever
+import com.weave.auth.ExistingUserVerifyCodeUseCase
+import com.weave.auth.NewUserVerifyCodeUseCase
+import com.weave.auth.RequestVerificationUseCase
 import com.weave.design_system.R
 import com.weave.design_system.component.SnackBarType
 import com.weave.intro.utils.AuthSmsReceiver
+import com.weave.model.auth.AuthRegisterToken
+import com.weave.model.auth.AuthVerifyToken
 import com.weave.utils.base.BaseViewModel
 import com.weave.utils.base.UIAction
 import com.weave.utils.base.UIEffect
 import com.weave.utils.base.UIIntent
 import com.weave.utils.base.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
+import java.util.UUID
 import javax.inject.Inject
 
 sealed class AuthAction : UIAction {
@@ -36,19 +43,27 @@ sealed class AuthIntent : UIIntent {
 data class AuthState(
     val code: SnapshotStateList<String> = mutableStateListOf("", "", "", "", "", ""),
     val isVerified: Boolean = false,
+    val registerToken: String = "",
     val autoFilledCode: String = "",
-    val errorMessage: String = ""
+    val errorMessage: String = "",
+    val isNotFirstSend: Boolean = false,
+    val isNewUser: Boolean? = null,
+    val authCodeId: UUID? = null,
 ) : UIState
 
 sealed class AuthEffect : UIEffect {
     data class ShowToast(val message: String, val type: SnackBarType) : AuthEffect()
-    data object NavigateToNextScreen : AuthEffect()
+    data object NavigateToMainScreen : AuthEffect()
+    data class NavigateToRegisterFlow(val registerToken: String) : AuthEffect()
     data class AutoFillCodeEffect(val code: String) : AuthEffect()
 }
 
 @HiltViewModel
 class MobileEnterAuthViewModel @Inject constructor(
-    private val application: Context
+    private val application: Context,
+    private val requestVerificationUseCase: RequestVerificationUseCase,
+    private val existingUserVerifyCodeUseCase: ExistingUserVerifyCodeUseCase,
+    private val newUserVerifyCodeUseCase: NewUserVerifyCodeUseCase
 ) : BaseViewModel<AuthAction, AuthIntent, AuthState, AuthEffect>(initialState = AuthState()),
     AuthSmsReceiver.OtpReceiveListener {
 
@@ -79,44 +94,81 @@ class MobileEnterAuthViewModel @Inject constructor(
     // 인증번호 발송 로직
     private fun sendVerificationCode(phoneNum: String) {
         viewModelScope.launch {
-            // 서버로 인증번호 요청을 보내는 API 호출 (예시)
-            val result = sendCodeToServer()  // 네트워크 요청 함수
-            if (result) {
-                setEffect {
-                    AuthEffect.ShowToast(
-                        application.getString(R.string.mobile_auth_resend_message),
-                        SnackBarType.DEFAULT
-                    )
-                }
-            } else {
-                setState { copy(errorMessage = application.getString(com.weave.design_system.R.string.mobile_auth_send_error_message)) }
-                setEffect {
-                    AuthEffect.ShowToast(
-                        application.getString(R.string.mobile_auth_send_error_message),
-                        SnackBarType.ERROR
-                    )
-                }
-            }
+
+            // Simulation 위해 주석 처리
+//            requestVerificationUseCase.invoke(phoneNum).mapMerge().collect {
+//                if (it != null) {
+//                    setState { uiState.copy(
+//                        isNewUser = it.userStatus == "NEW",
+//                        authCodeId = it.authCodeId
+//                    ) }
+//
+//                    if (uiState.isNotFirstSend) {
+//                        setEffect {
+//                            AuthEffect.ShowToast(
+//                                application.getString(R.string.mobile_auth_resend_message),
+//                                SnackBarType.DEFAULT
+//                            )
+//                        }
+//                    } else {
+//                        setState { uiState.copy(isNotFirstSend = true) }
+//                    }
+//                } else if (!isLoading) {
+//                    setState { copy(errorMessage = application.getString(com.weave.design_system.R.string.mobile_auth_send_error_message)) }
+//                    setEffect {
+//                        AuthEffect.ShowToast(
+//                            application.getString(R.string.mobile_auth_send_error_message),
+//                            SnackBarType.ERROR
+//                        )
+//                    }
+//                }
+//            }
         }
     }
 
-    // 인증번호 검증 로직
     private fun verifyCode(inputCode: String) {
         viewModelScope.launch {
-            // 서버에 입력된 인증번호를 보내 검증 (예시)
-            val isValid = verifyCodeWithServer(inputCode)  // 네트워크 요청 함수
-            if (isValid) {
+            // Simulation
+            val simulationResult = verifyCodeWithServer(inputCode)
+            if(simulationResult){
                 setState { copy(isVerified = true) }
-                setEffect { AuthEffect.NavigateToNextScreen }
+                setEffect { AuthEffect.NavigateToRegisterFlow("Test Register Token") }
             } else {
                 setState { copy(errorMessage = application.getString(com.weave.design_system.R.string.mobile_auth_verify_error_message)) }
-                setEffect {
-                    AuthEffect.ShowToast(
-                        application.getString(R.string.mobile_auth_verify_error_message),
-                        SnackBarType.ERROR
-                    )
-                }
+                setEffect { AuthEffect.ShowToast(application.getString(R.string.mobile_auth_verify_error_message), SnackBarType.ERROR) }
             }
+
+//            if (uiState.isNewUser == true){
+//                newUserVerifyCodeUseCase.invoke(authCodeId = uiState.authCodeId ?: UUID.fromString(""), verifyCode = inputCode).mapMerge().collect {
+//                    if(it != null){
+//                        setState { copy(isVerified = true) }
+//                        setEffect { AuthEffect.NavigateToRegisterFlow(it.registerToken) }
+//                    } else {
+//                        setState { copy(errorMessage = application.getString(com.weave.design_system.R.string.mobile_auth_verify_error_message)) }
+//                        setEffect {
+//                            AuthEffect.ShowToast(
+//                                application.getString(R.string.mobile_auth_verify_error_message),
+//                                SnackBarType.ERROR
+//                            )
+//                        }
+//                    }
+//                }
+//            } else {
+//                existingUserVerifyCodeUseCase.invoke(authCodeId = uiState.authCodeId ?: UUID.fromString(""), verifyCode = inputCode).mapMerge().collect {
+//                    if(it != null){
+//                        setState { copy(isVerified = true) }
+//                        setEffect { AuthEffect.NavigateToMainScreen }
+//                    } else {
+//                        setState { copy(errorMessage = application.getString(com.weave.design_system.R.string.mobile_auth_verify_error_message)) }
+//                        setEffect {
+//                            AuthEffect.ShowToast(
+//                                application.getString(R.string.mobile_auth_verify_error_message),
+//                                SnackBarType.ERROR
+//                            )
+//                        }
+//                    }
+//                }
+//            }
         }
     }
 
@@ -143,8 +195,9 @@ class MobileEnterAuthViewModel @Inject constructor(
                     }
                 }
 
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE){
-                    weakActivity?.get()?.registerReceiver(smsReceiver, smsReceiver!!.doFilter(),
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    weakActivity?.get()?.registerReceiver(
+                        smsReceiver, smsReceiver!!.doFilter(),
                         Context.RECEIVER_EXPORTED
                     )
                 } else {
