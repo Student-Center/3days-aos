@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.weave.design_system.DaysTheme
 import com.weave.design_system.R
 import com.weave.design_system.component.BtnType
@@ -42,18 +43,20 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MyProfileGenderScreen(
+    sharedViewModel: MyProfileSharedViewModel = hiltViewModel(),
     onBackBtnClicked: () -> Unit,
     onNextBtnClicked: () -> Unit
 ) {
     val isKeyboardVisible by keyboardAsState()
-    var isEnabled by remember { mutableStateOf(false) }
-    var genderState by remember { mutableStateOf("") }
+    var isEnabled by remember { mutableStateOf(sharedViewModel.genderState.isNotEmpty()) }
     val snackState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val noSelectedMessage = stringResource(id = R.string.my_profile_gender_no_selected_message)
 
     Scaffold(
-        modifier = Modifier.fillMaxSize().imePadding(),
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding(),
         topBar = {
             DaysOnlyBackAppbar(onBackPressed = onBackBtnClicked)
         },
@@ -114,10 +117,10 @@ fun MyProfileGenderScreen(
                 Spacer(modifier = Modifier.height(40.dp))
 
                 DaysGenderSelector(
-                    genderState = genderState,
+                    genderState = sharedViewModel.genderState,
                     onChangedGender = { newValue ->
-                        genderState = newValue
-                        isEnabled = genderState.isNotEmpty()
+                        sharedViewModel.genderState = newValue
+                        isEnabled = sharedViewModel.genderState.isNotEmpty()
                     }
                 )
             }
