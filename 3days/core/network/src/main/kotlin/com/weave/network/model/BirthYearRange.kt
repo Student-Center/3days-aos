@@ -30,11 +30,11 @@ data class BirthYearRange (
 
     /* 원하는 파트너의 최소 년생 */
     @SerializedName("start")
-    val start: kotlin.Int,
+    val start: kotlin.Int? = null,
 
     /* 원하는 파트너의 최대 년생 */
     @SerializedName("end")
-    val end: kotlin.Int
+    val end: kotlin.Int? = null
 
 ) {
 

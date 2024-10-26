@@ -24,22 +24,22 @@ import com.google.gson.annotations.SerializedName
 /**
  * 사용자가 원하는 파트너의 조건
  *
+ * @param birthYearRange 
  * @param jobOccupations 
  * @param preferDistance 
- * @param birthYearRange 
  */
 
 
 data class UserDesiredPartner (
 
+    @SerializedName("birthYearRange")
+    val birthYearRange: BirthYearRange,
+
     @SerializedName("jobOccupations")
     val jobOccupations: kotlin.collections.List<JobOccupation>,
 
     @SerializedName("preferDistance")
-    val preferDistance: PreferDistance,
-
-    @SerializedName("birthYearRange")
-    val birthYearRange: BirthYearRange? = null
+    val preferDistance: PreferDistance
 
 ) {
 
