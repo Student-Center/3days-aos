@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -28,14 +30,11 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
@@ -54,6 +53,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
@@ -67,6 +67,7 @@ import com.weave.design_system.component.DaysNextButton
 import com.weave.design_system.component.DaysOnlyBackAppbar
 import com.weave.design_system.component.DaysSnackBar
 import com.weave.design_system.component.DaysStepIndicator
+import com.weave.design_system.component.Gender
 import com.weave.design_system.component.SnackBarType
 import com.weave.design_system.component.tooltip.DaysTooltip
 import com.weave.design_system.component.tooltip.TooltipDirection
@@ -74,162 +75,76 @@ import com.weave.design_system.extension.addFocusCleaner
 import com.weave.design_system.extension.noRippleClickable
 import com.weave.utils.Keyboard
 import com.weave.utils.keyboardAsState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.Year
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyProfileBirthYearScreen(
+    modifier: Modifier = Modifier,
+    viewModel: MyProfileBirthYearViewModel = hiltViewModel(),
     sharedViewModel: MyProfileSharedViewModel = hiltViewModel(),
     onBackBtnClicked: () -> Unit,
     onNextBtnClicked: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val isKeyboardVisible by keyboardAsState()
-    var isEnabled by remember { mutableStateOf(sharedViewModel.birthYear.all { it.isNotEmpty() }) }
-    val snackState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-    val noInputMessage = stringResource(id = R.string.my_profile_birth_year_empty_input_message)
-    val tooltipState = remember { TooltipState() }
+    val snackState = remember { SnackbarHostState() }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            DaysOnlyBackAppbar(onBackPressed = onBackBtnClicked)
-        },
-        snackbarHost = {
-            SnackbarHost(
-                modifier = Modifier
-                    .padding(bottom = 110.dp)
-                    .imePadding(),
-                hostState = snackState,
-            ) { snackData ->
-                DaysSnackBar(
-                    message = snackData.visuals.message,
-                    type = if (snackData.visuals.actionLabel == SnackBarType.DEFAULT.toString()) SnackBarType.DEFAULT else SnackBarType.ERROR
-                )
+    LaunchedEffect(Unit) {
+        if (sharedViewModel.birthYear.all { it.isNotEmpty() }) {
+            sharedViewModel.birthYear.forEachIndexed { index, value ->
+                viewModel.setAction(BirthYearAction.SetBirthYear(index, value))
             }
-        }
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .addFocusCleaner(focusManager)
-                .padding(
-                    top = innerPadding.calculateTopPadding(),
-                )
-        ) {
-            Image(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(DaysTheme.colors.bgDefault),
-                painter = painterResource(id = R.drawable.texture_bg),
-                contentDescription = stringResource(id = R.string.background_description)
-            )
-
-            Column(
-                modifier = Modifier
-                    .matchParentSize()
-                    .padding(horizontal = 26.dp)
-            ) {
-                Spacer(modifier = Modifier.height(12.dp))
-
-                DaysStepIndicator(currentStep = 2, totalStep = 5)
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Text(
-                    text = stringResource(id = R.string.my_profile_birth_year_sub_title, if(sharedViewModel.genderState == "남성") "여성" else "남성"),
-                    style = DaysTheme.typography.regular14.toTextStyle(),
-                    color = DaysTheme.colors.grey200
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = stringResource(id = R.string.my_profile_birth_year_title),
-                    style = DaysTheme.typography.semiBold24.toTextStyle(),
-                    color = DaysTheme.colors.grey500
-                )
-
-                Spacer(modifier = Modifier.height(40.dp))
-
-                BirthYearInputRow(
-                    focusManager = focusManager,
-                    birthYear = sharedViewModel.birthYear,
-                    onNumChanged = { index, newValue ->
-                        sharedViewModel.birthYear[index] = newValue
-                        isEnabled = sharedViewModel.birthYear.all { it.isNotEmpty() }
-                    },
-                    unSupportedYear = false
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                DaysTooltip(
-                    tooltipState = tooltipState,
-                    direction = TooltipDirection.Top,
-                    tooltipText = boldBirthYearMessage(),
-                    content = {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .noRippleClickable {
-                                    scope.launch { tooltipState.show() }
-                                },
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(18.dp),
-                                painter = painterResource(id = R.drawable.ic_question_mark),
-                                tint = DaysTheme.colors.grey200,
-                                contentDescription = ""
-                            )
-
-                            Spacer(modifier = Modifier.width(4.dp))
-
-                            Text(
-                                text = stringResource(id = R.string.my_profile_birth_year_description),
-                                style = DaysTheme.typography.regular14.toTextStyle(),
-                                color = DaysTheme.colors.grey200
-                            )
-                        }
-
-                    }
-                )
-            }
-
-            DaysNextButton(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(
-                        bottom = if (isKeyboardVisible == Keyboard.Closed) innerPadding.calculateBottomPadding() else 0.dp
-                    ),
-                message = stringResource(id = R.string.next_button_message),
-                type = if (isKeyboardVisible == Keyboard.Opened) BtnType.Short else BtnType.Tall,
-                isEnabled = isEnabled,
-                onEnabledClick = onNextBtnClicked,
-                onDisabledClick = {
-                    scope.launch {
-                        val job = launch {
-                            snackState.showSnackbar(
-                                message = noInputMessage,
-                                actionLabel = SnackBarType.ERROR.toString(),
-                                duration = SnackbarDuration.Indefinite
-                            )
-                        }
-                        delay(3000L)
-                        job.cancel()
-                    }
-                }
-            )
         }
     }
+
+    LaunchedEffect(viewModel.uiEffect) {
+        viewModel.uiEffect.collect { effect ->
+            when (effect) {
+                is BirthYearEffect.NavigateToNextScreen -> {
+                    repeat(4) {
+                        sharedViewModel.birthYear[it] = viewModel.uiState.birthYear[it]
+                    }.also {
+                        onNextBtnClicked()
+                    }
+                }
+
+                is BirthYearEffect.ShowToast -> scope.launch {
+                    val job = launch {
+                        snackState.showSnackbar(
+                            message = effect.message,
+                            actionLabel = effect.type.toString(),
+                            duration = SnackbarDuration.Indefinite
+                        )
+                    }
+                    delay(3000L)
+                    job.cancel()
+                }
+            }
+        }
+    }
+
+    BirthYearScreenContent(
+        modifier = modifier,
+        uiState = viewModel.uiState,
+        isKeyboardVisible = isKeyboardVisible,
+        snackState = snackState,
+        focusManager = focusManager,
+        genderState = sharedViewModel.genderState,
+        onBirthYearChanged = { index, value ->
+            viewModel.setAction(BirthYearAction.SetBirthYear(index, value))
+        },
+        onBackPressed = onBackBtnClicked,
+        onNextClicked = {
+            viewModel.setAction(BirthYearAction.ValidateBirthYear)
+        }
+    )
 }
 
-fun boldBirthYearMessage(): AnnotatedString {
+private fun boldBirthYearMessage(): AnnotatedString {
     val currentYear = Year.now().value
     val twentyYearsOld = currentYear - 20
     val thirtyFiveYearsOld = currentYear - 35
@@ -243,100 +158,189 @@ fun boldBirthYearMessage(): AnnotatedString {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BirthYearInputRow(
+private fun BirthYearScreenContent(
     modifier: Modifier = Modifier,
+    uiState: BirthYearState,
+    isKeyboardVisible: Keyboard,
+    snackState: SnackbarHostState,
     focusManager: FocusManager,
-    birthYear: SnapshotStateList<String>,
-    onNumChanged: (Int, String) -> Unit,
-    unSupportedYear: Boolean
+    genderState: Gender,
+    onBirthYearChanged: (Int, String) -> Unit,
+    onBackPressed: () -> Unit,
+    onNextClicked: () -> Unit
+) {
+    val tooltipState = remember { TooltipState() }
+    val scope = rememberCoroutineScope()
+
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        topBar = {
+            DaysOnlyBackAppbar(onBackPressed = onBackPressed)
+        },
+        snackbarHost = {
+            DaysSnackBarHost(
+                snackState = snackState,
+                modifier = Modifier
+                    .padding(bottom = 110.dp)
+                    .imePadding()
+            )
+        }
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .addFocusCleaner(focusManager)
+                .padding(top = innerPadding.calculateTopPadding())
+        ) {
+            BackgroundImage()
+
+            Column(
+                modifier = Modifier
+                    .matchParentSize()
+                    .padding(horizontal = 26.dp)
+            ) {
+                BirthYearHeader(
+                    oppositeGender = if (genderState == Gender.MALE) Gender.FEMALE.koValue else Gender.MALE.koValue
+                )
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                BirthYearInputSection(
+                    birthYear = uiState.birthYear,
+                    isValidBirthYear = uiState.invalidBirthYearFlag,
+                    focusManager = focusManager,
+                    onNumChanged = onBirthYearChanged
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                BirthYearTooltip(
+                    tooltipState = tooltipState,
+                    scope = scope
+                )
+            }
+        }
+
+        NextButton(
+            isKeyboardVisible = isKeyboardVisible,
+            isEnabled = uiState.birthYear.all { it.isNotBlank() },
+            padding = innerPadding,
+            onClick = onNextClicked
+        )
+    }
+}
+
+@Composable
+private fun BackgroundImage() {
+    Image(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(DaysTheme.colors.bgDefault),
+        painter = painterResource(id = R.drawable.texture_bg),
+        contentDescription = stringResource(id = R.string.background_description)
+    )
+}
+
+@Composable
+private fun DaysSnackBarHost(
+    snackState: SnackbarHostState,
+    modifier: Modifier = Modifier
+) {
+    SnackbarHost(
+        modifier = modifier,
+        hostState = snackState,
+    ) { snackData ->
+        DaysSnackBar(
+            message = snackData.visuals.message,
+            type = if (snackData.visuals.actionLabel == SnackBarType.DEFAULT.toString()) {
+                SnackBarType.DEFAULT
+            } else {
+                SnackBarType.ERROR
+            }
+        )
+    }
+}
+
+@Composable
+private fun BirthYearHeader(
+    oppositeGender: String
+) {
+    Spacer(modifier = Modifier.height(12.dp))
+
+    DaysStepIndicator(currentStep = 2, totalStep = 5)
+
+    Spacer(modifier = Modifier.height(20.dp))
+
+    Text(
+        text = stringResource(
+            id = R.string.my_profile_birth_year_sub_title,
+            oppositeGender
+        ),
+        style = DaysTheme.typography.regular14.toTextStyle(),
+        color = DaysTheme.colors.grey200
+    )
+
+    Spacer(modifier = Modifier.height(4.dp))
+
+    Text(
+        text = stringResource(id = R.string.my_profile_birth_year_title),
+        style = DaysTheme.typography.semiBold24.toTextStyle(),
+        color = DaysTheme.colors.grey500
+    )
+}
+
+@Composable
+fun BirthYearInputSection(
+    birthYear: List<String>,
+    isValidBirthYear: Boolean,
+    focusManager: FocusManager,
+    onNumChanged: (Int, String) -> Unit
 ) {
     val focusRequesters = List(4) { FocusRequester() }
     val isFocused = remember { mutableIntStateOf(-1) }
     val showHint = birthYear.all { it.isEmpty() }
 
     Row(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(314f / 92f),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.Bottom
     ) {
         birthYear.forEachIndexed { index, _ ->
-            BasicTextField(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxSize()
-                    .background(
-                        color = if (unSupportedYear) DaysTheme.colors.pink50 else DaysTheme.colors.yellow50,
-                        shape = RoundedCornerShape(20.dp)
-                    )
-                    .border(
-                        width = 4.dp,
-                        color = if (unSupportedYear) {
-                            DaysTheme.colors.red300
-                        } else {
-                            if (isFocused.intValue == index) Color(0xFFDFDBA5) else DaysTheme.colors.white
-                        },
-                        shape = RoundedCornerShape(20.dp)
-                    )
-                    .focusRequester(focusRequesters[index])
-                    .onFocusChanged { focusState ->
-                        if (focusState.isFocused) {
-                            isFocused.intValue = index
-                            onNumChanged(index, "")
-                        } else if (isFocused.intValue == index) {
-                            isFocused.intValue = -1
-                        }
-                    }
-                    .onKeyEvent { event: KeyEvent ->
-                        if (event.key == Key.Backspace) {
-                            if (birthYear[index].isEmpty()) {
-                                if (index > 0) {
-                                    focusRequesters[index - 1].requestFocus()
-                                }
-                            }
-                            return@onKeyEvent true
-                        }
-                        false
-                    },
+            BirthYearDigitInput(
+                modifier = Modifier.weight(1f),
+                index = index,
                 value = birthYear[index],
-                onValueChange = { newValue ->
+                isValidBirthYear = isValidBirthYear,
+                isFocused = isFocused.intValue == index,
+                showHint = showHint,
+                focusRequester = focusRequesters[index],
+                focusManager = focusManager,
+                onFocusChanged = { focused ->
+                    if (focused) {
+                        isFocused.intValue = index
+                        onNumChanged(index, "")
+                    } else if (isFocused.intValue == index) {
+                        isFocused.intValue = -1
+                    }
+                },
+                onValueChanged = { newValue ->
                     if (newValue.length == 1 && newValue.all { it.isDigit() }) {
                         onNumChanged(index, newValue)
-
                         val nextIdx = index + 1
                         if (nextIdx < birthYear.size) {
                             focusRequesters[nextIdx].requestFocus()
-                        } else if (birthYear.all { it.isNotBlank() }) {
+                        } else {
                             focusManager.clearFocus()
                         }
                     }
                 },
-                textStyle = DaysTheme.typography.semiBold28.copy(
-                    fontSize = 40.dp, lineHeight = 60.dp, textAlign = TextAlign.Center
-                ).toTextStyle(),
-                singleLine = true,
-                maxLines = 1,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                decorationBox = { innerTextField ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        if (showHint) {
-                            Text(
-                                modifier = Modifier.fillMaxWidth(),
-                                text = "2000"[index].toString(),
-                                style = DaysTheme.typography.semiBold28.copy(
-                                    color = Color(0xFFF1EFCC),
-                                    fontSize = 40.dp,
-                                    lineHeight = 60.dp,
-                                    textAlign = TextAlign.Center
-                                ).toTextStyle()
-                            )
-                        }
-                        innerTextField()
+                onBackspace = {
+                    if (birthYear[index].isEmpty() && index > 0) {
+                        focusRequesters[index - 1].requestFocus()
                     }
                 }
             )
@@ -351,22 +355,150 @@ fun BirthYearInputRow(
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun BirthYearInputRowPreview() {
-    val focusManager = LocalFocusManager.current
-    val birthYear = remember { mutableStateListOf("", "", "", "") }
-
-    val onNumChanged: (Int, String) -> Unit = { index, newValue ->
-        birthYear[index] = newValue
-    }
-
-    BirthYearInputRow(
-        focusManager = focusManager,
-        birthYear = birthYear,
-        onNumChanged = onNumChanged,
-        unSupportedYear = false
+private fun BirthYearDigitInput(
+    modifier: Modifier = Modifier,
+    index: Int,
+    value: String,
+    isValidBirthYear: Boolean,
+    isFocused: Boolean,
+    showHint: Boolean,
+    focusRequester: FocusRequester,
+    focusManager: FocusManager,
+    onFocusChanged: (Boolean) -> Unit,
+    onValueChanged: (String) -> Unit,
+    onBackspace: () -> Unit
+) {
+    BasicTextField(
+        modifier = modifier
+            .fillMaxSize()
+            .background(
+                color = if (isValidBirthYear) DaysTheme.colors.pink50 else DaysTheme.colors.yellow50,
+                shape = RoundedCornerShape(20.dp)
+            )
+            .border(
+                width = 4.dp,
+                color = when {
+                    isValidBirthYear -> DaysTheme.colors.red300
+                    isFocused -> Color(0xFFDFDBA5)
+                    else -> DaysTheme.colors.white
+                },
+                shape = RoundedCornerShape(20.dp)
+            )
+            .focusRequester(focusRequester)
+            .onFocusChanged { focusState ->
+                onFocusChanged(focusState.isFocused)
+            }
+            .onKeyEvent { event: KeyEvent ->
+                if (event.key == Key.Backspace) {
+                    onBackspace()
+                    true
+                } else false
+            },
+        value = value,
+        onValueChange = onValueChanged,
+        textStyle = DaysTheme.typography.semiBold28.copy(
+            fontSize = 40.dp,
+            lineHeight = 60.dp,
+            textAlign = TextAlign.Center
+        ).toTextStyle(),
+        singleLine = true,
+        maxLines = 1,
+        keyboardOptions = KeyboardOptions.Default.copy(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = { focusManager.clearFocus() }
+        ),
+        decorationBox = { innerTextField ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                if (showHint) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "2000"[index].toString(),
+                        style = DaysTheme.typography.semiBold28.copy(
+                            color = Color(0xFFF1EFCC),
+                            fontSize = 40.dp,
+                            lineHeight = 60.dp,
+                            textAlign = TextAlign.Center
+                        ).toTextStyle()
+                    )
+                }
+                innerTextField()
+            }
+        }
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun BirthYearTooltip(
+    tooltipState: TooltipState,
+    scope: CoroutineScope
+) {
+    DaysTooltip(
+        tooltipState = tooltipState,
+        direction = TooltipDirection.Top,
+        tooltipText = boldBirthYearMessage(),
+        content = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .noRippleClickable {
+                        scope.launch { tooltipState.show() }
+                    },
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    modifier = Modifier.size(18.dp),
+                    painter = painterResource(id = R.drawable.ic_question_mark),
+                    tint = DaysTheme.colors.grey200,
+                    contentDescription = null
+                )
+
+                Spacer(modifier = Modifier.width(4.dp))
+
+                Text(
+                    text = stringResource(id = R.string.my_profile_birth_year_description),
+                    style = DaysTheme.typography.regular14.toTextStyle(),
+                    color = DaysTheme.colors.grey200
+                )
+            }
+        }
+    )
+}
+
+@Composable
+private fun NextButton(
+    modifier: Modifier = Modifier,
+    isKeyboardVisible: Keyboard,
+    isEnabled: Boolean,
+    padding: PaddingValues,
+    onClick: () -> Unit
+) {
+    Box(modifier = modifier.fillMaxSize()) {
+        DaysNextButton(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(
+                    bottom = if (isKeyboardVisible == Keyboard.Closed) {
+                        padding.calculateBottomPadding()
+                    } else {
+                        0.dp
+                    }
+                ),
+            message = stringResource(id = R.string.next_button_message),
+            type = if (isKeyboardVisible == Keyboard.Opened) BtnType.Short else BtnType.Tall,
+            isEnabled = isEnabled,
+            onEnabledClick = onClick,
+            onDisabledClick = onClick
+        )
+    }
 }
 
 @Preview
