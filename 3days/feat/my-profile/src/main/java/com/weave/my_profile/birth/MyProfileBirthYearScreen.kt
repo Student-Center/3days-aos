@@ -129,6 +129,7 @@ fun MyProfileBirthYearScreen(
     }
 
     BirthYearScreenContent(modifier = modifier,
+        scope = scope,
         uiState = viewModel.uiState,
         isKeyboardVisible = isKeyboardVisible,
         snackState = snackState,
@@ -164,6 +165,7 @@ private fun boldBirthYearMessage(): AnnotatedString {
 @Composable
 private fun BirthYearScreenContent(
     modifier: Modifier = Modifier,
+    scope: CoroutineScope,
     uiState: BirthYearState,
     isKeyboardVisible: Keyboard,
     snackState: SnackbarHostState,
@@ -174,14 +176,14 @@ private fun BirthYearScreenContent(
     onNextClicked: () -> Unit
 ) {
     val tooltipState = remember { TooltipState() }
-    val scope = rememberCoroutineScope()
+    val snackBarPadding = if (isKeyboardVisible == Keyboard.Closed) 110.dp else 36.dp
 
     Scaffold(modifier = modifier.fillMaxSize(), topBar = {
         DaysOnlyBackAppbar(onBackPressed = onBackPressed)
     }, snackbarHost = {
         DaysSnackBarHost(
             snackState = snackState, modifier = Modifier
-                .padding(bottom = 110.dp)
+                .padding(bottom = snackBarPadding)
                 .imePadding()
         )
     }) { innerPadding ->

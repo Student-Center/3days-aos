@@ -86,7 +86,7 @@ class MyProfileBirthYearViewModel @Inject constructor(
 
         val result = uiState.birthYear.joinToString("").toInt() in minYear..maxYear
 
-        setState { copy(invalidBirthYearFlag = true) }
+        if (!result) setState { copy(invalidBirthYearFlag = true) }
         setEffect {
             if (result) BirthYearEffect.NavigateToNextScreen
             else BirthYearEffect.ShowToast(
@@ -95,5 +95,4 @@ class MyProfileBirthYearViewModel @Inject constructor(
             )
         }
     }
-
 }
