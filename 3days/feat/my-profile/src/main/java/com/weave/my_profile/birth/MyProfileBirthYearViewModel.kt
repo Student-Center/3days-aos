@@ -1,4 +1,4 @@
-package com.weave.my_profile
+package com.weave.my_profile.birth
 
 import com.weave.design_system.component.SnackBarType
 import com.weave.utils.base.BaseViewModel
@@ -86,7 +86,7 @@ class MyProfileBirthYearViewModel @Inject constructor(
 
         val result = uiState.birthYear.joinToString("").toInt() in minYear..maxYear
 
-        setState { copy(invalidBirthYearFlag = true) }
+        if (!result) setState { copy(invalidBirthYearFlag = true) }
         setEffect {
             if (result) BirthYearEffect.NavigateToNextScreen
             else BirthYearEffect.ShowToast(
@@ -95,5 +95,4 @@ class MyProfileBirthYearViewModel @Inject constructor(
             )
         }
     }
-
 }

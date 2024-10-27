@@ -79,4 +79,10 @@
     <string name="my_profile_birth_year_tooltip_description">Question Mark</string>
     <string name="my_profile_birth_year_empty_input_message">나이를 입력해 주세요</string>
     <string name="my_profile_birth_year_unsupported_input_message">가입이 불가한 연령이예요</string>
+
+    <string name="my_profile_company_sub_title">운명의 상대를 만나기 딱 좋은 나이네요.</string>
+    <string name="my_profile_company_title">당신은 지금 어떤 회사에서\n재직하고 있나요?</string>
+    <string name="my_profile_company_text_field_hint">내 회사 검색</string>
+    <string name="my_profile_company_not_visible_my_company">회사 검색 목록에 없어요</string>
+    <string name="my_profile_company_not_selected_error_message">내 회사를 선택해 주세요</string>
 </resources>

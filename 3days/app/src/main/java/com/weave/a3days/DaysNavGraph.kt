@@ -7,15 +7,33 @@ import androidx.navigation.compose.composable
 import com.weave.intro.navGraphIntro
 import com.weave.my_profile.navGraphMyProfile
 
+enum class Route(val routeName: String) {
+    Splash("splash"),
+    Home("home"),
+    Intro("intro"),
+    MyProfile("my_profile");
+
+    fun withArgs(vararg args: String): String {
+        return buildString {
+            append(routeName)
+            args.forEach { arg ->
+                append("/$arg")
+            }
+        }
+    }
+}
+
 @Composable
 fun DaysNavGraph(navController: NavHostController) {
-    NavHost(navController, startDestination = "splash") {
-        composable("splash") {
+    NavHost(navController, startDestination = Route.Splash.routeName) {
+        composable(Route.Splash.routeName) {
             SplashScreen(
                 onDataLoadedResult = {
                     navController.navigate(
-                        if (it) "home" else "intro"
-                    )
+                        if (it) Route.Home.routeName else Route.Intro.routeName
+                    ) {
+                        popUpTo(Route.Splash.routeName) { inclusive = true }
+                    }
                 }
             )
         }

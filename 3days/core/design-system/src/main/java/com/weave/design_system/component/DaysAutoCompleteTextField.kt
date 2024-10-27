@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -58,26 +59,26 @@ import com.weave.design_system.extension.noRippleClickable
 @Composable
 fun DaysAutoCompleteTextField(
     modifier: Modifier = Modifier,
+    focusManager: FocusManager,
+    inputText: String,
+    onTextChange: (String) -> Unit,
     suggestions: List<String>,
     selectedSuggestion: String,
     onSuggestionSelected: (String) -> Unit,
     placeholderText: String = "",
     allowDirectInput: Boolean = false,
-    focusManager: FocusManager
+    lazyListState: LazyListState,
 ) {
-    var inputText by remember { mutableStateOf("") }
     var isDropdownVisible by remember { mutableStateOf(false) }
     var isFocusedState by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 50.dp)
     ) {
         DaysAutoCompleteInputField(
             text = inputText,
             onTextChange = { newText ->
-                inputText = newText
+                onTextChange(newText)
                 isDropdownVisible = newText.isNotBlank()
                 onSuggestionSelected("")
             },
@@ -95,11 +96,12 @@ fun DaysAutoCompleteTextField(
 
         if (isDropdownVisible) {
             SuggestionDropdown(
+                lazyListState = lazyListState,
                 query = inputText,
                 allowDirectInput = allowDirectInput,
                 suggestions = suggestions.filter { it.contains(inputText, ignoreCase = true) },
                 onSuggestionClick = { clickedSuggestion ->
-                    inputText = clickedSuggestion
+                    onTextChange(clickedSuggestion)
                     isDropdownVisible = false
                     onSuggestionSelected(clickedSuggestion)
 
@@ -199,13 +201,14 @@ private fun SuggestionIcon(selected: Boolean) {
 
 @Composable
 private fun SuggestionDropdown(
+    lazyListState: LazyListState,
     query: String,
     allowDirectInput: Boolean,
     suggestions: List<String>,
     onSuggestionClick: (String) -> Unit
 ) {
     if (suggestions.isNotEmpty() && query.isNotBlank()) {
-        SuggestionList(suggestions, onSuggestionClick)
+        SuggestionList(lazyListState, suggestions, onSuggestionClick)
     } else if (allowDirectInput && query.isNotBlank()) {
         DirectInputOption(query, onSuggestionClick)
     }
@@ -213,6 +216,7 @@ private fun SuggestionDropdown(
 
 @Composable
 private fun SuggestionList(
+    lazyListState: LazyListState,
     suggestions: List<String>,
     onSuggestionClick: (String) -> Unit
 ) {
@@ -224,6 +228,7 @@ private fun SuggestionList(
                 .applyShadow(RoundedCornerShape(24.dp))
                 .background(color = colors.white, shape = RoundedCornerShape(24.dp))
                 .padding(start = 24.dp, end = 24.dp, top = 14.dp),
+            lazyListState = lazyListState,
             items = suggestions,
             onItemSelected = onSuggestionClick
         )
@@ -260,18 +265,19 @@ private fun DirectInputOption(
 @Composable
 private fun DropdownWithScrollbar(
     modifier: Modifier = Modifier,
+    lazyListState: LazyListState,
     items: List<String>,
     onItemSelected: (String) -> Unit
 ) {
-    val state = rememberLazyListState()
+//    val state = rememberLazyListState()
     val scrollBarColor = colors.grey100
     val scrollbarWidth = 4.dp
 
     LazyColumn(
-        state = state,
+        state = lazyListState,
         modifier = modifier
             .drawScrollbar(
-                state = state,
+                state = lazyListState,
                 barColor = scrollBarColor,
                 barWidth = scrollbarWidth,
                 barBottomPadding = 18.dp
@@ -298,6 +304,7 @@ private fun DropdownWithScrollbar(
 @Preview(showBackground = true)
 @Composable
 fun DaysAutoCompleteTextFieldPreview() {
+    var inputText by remember { mutableStateOf("") }
     val items = listOf(
         "Apple", "Banana", "Cherry", "Date", "Elderberry", "Apple",
         "Banana", "Cherry", "Date", "Elderberry", "Apple", "Banana", "Cherry", "Date", "Elderberry"
@@ -306,6 +313,7 @@ fun DaysAutoCompleteTextFieldPreview() {
     DaysTheme {
         val focusManager = LocalFocusManager.current
         var selectedSuggestion by remember { mutableStateOf("") }
+        val state = rememberLazyListState()
 
         Column(
             modifier = Modifier
@@ -314,6 +322,8 @@ fun DaysAutoCompleteTextFieldPreview() {
         ) {
             Spacer(modifier = Modifier.height(100.dp))
             DaysAutoCompleteTextField(
+                inputText = inputText,
+                onTextChange = { inputText = it },
                 suggestions = items,
                 selectedSuggestion = selectedSuggestion,
                 onSuggestionSelected = { selectedItem ->
@@ -323,7 +333,8 @@ fun DaysAutoCompleteTextFieldPreview() {
                 },
                 placeholderText = "내 회사 검색 혹은 직접 입력",
                 focusManager = focusManager,
-                allowDirectInput = true
+                allowDirectInput = true,
+                lazyListState = state
             )
         }
     }

@@ -30,6 +30,7 @@ dependencies {
     implementation(project(":core:model"))
 
     implementation(libs.bundles.compose)
+    implementation(libs.androidx.navigation.runtime.ktx)
     debugImplementation(libs.bundles.compose.debug)
     androidTestImplementation(libs.bundles.android.test)
     testImplementation(libs.junit)

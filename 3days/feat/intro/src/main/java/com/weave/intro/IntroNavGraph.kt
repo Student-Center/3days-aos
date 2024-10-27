@@ -7,40 +7,67 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 
+enum class Route(val routeName: String) {
+    Intro("intro"),
+    Welcome("welcome"),
+    MobileSendAuth("mobile_send_auth"),
+    MobileEnterAuth("mobile_enter_auth"),
+    TermsAgreement("terms_agreement"),
+    Main("main"),
+    MyProfile("my_profile");
+
+    fun withArgs(vararg args: String): String {
+        return buildString {
+            append(routeName)
+            args.forEach { arg ->
+                append("/$arg")
+            }
+        }
+    }
+}
+
 fun NavGraphBuilder.navGraphIntro(navController: NavController) {
-    navigation(startDestination = "welcome", route = "intro") {
-        composable("welcome") {
+    navigation(startDestination = Route.Welcome.routeName, route = Route.Intro.routeName) {
+        composable(Route.Welcome.routeName) {
             IntroScreen(
-                onClicked = { navController.navigate("mobile_send_auth") }
+                onClicked = { navController.navigate(Route.MobileSendAuth.routeName) }
             )
         }
-        composable("mobile_send_auth") {
+        composable(Route.MobileSendAuth.routeName) {
             MobileSendAuthScreen(
                 onBackBtnClicked = { navController.popBackStack() },
-                onNextBtnClicked = { navController.navigate("mobile_enter_auth/$it") }
+                onNextBtnClicked = { mobileNum ->
+                    navController.navigate(Route.MobileEnterAuth.withArgs(mobileNum))
+                }
             )
         }
         composable(
-            route = "mobile_enter_auth/{mobileNum}",
+            route = Route.MobileEnterAuth.withArgs("{mobileNum}"),
             arguments = listOf(navArgument("mobileNum") { type = NavType.StringType })
         ) { backStackEntry ->
             val mobileNum = backStackEntry.arguments?.getString("mobileNum") ?: ""
             MobileEnterAuthScreen(
                 mobileNum = mobileNum,
                 onBackBtnClicked = { navController.popBackStack() },
-                navigateToMainScreen = { navController.navigate("main") },
-                navigateToRegisterFlow = { navController.navigate("terms_agreement/$it") }
+                navigateToMainScreen = { navController.navigate(Route.Main.routeName) },
+                navigateToRegisterFlow = { registerToken ->
+                    navController.navigate(Route.TermsAgreement.withArgs(registerToken))
+                }
             )
         }
 
         composable(
-            route = "terms_agreement/{registerToken}",
+            route = Route.TermsAgreement.withArgs("{registerToken}"),
             arguments = listOf(navArgument("registerToken") { type = NavType.StringType })
         ) { backStackEntry ->
             val registerToken = backStackEntry.arguments?.getString("registerToken") ?: ""
             TermsAgreementScreen(
                 onBackBtnClicked = { navController.popBackStack() },
-                onNextBtnClicked = { navController.navigate("my_profile/$registerToken") }
+                onNextBtnClicked = {
+                    navController.navigate(Route.MyProfile.withArgs(registerToken)) {
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                    }
+                }
             )
         }
     }

@@ -101,6 +101,24 @@ fun DaysSnackBar(
     }
 }
 
+@Composable
+fun DaysSnackBarHost(
+    snackState: SnackbarHostState,
+    modifier: Modifier = Modifier
+) {
+    SnackbarHost(
+        modifier = modifier,
+        hostState = snackState,
+    ) { snackData ->
+        DaysSnackBar(
+            message = snackData.visuals.message,
+            type = runCatching {
+                SnackBarType.valueOf(snackData.visuals.actionLabel ?: "")
+            }.getOrDefault(SnackBarType.DEFAULT)
+        )
+    }
+}
+
 @Preview
 @Composable
 fun DaysSnackBarPreview() {

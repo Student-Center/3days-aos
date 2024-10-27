@@ -1,4 +1,4 @@
-package com.weave.my_profile
+package com.weave.my_profile.birth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -73,6 +73,7 @@ import com.weave.design_system.component.tooltip.DaysTooltip
 import com.weave.design_system.component.tooltip.TooltipDirection
 import com.weave.design_system.extension.addFocusCleaner
 import com.weave.design_system.extension.noRippleClickable
+import com.weave.my_profile.MyProfileSharedViewModel
 import com.weave.utils.Keyboard
 import com.weave.utils.keyboardAsState
 import kotlinx.coroutines.CoroutineScope
@@ -93,7 +94,7 @@ fun MyProfileBirthYearScreen(
     val scope = rememberCoroutineScope()
     val snackState = remember { SnackbarHostState() }
 
-    LaunchedEffect(true) {
+    LaunchedEffect(Unit) {
         if (sharedViewModel.birthYear.all { it.isNotEmpty() }) {
             sharedViewModel.birthYear.forEachIndexed { index, value ->
                 viewModel.setAction(BirthYearAction.SetBirthYear(index, value))
@@ -128,6 +129,7 @@ fun MyProfileBirthYearScreen(
     }
 
     BirthYearScreenContent(modifier = modifier,
+        scope = scope,
         uiState = viewModel.uiState,
         isKeyboardVisible = isKeyboardVisible,
         snackState = snackState,
@@ -163,6 +165,7 @@ private fun boldBirthYearMessage(): AnnotatedString {
 @Composable
 private fun BirthYearScreenContent(
     modifier: Modifier = Modifier,
+    scope: CoroutineScope,
     uiState: BirthYearState,
     isKeyboardVisible: Keyboard,
     snackState: SnackbarHostState,
@@ -173,14 +176,14 @@ private fun BirthYearScreenContent(
     onNextClicked: () -> Unit
 ) {
     val tooltipState = remember { TooltipState() }
-    val scope = rememberCoroutineScope()
+    val snackBarPadding = if (isKeyboardVisible == Keyboard.Closed) 110.dp else 36.dp
 
     Scaffold(modifier = modifier.fillMaxSize(), topBar = {
         DaysOnlyBackAppbar(onBackPressed = onBackPressed)
     }, snackbarHost = {
         DaysSnackBarHost(
             snackState = snackState, modifier = Modifier
-                .padding(bottom = 110.dp)
+                .padding(bottom = snackBarPadding)
                 .imePadding()
         )
     }) { innerPadding ->
