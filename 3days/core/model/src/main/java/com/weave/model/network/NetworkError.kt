@@ -7,6 +7,7 @@ enum class NetworkError(val errorCode: String, val code: Int) {
     NOT_FOUND("RESOURCE_NOT_FOUND", 404),
     TIMEOUT("NETWORK_TIMEOUT", 408),
     SERVER_ERROR("INTERNAL_SERVER_ERROR", 500),
+    NULL_RESPONSE_BODY("NULL_RESPONSE_BODY", -2),
     UNKNOWN("UNKNOWN_ERROR", -1);
 
     fun from(): String {
@@ -17,6 +18,7 @@ enum class NetworkError(val errorCode: String, val code: Int) {
             NOT_FOUND -> "요청한 리소스를 찾을 수 없습니다."
             TIMEOUT -> "요청 시간이 초과되었습니다. 다시 시도해 주세요."
             SERVER_ERROR -> "서버에 오류가 발생했습니다. 나중에 다시 시도해 주세요."
+            NULL_RESPONSE_BODY -> "응답 본문이 존재하지 않습니다."
             UNKNOWN -> "알 수 없는 오류가 발생했습니다. 다시 시도해 주세요."
         }
     }
