@@ -15,6 +15,7 @@ import com.weave.my_profile.birth.MyProfileBirthYearScreen
 import com.weave.my_profile.company.MyProfileCompanyScreen
 import com.weave.my_profile.gender.MyProfileGenderScreen
 import com.weave.my_profile.init.MyProfileInitScreen
+import com.weave.utils.navigation.navigateWithClearBackStack
 
 enum class Route(val routeName: String) {
     MyProfile("my_profile"),
@@ -104,15 +105,6 @@ fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
                 }
             )
         }
-    }
-}
-
-
-private fun NavController.navigateWithClearBackStack(
-    destination: String, popUpToRoute: String
-) {
-    this.navigate(destination) {
-        popUpTo(popUpToRoute)
     }
 }
 
