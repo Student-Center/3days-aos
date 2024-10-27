@@ -437,7 +437,7 @@ private fun BirthYearTooltip(
                     modifier = Modifier.size(18.dp),
                     painter = painterResource(id = R.drawable.ic_question_mark),
                     tint = DaysTheme.colors.grey200,
-                    contentDescription = null
+                    contentDescription = stringResource(id = R.string.my_profile_birth_year_tooltip_description)
                 )
 
                 Spacer(modifier = Modifier.width(4.dp))
