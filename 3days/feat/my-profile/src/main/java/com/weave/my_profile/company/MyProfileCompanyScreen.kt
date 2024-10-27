@@ -109,12 +109,12 @@ fun MyProfileCompanyScreen(
         checkState = viewModel.uiState.isChecked,
         onCheckChanged = {
             viewModel.setAction(CompanyAction.SetChecked(!viewModel.uiState.isChecked))
+            inputText = ""
         },
         selectedCompany = viewModel.uiState.selectedCompany,
         companies = viewModel.uiState.companies,
         onCompanyChanged = {
             viewModel.setAction(CompanyAction.SelectCompany(it))
-            inputText = ""
         },
         onBackBtnClicked = onBackBtnClicked,
         onNextBtnClicked = {
