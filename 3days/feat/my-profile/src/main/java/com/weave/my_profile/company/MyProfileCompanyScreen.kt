@@ -68,7 +68,7 @@ fun MyProfileCompanyScreen(
     val snackState = remember { SnackbarHostState() }
     var inputText by remember { mutableStateOf("") }
 
-    LaunchedEffect(true) {
+    LaunchedEffect(Unit) {
         sharedViewModel.company?.let {
             viewModel.setAction(
                 CompanyAction.SelectCompany(sharedViewModel.company!!)

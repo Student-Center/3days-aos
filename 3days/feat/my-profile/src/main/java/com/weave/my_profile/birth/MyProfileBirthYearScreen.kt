@@ -94,7 +94,7 @@ fun MyProfileBirthYearScreen(
     val scope = rememberCoroutineScope()
     val snackState = remember { SnackbarHostState() }
 
-    LaunchedEffect(true) {
+    LaunchedEffect(Unit) {
         if (sharedViewModel.birthYear.all { it.isNotEmpty() }) {
             sharedViewModel.birthYear.forEachIndexed { index, value ->
                 viewModel.setAction(BirthYearAction.SetBirthYear(index, value))
