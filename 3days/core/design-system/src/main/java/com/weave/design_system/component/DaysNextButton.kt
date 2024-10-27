@@ -1,16 +1,25 @@
 package com.weave.design_system.component
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.weave.design_system.DaysTheme
+import com.weave.design_system.R
+import com.weave.utils.Keyboard
 
 enum class BtnType {
     Tall, Short
@@ -54,58 +63,34 @@ fun DaysNextButton(
     }
 }
 
-//@Composable
-//fun SampleCode(){
-//    val context = LocalContext.current
-//
-//    var inputText by remember { mutableStateOf("") }
-//    val isEnabled = inputText.length >= 2
-//
-//    val keyboardController = LocalSoftwareKeyboardController.current
-//    val isKeyboardVisible by keyboardAsState()
-//    val buttonType = if (isKeyboardVisible == Keyboard.Opened) BtnType.Short else BtnType.Tall
-//
-//    DaysTheme {
-//        Box(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .imePadding()
-//        ) {
-//            Column(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(16.dp),
-//                horizontalAlignment = Alignment.CenterHorizontally,
-//                verticalArrangement = Arrangement.Center
-//            ) {
-//                TextField(
-//                    value = inputText,
-//                    onValueChange = { newText ->
-//                        inputText = newText
-//                    },
-//                    label = { Text("Enter Text") },
-//                    modifier = Modifier.fillMaxWidth(),
-//                    singleLine = true,
-//                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-//                    keyboardActions = KeyboardActions(
-//                        onDone = { keyboardController?.hide() }),
-//                )
-//
-//                Spacer(modifier = Modifier.height(16.dp))
-//            }
-//
-//            DaysNextButton(
-//                message = "다음",
-//                type = buttonType,
-//                isEnabled = isEnabled,
-//                onClick = {
-//                    if (isEnabled) {
-//                        Toast.makeText(context, "성공", Toast.LENGTH_SHORT).show()
-//                    }
-//                },
-//                modifier = Modifier
-//                    .align(Alignment.BottomCenter)
-//            )
-//        }
-//    }
-//}
+@Composable
+fun NextButton(
+    modifier: Modifier = Modifier,
+    isKeyboardVisible: Keyboard,
+    isEnabled: Boolean,
+    padding: PaddingValues,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .imePadding()
+    ) {
+        DaysNextButton(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(
+                    bottom = if (isKeyboardVisible == Keyboard.Closed) {
+                        padding.calculateBottomPadding()
+                    } else {
+                        0.dp
+                    }
+                ),
+            message = stringResource(id = R.string.next_button_message),
+            type = if (isKeyboardVisible == Keyboard.Opened) BtnType.Short else BtnType.Tall,
+            isEnabled = isEnabled,
+            onEnabledClick = onClick,
+            onDisabledClick = onClick
+        )
+    }
+}
