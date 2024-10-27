@@ -13,6 +13,7 @@ import com.weave.utils.base.UIIntent
 import com.weave.utils.base.UIState
 import com.weave.utils.network.debounce
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
@@ -45,7 +46,7 @@ sealed class CompanyEffect : UIEffect {
 
 @HiltViewModel
 class MyProfileCompanyViewModel @Inject constructor(
-    private val application: Context,
+    @ApplicationContext private val context: Context,
     private val searchCompaniesUseCase: SearchCompaniesUseCase
 ) : BaseViewModel<CompanyAction, CompanyIntent, CompanyState, CompanyEffect>(initialState = CompanyState()) {
     override fun actionPredicate(action: CompanyAction): CompanyIntent {
@@ -94,10 +95,10 @@ class MyProfileCompanyViewModel @Inject constructor(
                             )
                         }
                     } else if (!isLoading) {
-                        setState { copy(errorMessage = application.getString(R.string.my_profile_company_not_selected_error_message)) }
+                        setState { copy(errorMessage = context.getString(R.string.my_profile_company_not_selected_error_message)) }
                         setEffect {
                             CompanyEffect.ShowToast(
-                                application.getString(R.string.my_profile_company_not_selected_error_message),
+                                context.getString(R.string.my_profile_company_not_selected_error_message),
                                 SnackBarType.ERROR
                             )
                         }
@@ -110,10 +111,12 @@ class MyProfileCompanyViewModel @Inject constructor(
         timeMillis = 500L,
         coroutineScope = viewModelScope
     ) { query ->
-        setState { copy(
-            companies = listOf(),
-            nextUUID = null
-        ) }
+        setState {
+            copy(
+                companies = listOf(),
+                nextUUID = null
+            )
+        }
         search(keyword = query)
     }
 }

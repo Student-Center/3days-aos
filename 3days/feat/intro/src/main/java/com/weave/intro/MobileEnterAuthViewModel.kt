@@ -20,6 +20,7 @@ import com.weave.utils.base.UIEffect
 import com.weave.utils.base.UIIntent
 import com.weave.utils.base.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import java.util.UUID
@@ -57,7 +58,7 @@ sealed class AuthEffect : UIEffect {
 
 @HiltViewModel
 class MobileEnterAuthViewModel @Inject constructor(
-    private val application: Context,
+    @ApplicationContext private val context: Context,
     private val requestVerificationUseCase: RequestVerificationUseCase,
     private val existingUserVerifyCodeUseCase: ExistingUserVerifyCodeUseCase,
     private val newUserVerifyCodeUseCase: NewUserVerifyCodeUseCase
@@ -131,10 +132,10 @@ class MobileEnterAuthViewModel @Inject constructor(
                 setState { copy(isVerified = true) }
                 setEffect { AuthEffect.NavigateToRegisterFlow("Test Register Token") }
             } else {
-                setState { copy(errorMessage = application.getString(com.weave.design_system.R.string.mobile_auth_verify_error_message)) }
+                setState { copy(errorMessage = context.getString(com.weave.design_system.R.string.mobile_auth_verify_error_message)) }
                 setEffect {
                     AuthEffect.ShowToast(
-                        application.getString(R.string.mobile_auth_verify_error_message),
+                        context.getString(R.string.mobile_auth_verify_error_message),
                         SnackBarType.ERROR
                     )
                 }
