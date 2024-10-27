@@ -1,6 +1,6 @@
 package com.weave.data.datasource
 
-import com.weave.model.network.NetworkError
+import com.weave.data.extension.handleApiResponse
 import com.weave.model.network.NetworkResult
 import com.weave.network.api.AuthApi
 import com.weave.network.model.ExistingUserVerifyCodeResponse
@@ -16,22 +16,14 @@ import javax.inject.Inject
 
 class AuthRemoteDataSourceImpl @Inject constructor(
     private val service: AuthApi
-): AuthRemoteDataSource {
+) : AuthRemoteDataSource {
 
     override suspend fun existingUserVerifyCode(
         authCodeId: UUID,
         verifyCodeRequest: VerifyCodeRequest
     ): NetworkResult<ExistingUserVerifyCodeResponse> {
-        return try {
-            val response = service.existingUserVerifyCode(authCodeId, verifyCodeRequest)
-
-            if(response.isSuccessful){
-                NetworkResult.Success(response.body()!!)
-            } else {
-                NetworkResult.Error(NetworkError.getNetworkErrorByCode(response.code()))
-            }
-        } catch (e: Exception){
-            NetworkResult.Error(NetworkError.UNKNOWN)
+        return handleApiResponse {
+            service.existingUserVerifyCode(authCodeId, verifyCodeRequest)
         }
     }
 
@@ -39,44 +31,20 @@ class AuthRemoteDataSourceImpl @Inject constructor(
         authCodeId: UUID,
         verifyCodeRequest: VerifyCodeRequest
     ): NetworkResult<NewUserVerifyCodeResponse> {
-        return try {
-            val response = service.newUserVerifyCode(authCodeId, verifyCodeRequest)
-
-            if(response.isSuccessful){
-                NetworkResult.Success(response.body()!!)
-            } else {
-                NetworkResult.Error(NetworkError.getNetworkErrorByCode(response.code()))
-            }
-        } catch (e: Exception){
-            NetworkResult.Error(NetworkError.UNKNOWN)
+        return handleApiResponse {
+            service.newUserVerifyCode(authCodeId, verifyCodeRequest)
         }
     }
 
     override suspend fun refreshToken(refreshTokenRequest: RefreshTokenRequest): NetworkResult<TokenResponse> {
-        return try {
-            val response = service.refreshToken(refreshTokenRequest)
-
-            if(response.isSuccessful){
-                NetworkResult.Success(response.body()!!)
-            } else {
-                NetworkResult.Error(NetworkError.getNetworkErrorByCode(response.code()))
-            }
-        } catch (e: Exception){
-            NetworkResult.Error(NetworkError.UNKNOWN)
+        return handleApiResponse {
+            service.refreshToken(refreshTokenRequest)
         }
     }
 
     override suspend fun requestVerification(sendAuthCodeRequest: SendAuthCodeRequest): NetworkResult<SendAuthCodeResponse> {
-        return try {
-            val response = service.requestVerification(OSType.AOS, sendAuthCodeRequest)
-
-            if(response.isSuccessful){
-                NetworkResult.Success(response.body()!!)
-            } else {
-                NetworkResult.Error(NetworkError.getNetworkErrorByCode(response.code()))
-            }
-        } catch (e: Exception){
-            NetworkResult.Error(NetworkError.UNKNOWN)
+        return handleApiResponse {
+            service.requestVerification(OSType.AOS, sendAuthCodeRequest)
         }
     }
 }
