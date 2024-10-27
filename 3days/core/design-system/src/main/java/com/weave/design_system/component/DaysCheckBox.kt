@@ -2,17 +2,15 @@ package com.weave.design_system.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -63,12 +61,19 @@ fun DaysCheckBox(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, group = "DaysCheckBox")
 @Composable
-private fun DaysCheckBoxPreview() {
-    var checked by remember { mutableStateOf(false) }
-
-    Box(modifier = Modifier.size(30.dp), contentAlignment = Alignment.Center) {
-        DaysCheckBox(checked = checked, onCheckedChange = { checked = !checked })
+private fun DaysCheckBoxStatesPreview() {
+    Box(
+        modifier = Modifier.size(width = 100.dp, height = 30.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            DaysCheckBox(checked = false, onCheckedChange = {})
+            DaysCheckBox(checked = true, onCheckedChange = {})
+        }
     }
 }
