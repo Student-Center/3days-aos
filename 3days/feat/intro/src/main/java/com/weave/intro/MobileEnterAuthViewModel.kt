@@ -14,15 +14,12 @@ import com.weave.auth.RequestVerificationUseCase
 import com.weave.design_system.R
 import com.weave.design_system.component.SnackBarType
 import com.weave.intro.utils.AuthSmsReceiver
-import com.weave.model.auth.AuthRegisterToken
-import com.weave.model.auth.AuthVerifyToken
 import com.weave.utils.base.BaseViewModel
 import com.weave.utils.base.UIAction
 import com.weave.utils.base.UIEffect
 import com.weave.utils.base.UIIntent
 import com.weave.utils.base.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import java.util.UUID
@@ -130,12 +127,17 @@ class MobileEnterAuthViewModel @Inject constructor(
         viewModelScope.launch {
             // Simulation
             val simulationResult = verifyCodeWithServer(inputCode)
-            if(simulationResult){
+            if (simulationResult) {
                 setState { copy(isVerified = true) }
                 setEffect { AuthEffect.NavigateToRegisterFlow("Test Register Token") }
             } else {
                 setState { copy(errorMessage = application.getString(com.weave.design_system.R.string.mobile_auth_verify_error_message)) }
-                setEffect { AuthEffect.ShowToast(application.getString(R.string.mobile_auth_verify_error_message), SnackBarType.ERROR) }
+                setEffect {
+                    AuthEffect.ShowToast(
+                        application.getString(R.string.mobile_auth_verify_error_message),
+                        SnackBarType.ERROR
+                    )
+                }
             }
 
 //            if (uiState.isNewUser == true){
