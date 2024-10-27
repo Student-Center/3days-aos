@@ -28,14 +28,19 @@ fun NavGraphBuilder.navGraphIntro(navController: NavController) {
             MobileEnterAuthScreen(
                 mobileNum = mobileNum,
                 onBackBtnClicked = { navController.popBackStack() },
-                onNextBtnClicked = { navController.navigate("terms_agreement") }
+                navigateToMainScreen = { navController.navigate("main") },
+                navigateToRegisterFlow = { navController.navigate("terms_agreement/$it") }
             )
         }
 
-        composable("terms_agreement"){
+        composable(
+            route = "terms_agreement/{registerToken}",
+            arguments = listOf(navArgument("registerToken") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val registerToken = backStackEntry.arguments?.getString("registerToken") ?: ""
             TermsAgreementScreen(
                 onBackBtnClicked = { navController.popBackStack() },
-                onNextBtnClicked = { navController.navigate("my_profile") }
+                onNextBtnClicked = { navController.navigate("my_profile/$registerToken") }
             )
         }
     }

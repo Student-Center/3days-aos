@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.weave.design_system.component.Gender
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -12,7 +13,7 @@ import javax.inject.Inject
 class MyProfileSharedViewModel @Inject constructor(
 
 ): ViewModel() {
-
-    var genderState by mutableStateOf("")
+    var registerToken by mutableStateOf("")
+    var genderState by mutableStateOf(Gender.EMPTY)
     val birthYear = mutableStateListOf("", "", "", "")
 }

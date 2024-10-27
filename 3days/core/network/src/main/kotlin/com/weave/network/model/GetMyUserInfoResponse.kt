@@ -15,33 +15,41 @@
 
 package com.weave.network.model
 
+import com.weave.network.model.UserDesiredPartner
+import com.weave.network.model.UserProfile
+
 import com.google.gson.annotations.SerializedName
 
 /**
- * 사용자 정보
+ * 
  *
- * @param id 사용자 고유 식별자
  * @param name 사용자 이름
+ * @param phoneNumber 사용자의 전화번호 (한국 휴대폰 번호 형식)
  * @param profile 
  * @param desiredPartner 
+ * @param id 사용자 식별자
  */
 
 
-data class User (
-
-    /* 사용자 고유 식별자 */
-    @SerializedName("id")
-    val id: kotlin.String? = null,
+data class GetMyUserInfoResponse (
 
     /* 사용자 이름 */
     @SerializedName("name")
-    val name: kotlin.String? = null,
+    val name: kotlin.String,
+
+    /* 사용자의 전화번호 (한국 휴대폰 번호 형식) */
+    @SerializedName("phoneNumber")
+    val phoneNumber: kotlin.String,
 
     @SerializedName("profile")
-    val profile: UserProfile? = null,
+    val profile: UserProfile,
 
     @SerializedName("desiredPartner")
-    val desiredPartner: UserDesiredPartner? = null
+    val desiredPartner: UserDesiredPartner,
+
+    /* 사용자 식별자 */
+    @SerializedName("id")
+    val id: java.util.UUID? = null
 
 ) {
 

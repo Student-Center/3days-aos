@@ -35,6 +35,7 @@ import com.weave.design_system.component.DaysNextButton
 import com.weave.design_system.component.DaysOnlyBackAppbar
 import com.weave.design_system.component.DaysSnackBar
 import com.weave.design_system.component.DaysStepIndicator
+import com.weave.design_system.component.Gender
 import com.weave.design_system.component.SnackBarType
 import com.weave.utils.Keyboard
 import com.weave.utils.keyboardAsState
@@ -48,7 +49,7 @@ fun MyProfileGenderScreen(
     onNextBtnClicked: () -> Unit
 ) {
     val isKeyboardVisible by keyboardAsState()
-    var isEnabled by remember { mutableStateOf(sharedViewModel.genderState.isNotEmpty()) }
+    var isEnabled by remember { mutableStateOf(sharedViewModel.genderState != Gender.EMPTY) }
     val snackState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val noSelectedMessage = stringResource(id = R.string.my_profile_gender_no_selected_message)
@@ -120,7 +121,7 @@ fun MyProfileGenderScreen(
                     genderState = sharedViewModel.genderState,
                     onChangedGender = { newValue ->
                         sharedViewModel.genderState = newValue
-                        isEnabled = sharedViewModel.genderState.isNotEmpty()
+                        isEnabled = sharedViewModel.genderState != Gender.EMPTY
                     }
                 )
             }

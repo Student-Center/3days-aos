@@ -15,22 +15,30 @@
 
 package com.weave.network.model
 
+import com.weave.network.model.UserDesiredPartner
+import com.weave.network.model.UserProfile
+
 import com.google.gson.annotations.SerializedName
 
 /**
  * 회원 가입 시 필요한 사용자 정보
  *
  * @param name 사용자 이름
+ * @param phoneNumber 사용자 전화번호
  * @param profile 
  * @param desiredPartner 
  */
 
 
-data class UserRegistration (
+data class RegisterUserRequest (
 
     /* 사용자 이름 */
     @SerializedName("name")
     val name: kotlin.String,
+
+    /* 사용자 전화번호 */
+    @SerializedName("phoneNumber")
+    val phoneNumber: kotlin.String,
 
     @SerializedName("profile")
     val profile: UserProfile,

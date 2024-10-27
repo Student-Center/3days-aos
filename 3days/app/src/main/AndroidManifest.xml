@@ -14,6 +14,7 @@
         android:roundIcon="@mipmap/ic_3days_round"
         android:supportsRtl="true"
         android:theme="@style/Theme._3days"
+        android:usesCleartextTraffic="true"
         tools:targetApi="34">
         <activity
             android:name=".MainActivity"

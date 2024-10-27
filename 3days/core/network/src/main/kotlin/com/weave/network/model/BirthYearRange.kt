@@ -21,18 +21,18 @@ import com.google.gson.annotations.SerializedName
 /**
  * 
  *
- * @param start 원하는 파트너의 최소 년생 (ex, 1990)
- * @param end 원하는 파트너의 최대 년생 (ex, 2000)
+ * @param start 원하는 파트너의 최소 년생
+ * @param end 원하는 파트너의 최대 년생
  */
 
 
-data class UserDesiredPartnerBirthYearRange (
+data class BirthYearRange (
 
-    /* 원하는 파트너의 최소 년생 (ex, 1990) */
+    /* 원하는 파트너의 최소 년생 */
     @SerializedName("start")
     val start: kotlin.Int? = null,
 
-    /* 원하는 파트너의 최대 년생 (ex, 2000) */
+    /* 원하는 파트너의 최대 년생 */
     @SerializedName("end")
     val end: kotlin.Int? = null
 

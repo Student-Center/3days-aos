@@ -15,21 +15,21 @@
 
 package com.weave.network.model
 
+import com.weave.network.model.Company
 
 import com.google.gson.annotations.SerializedName
 
 /**
  * 
  *
- * @param phoneNumber 사용자의 전화번호 (한국 휴대폰 번호 형식)
+ * @param company 
  */
 
 
-data class RequestVerificationRequest (
+data class GetCompanyDetailsResponse (
 
-    /* 사용자의 전화번호 (한국 휴대폰 번호 형식) */
-    @SerializedName("phoneNumber")
-    val phoneNumber: kotlin.String? = null
+    @SerializedName("company")
+    val company: Company
 
 ) {
 

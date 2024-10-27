@@ -21,15 +21,15 @@ import com.google.gson.annotations.SerializedName
 /**
  * 
  *
- * @param verificationId 인증 요청에 대한 고유 식별자 (UUID 형식)
+ * @param phoneNumber 사용자의 전화번호 (한국 휴대폰 번호 형식)
  */
 
 
-data class RequestVerification201Response (
+data class SendAuthCodeRequest (
 
-    /* 인증 요청에 대한 고유 식별자 (UUID 형식) */
-    @SerializedName("verificationId")
-    val verificationId: java.util.UUID? = null
+    /* 사용자의 전화번호 (한국 휴대폰 번호 형식) */
+    @SerializedName("phoneNumber")
+    val phoneNumber: kotlin.String
 
 ) {
 

@@ -102,7 +102,7 @@ abstract class BaseViewModel<Action : UIAction, Intent : UIIntent, State : UISta
             }
             is NetworkResult.Error -> {
                 _isLoading = false
-                _error = "[${result.error.code}] ${result.error.errorCode}"
+                _error = "[${result.error.code}] ${result.error.from()}"
                 flowOf(null)
             }
         }

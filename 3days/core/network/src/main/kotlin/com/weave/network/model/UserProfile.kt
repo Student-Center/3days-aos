@@ -15,53 +15,44 @@
 
 package com.weave.network.model
 
+import com.weave.network.model.Gender
+import com.weave.network.model.JobOccupation
 
 import com.google.gson.annotations.SerializedName
 
 /**
  * 사용자 프로필 정보
  *
- * @param gender 사용자의 성별
+ * @param gender 
  * @param birthYear 사용자의 출생년도
- * @param company 사용자의 회사명
- * @param job 사용자의 직업
- * @param locations 사용자의 활동 지역 목록
+ * @param companyId 사용자의 회사 ID
+ * @param jobOccupation 
+ * @param locationIds 사용자의 활동 지역 목록 ID 리스트
  */
 
 
 data class UserProfile (
 
-    /* 사용자의 성별 */
     @SerializedName("gender")
-    val gender: UserProfile.Gender,
+    val gender: Gender,
 
     /* 사용자의 출생년도 */
     @SerializedName("birthYear")
     val birthYear: kotlin.Int,
 
-    /* 사용자의 회사명 */
-    @SerializedName("company")
-    val company: kotlin.String,
+    /* 사용자의 회사 ID */
+    @SerializedName("companyId")
+    val companyId: java.util.UUID,
 
-    /* 사용자의 직업 */
-    @SerializedName("job")
-    val job: kotlin.String,
+    @SerializedName("jobOccupation")
+    val jobOccupation: JobOccupation,
 
-    /* 사용자의 활동 지역 목록 */
-    @SerializedName("locations")
-    val locations: kotlin.collections.List<kotlin.String>
+    /* 사용자의 활동 지역 목록 ID 리스트 */
+    @SerializedName("locationIds")
+    val locationIds: kotlin.collections.List<java.util.UUID>
 
 ) {
 
-    /**
-     * 사용자의 성별
-     *
-     * Values: MALE,FEMALE
-     */
-    enum class Gender(val value: kotlin.String) {
-        @SerializedName(value = "MALE") MALE("MALE"),
-        @SerializedName(value = "FEMALE") FEMALE("FEMALE");
-    }
 
 }
 

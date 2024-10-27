@@ -66,7 +66,8 @@ fun MobileEnterAuthScreen(
     viewModel: MobileEnterAuthViewModel = hiltViewModel(),
     mobileNum: String,
     onBackBtnClicked: () -> Unit,
-    onNextBtnClicked: () -> Unit
+    navigateToMainScreen: () -> Unit,
+    navigateToRegisterFlow: (String) -> Unit
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -76,7 +77,10 @@ fun MobileEnterAuthScreen(
 
     // SMS retriever 시작/중지
     DisposableEffect(LocalLifecycleOwner.current) {
-        (context as? Activity)?.let { viewModel.startSmsRetriever(it) }
+        (context as? Activity)?.let {
+            viewModel.startSmsRetriever(it)
+            viewModel.setAction(AuthAction.RequestVerificationCode(mobileNum))
+        }
         onDispose { (context as? Activity)?.let { viewModel.stopSmsRetriever() } }
     }
 
@@ -95,7 +99,11 @@ fun MobileEnterAuthScreen(
                     )
                 }
 
-                is AuthEffect.NavigateToNextScreen -> onNextBtnClicked()
+                is AuthEffect.NavigateToMainScreen -> navigateToMainScreen()
+                is AuthEffect.NavigateToRegisterFlow -> {
+                    navigateToRegisterFlow(effect.registerToken)
+                }
+
                 is AuthEffect.ShowToast -> coroutineScope.launch {
                     val job = launch {
                         snackState.showSnackbar(
@@ -200,7 +208,10 @@ fun MobileEnterAuthScreen(
                             .padding(vertical = 8.dp, horizontal = 16.dp)
                     ) {
                         Text(
-                            text = stringResource(id = R.string.mobile_enter_resend, formatPhoneNumber(mobileNum)),
+                            text = stringResource(
+                                id = R.string.mobile_enter_resend,
+                                formatPhoneNumber(mobileNum)
+                            ),
                             style = DaysTheme.typography.regular14.toTextStyle(),
                             color = DaysTheme.colors.grey300
                         )
@@ -288,6 +299,7 @@ fun MobileEnterAuthScreenPreview() {
     MobileEnterAuthScreen(
         mobileNum = "01012345678",
         onBackBtnClicked = {},
-        onNextBtnClicked = {}
+        navigateToMainScreen = {},
+        navigateToRegisterFlow = {}
     )
 }

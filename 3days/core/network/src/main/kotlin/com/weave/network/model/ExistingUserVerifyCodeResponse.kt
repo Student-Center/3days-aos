@@ -23,23 +23,28 @@ import com.google.gson.annotations.SerializedName
  *
  * @param accessToken 액세스 토큰
  * @param refreshToken 리프레시 토큰
- * @param expiresIn 액세스 토큰의 유효 기간 (초 단위)
+ * @param accessTokenExpiresIn 액세스 토큰의 유효 기간 (초 단위)
+ * @param refreshTokenExpiresIn 리프레시 토큰의 유효 기간 (초 단위)
  */
 
 
-data class ExistingUserVerificationResponse (
+data class ExistingUserVerifyCodeResponse (
 
     /* 액세스 토큰 */
     @SerializedName("accessToken")
-    val accessToken: kotlin.String? = null,
+    val accessToken: kotlin.String,
 
     /* 리프레시 토큰 */
     @SerializedName("refreshToken")
-    val refreshToken: kotlin.String? = null,
+    val refreshToken: kotlin.String,
 
     /* 액세스 토큰의 유효 기간 (초 단위) */
-    @SerializedName("expiresIn")
-    val expiresIn: kotlin.Int? = null
+    @SerializedName("accessTokenExpiresIn")
+    val accessTokenExpiresIn: kotlin.Int? = null,
+
+    /* 리프레시 토큰의 유효 기간 (초 단위) */
+    @SerializedName("refreshTokenExpiresIn")
+    val refreshTokenExpiresIn: kotlin.Int? = null
 
 ) {
 

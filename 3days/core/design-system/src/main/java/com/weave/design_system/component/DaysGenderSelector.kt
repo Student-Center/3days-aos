@@ -31,17 +31,21 @@ import com.weave.design_system.DaysTheme
 import com.weave.design_system.R
 import com.weave.design_system.extension.noRippleClickable
 
+enum class Gender(val koValue: String) {
+    MALE("남성"), FEMALE("여성"), EMPTY("")
+}
+
 @Composable
 fun DaysGenderSelector(
     modifier: Modifier = Modifier,
-    genderState: String,
-    onChangedGender: (String) -> Unit
+    genderState: Gender,
+    onChangedGender: (Gender) -> Unit
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
-        listOf("남성" to true, "여성" to false).forEach { (gender, isMan) ->
+        listOf(Gender.MALE to true, Gender.FEMALE to false).forEach { (gender, isMan) ->
             DaysGenderToggleButton(
                 isChecked = genderState == gender,
                 onCheckChanged = onChangedGender,
@@ -56,24 +60,24 @@ fun DaysGenderSelector(
 fun DaysGenderToggleButton(
     modifier: Modifier = Modifier,
     isChecked: Boolean,
-    onCheckChanged: (String) -> Unit,
+    onCheckChanged: (Gender) -> Unit,
     isMan: Boolean,
 ) {
     val colors: Pair<List<Color>, Color>
-    val textIcon: Triple<String, Int, Color>
+    val textIcon: Triple<Gender, Int, Color>
 
     if (isMan) {
         colors = Pair(
             listOf(Color(0xFFA1BA91), Color(0xFF586A4D)),
             DaysTheme.colors.green50
         )
-        textIcon = Triple("남성", R.drawable.ic_man, DaysTheme.colors.green500)
+        textIcon = Triple(Gender.MALE, R.drawable.ic_man, DaysTheme.colors.green500)
     } else {
         colors = Pair(
             listOf(Color(0xFFD2A4B5), Color(0xFF8B5C6D)),
             DaysTheme.colors.pink50
         )
-        textIcon = Triple("여성", R.drawable.ic_woman, DaysTheme.colors.pink500)
+        textIcon = Triple(Gender.FEMALE, R.drawable.ic_woman, DaysTheme.colors.pink500)
     }
 
     Box(
@@ -107,7 +111,7 @@ fun DaysGenderToggleButton(
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = textIcon.first,
+                text = textIcon.first.koValue,
                 style = DaysTheme.typography.semiBold20.toTextStyle(),
                 color = if (isChecked) DaysTheme.colors.white else textIcon.third,
                 textAlign = TextAlign.Center
@@ -119,7 +123,7 @@ fun DaysGenderToggleButton(
 @Preview(showBackground = true)
 @Composable
 fun DaysGenderSelectorPreview() {
-    var genderState by remember { mutableStateOf("") }
+    var genderState by remember { mutableStateOf(Gender.EMPTY) }
 
     DaysGenderSelector(
         genderState = genderState,

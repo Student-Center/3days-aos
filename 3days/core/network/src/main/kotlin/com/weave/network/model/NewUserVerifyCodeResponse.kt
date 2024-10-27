@@ -15,33 +15,24 @@
 
 package com.weave.network.model
 
+
 import com.google.gson.annotations.SerializedName
 
 /**
- * 
+ * 새 사용자 인증 응답
  *
  * @param registerToken 회원 가입을 위한 토큰
- * @param accessToken 액세스 토큰
- * @param refreshToken 리프레시 토큰
- * @param expiresIn 액세스 토큰의 유효 기간 (초 단위)
+ * @param expiresIn 회원 가입 토큰의 유효 기간 (초 단위)
  */
 
 
-data class VerifyCode200Response (
+data class NewUserVerifyCodeResponse (
 
     /* 회원 가입을 위한 토큰 */
     @SerializedName("registerToken")
-    val registerToken: kotlin.String? = null,
+    val registerToken: kotlin.String,
 
-    /* 액세스 토큰 */
-    @SerializedName("accessToken")
-    val accessToken: kotlin.String? = null,
-
-    /* 리프레시 토큰 */
-    @SerializedName("refreshToken")
-    val refreshToken: kotlin.String? = null,
-
-    /* 액세스 토큰의 유효 기간 (초 단위) */
+    /* 회원 가입 토큰의 유효 기간 (초 단위) */
     @SerializedName("expiresIn")
     val expiresIn: kotlin.Int? = null
 

@@ -19,17 +19,22 @@ package com.weave.network.model
 import com.google.gson.annotations.SerializedName
 
 /**
- * 새 사용자 인증 응답
+ * 
  *
- * @param registerToken 회원 가입을 위한 토큰
+ * @param id 회사 식별자
+ * @param name 회사명
  */
 
 
-data class NewUserVerificationResponse (
+data class Company (
 
-    /* 회원 가입을 위한 토큰 */
-    @SerializedName("registerToken")
-    val registerToken: kotlin.String? = null
+    /* 회사 식별자 */
+    @SerializedName("id")
+    val id: java.util.UUID,
+
+    /* 회사명 */
+    @SerializedName("name")
+    val name: kotlin.String
 
 ) {
 
