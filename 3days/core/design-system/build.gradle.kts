@@ -30,6 +30,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:utils"))
+
     implementation(libs.bundles.compose)
     debugImplementation(libs.bundles.compose.debug)
     androidTestImplementation(libs.bundles.android.test)
