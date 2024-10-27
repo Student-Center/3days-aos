@@ -112,11 +112,9 @@ fun DaysSnackBarHost(
     ) { snackData ->
         DaysSnackBar(
             message = snackData.visuals.message,
-            type = if (snackData.visuals.actionLabel == SnackBarType.DEFAULT.toString()) {
-                SnackBarType.DEFAULT
-            } else {
-                SnackBarType.ERROR
-            }
+            type = runCatching {
+                SnackBarType.valueOf(snackData.visuals.actionLabel ?: "")
+            }.getOrDefault(SnackBarType.DEFAULT)
         )
     }
 }

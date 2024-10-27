@@ -23,6 +23,7 @@ sealed class CompanyAction : UIAction {
     data class GetNextPage(val keyword: String) : CompanyAction()
     data class SelectCompany(val company: Company) : CompanyAction()
     data class SetChecked(val isChecked: Boolean) : CompanyAction()
+    data object ValidateInput : CompanyAction()
 }
 
 sealed class CompanyIntent : UIIntent {
@@ -30,6 +31,7 @@ sealed class CompanyIntent : UIIntent {
     data class GetNextPage(val keyword: String) : CompanyIntent()
     data class SelectCompany(val company: Company) : CompanyIntent()
     data class SetChecked(val isChecked: Boolean) : CompanyIntent()
+    data object ValidateInput : CompanyIntent()
 }
 
 data class CompanyState(
@@ -41,6 +43,7 @@ data class CompanyState(
 ) : UIState
 
 sealed class CompanyEffect : UIEffect {
+    data object NavigateToNextScreen : CompanyEffect()
     data class ShowToast(val message: String, val type: SnackBarType) : CompanyEffect()
 }
 
@@ -55,6 +58,7 @@ class MyProfileCompanyViewModel @Inject constructor(
             is CompanyAction.GetNextPage -> CompanyIntent.GetNextPage(action.keyword)
             is CompanyAction.SelectCompany -> CompanyIntent.SelectCompany(action.company)
             is CompanyAction.SetChecked -> CompanyIntent.SetChecked(action.isChecked)
+            is CompanyAction.ValidateInput -> CompanyIntent.ValidateInput
         }
     }
 
@@ -64,6 +68,21 @@ class MyProfileCompanyViewModel @Inject constructor(
             is CompanyIntent.GetNextPage -> search(intent.keyword)
             is CompanyIntent.SelectCompany -> selectCompany(intent.company)
             is CompanyIntent.SetChecked -> setChecked(intent.isChecked)
+            is CompanyIntent.ValidateInput -> validateInput()
+        }
+    }
+
+    private fun validateInput() {
+        if (uiState.isChecked || uiState.selectedCompany != null) {
+            setEffect { CompanyEffect.NavigateToNextScreen }
+        } else {
+            setState { copy(errorMessage = context.getString(R.string.my_profile_company_not_selected_error_message)) }
+            setEffect {
+                CompanyEffect.ShowToast(
+                    context.getString(R.string.my_profile_company_not_selected_error_message),
+                    SnackBarType.ERROR
+                )
+            }
         }
     }
 
@@ -95,10 +114,9 @@ class MyProfileCompanyViewModel @Inject constructor(
                             )
                         }
                     } else if (!isLoading) {
-                        setState { copy(errorMessage = context.getString(R.string.my_profile_company_not_selected_error_message)) }
                         setEffect {
                             CompanyEffect.ShowToast(
-                                context.getString(R.string.my_profile_company_not_selected_error_message),
+                                error,
                                 SnackBarType.ERROR
                             )
                         }

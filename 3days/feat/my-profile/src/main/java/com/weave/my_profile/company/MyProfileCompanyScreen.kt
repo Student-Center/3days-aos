@@ -83,6 +83,11 @@ fun MyProfileCompanyScreen(
     LaunchedEffect(viewModel.uiEffect) {
         viewModel.uiEffect.collect { effect ->
             when (effect) {
+                is CompanyEffect.NavigateToNextScreen -> {
+                    sharedViewModel.company = viewModel.uiState.selectedCompany
+                    onNextBtnClicked()
+                }
+
                 is CompanyEffect.ShowToast -> scope.launch {
                     val job = launch {
                         snackState.showSnackbar(
@@ -118,10 +123,7 @@ fun MyProfileCompanyScreen(
         },
         onBackBtnClicked = onBackBtnClicked,
         onNextBtnClicked = {
-            if (viewModel.uiState.isChecked || viewModel.uiState.selectedCompany != null) {
-                sharedViewModel.company = viewModel.uiState.selectedCompany
-                onNextBtnClicked()
-            }
+            viewModel.setAction(CompanyAction.ValidateInput)
         }
     )
 }
