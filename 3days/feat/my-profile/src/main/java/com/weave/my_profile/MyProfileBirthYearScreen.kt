@@ -93,7 +93,7 @@ fun MyProfileBirthYearScreen(
     val scope = rememberCoroutineScope()
     val snackState = remember { SnackbarHostState() }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(true) {
         if (sharedViewModel.birthYear.all { it.isNotEmpty() }) {
             sharedViewModel.birthYear.forEachIndexed { index, value ->
                 viewModel.setAction(BirthYearAction.SetBirthYear(index, value))
@@ -127,8 +127,7 @@ fun MyProfileBirthYearScreen(
         }
     }
 
-    BirthYearScreenContent(
-        modifier = modifier,
+    BirthYearScreenContent(modifier = modifier,
         uiState = viewModel.uiState,
         isKeyboardVisible = isKeyboardVisible,
         snackState = snackState,
@@ -140,21 +139,23 @@ fun MyProfileBirthYearScreen(
         onBackPressed = onBackBtnClicked,
         onNextClicked = {
             viewModel.setAction(BirthYearAction.ValidateBirthYear)
-        }
-    )
+        })
 }
 
+@Composable
 private fun boldBirthYearMessage(): AnnotatedString {
-    val currentYear = Year.now().value
-    val twentyYearsOld = currentYear - 20
-    val thirtyFiveYearsOld = currentYear - 35
+    return remember {
+        val currentYear = Year.now().value
+        val twentyYearsOld = currentYear - 20
+        val thirtyFiveYearsOld = currentYear - 35
 
-    return buildAnnotatedString {
-        append("${currentYear}년 기준으로 ")
-        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-            append("${twentyYearsOld}년생(만 20살)부터 ${thirtyFiveYearsOld}년생(만 35살) ")
+        buildAnnotatedString {
+            append("${currentYear}년 기준으로 ")
+            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                append("${twentyYearsOld}년생(만 20살)부터 ${thirtyFiveYearsOld}년생(만 35살) ")
+            }
+            append("까지 가입할 수 있어요")
         }
-        append("까지 가입할 수 있어요")
     }
 }
 
@@ -174,20 +175,15 @@ private fun BirthYearScreenContent(
     val tooltipState = remember { TooltipState() }
     val scope = rememberCoroutineScope()
 
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        topBar = {
-            DaysOnlyBackAppbar(onBackPressed = onBackPressed)
-        },
-        snackbarHost = {
-            DaysSnackBarHost(
-                snackState = snackState,
-                modifier = Modifier
-                    .padding(bottom = 110.dp)
-                    .imePadding()
-            )
-        }
-    ) { innerPadding ->
+    Scaffold(modifier = modifier.fillMaxSize(), topBar = {
+        DaysOnlyBackAppbar(onBackPressed = onBackPressed)
+    }, snackbarHost = {
+        DaysSnackBarHost(
+            snackState = snackState, modifier = Modifier
+                .padding(bottom = 110.dp)
+                .imePadding()
+        )
+    }) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -209,7 +205,7 @@ private fun BirthYearScreenContent(
 
                 BirthYearInputSection(
                     birthYear = uiState.birthYear,
-                    isValidBirthYear = uiState.invalidBirthYearFlag,
+                    isInvalidBirthYear = uiState.invalidBirthYearFlag,
                     focusManager = focusManager,
                     onNumChanged = onBirthYearChanged
                 )
@@ -217,18 +213,17 @@ private fun BirthYearScreenContent(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 BirthYearTooltip(
-                    tooltipState = tooltipState,
-                    scope = scope
+                    tooltipState = tooltipState, scope = scope
                 )
             }
-        }
 
-        NextButton(
-            isKeyboardVisible = isKeyboardVisible,
-            isEnabled = uiState.birthYear.all { it.isNotBlank() },
-            padding = innerPadding,
-            onClick = onNextClicked
-        )
+            NextButton(
+                isKeyboardVisible = isKeyboardVisible,
+                isEnabled = uiState.birthYear.all { it.isNotBlank() },
+                padding = innerPadding,
+                onClick = onNextClicked
+            )
+        }
     }
 }
 
@@ -275,11 +270,8 @@ private fun BirthYearHeader(
 
     Text(
         text = stringResource(
-            id = R.string.my_profile_birth_year_sub_title,
-            oppositeGender
-        ),
-        style = DaysTheme.typography.regular14.toTextStyle(),
-        color = DaysTheme.colors.grey200
+            id = R.string.my_profile_birth_year_sub_title, oppositeGender
+        ), style = DaysTheme.typography.regular14.toTextStyle(), color = DaysTheme.colors.grey200
     )
 
     Spacer(modifier = Modifier.height(4.dp))
@@ -294,7 +286,7 @@ private fun BirthYearHeader(
 @Composable
 fun BirthYearInputSection(
     birthYear: List<String>,
-    isValidBirthYear: Boolean,
+    isInvalidBirthYear: Boolean,
     focusManager: FocusManager,
     onNumChanged: (Int, String) -> Unit
 ) {
@@ -310,11 +302,10 @@ fun BirthYearInputSection(
         verticalAlignment = Alignment.Bottom
     ) {
         birthYear.forEachIndexed { index, _ ->
-            BirthYearDigitInput(
-                modifier = Modifier.weight(1f),
+            BirthYearDigitInput(modifier = Modifier.weight(1f),
                 index = index,
                 value = birthYear[index],
-                isValidBirthYear = isValidBirthYear,
+                isInvalidBirthYear = isInvalidBirthYear,
                 isFocused = isFocused.intValue == index,
                 showHint = showHint,
                 focusRequester = focusRequesters[index],
@@ -342,8 +333,7 @@ fun BirthYearInputSection(
                     if (birthYear[index].isEmpty() && index > 0) {
                         focusRequesters[index - 1].requestFocus()
                     }
-                }
-            )
+                })
         }
 
         Text(
@@ -360,7 +350,7 @@ private fun BirthYearDigitInput(
     modifier: Modifier = Modifier,
     index: Int,
     value: String,
-    isValidBirthYear: Boolean,
+    isInvalidBirthYear: Boolean,
     isFocused: Boolean,
     showHint: Boolean,
     focusRequester: FocusRequester,
@@ -369,48 +359,40 @@ private fun BirthYearDigitInput(
     onValueChanged: (String) -> Unit,
     onBackspace: () -> Unit
 ) {
-    BasicTextField(
-        modifier = modifier
-            .fillMaxSize()
-            .background(
-                color = if (isValidBirthYear) DaysTheme.colors.pink50 else DaysTheme.colors.yellow50,
-                shape = RoundedCornerShape(20.dp)
-            )
-            .border(
-                width = 4.dp,
-                color = when {
-                    isValidBirthYear -> DaysTheme.colors.red300
-                    isFocused -> Color(0xFFDFDBA5)
-                    else -> DaysTheme.colors.white
-                },
-                shape = RoundedCornerShape(20.dp)
-            )
-            .focusRequester(focusRequester)
-            .onFocusChanged { focusState ->
-                onFocusChanged(focusState.isFocused)
-            }
-            .onKeyEvent { event: KeyEvent ->
-                if (event.key == Key.Backspace) {
-                    onBackspace()
-                    true
-                } else false
-            },
+    BasicTextField(modifier = modifier
+        .fillMaxSize()
+        .background(
+            color = if (isInvalidBirthYear) DaysTheme.colors.pink50 else DaysTheme.colors.yellow50,
+            shape = RoundedCornerShape(20.dp)
+        )
+        .border(
+            width = 4.dp, color = when {
+                isInvalidBirthYear -> DaysTheme.colors.red300
+                isFocused -> Color(0xFFDFDBA5)
+                else -> DaysTheme.colors.white
+            }, shape = RoundedCornerShape(20.dp)
+        )
+        .focusRequester(focusRequester)
+        .onFocusChanged { focusState ->
+            onFocusChanged(focusState.isFocused)
+        }
+        .onKeyEvent { event: KeyEvent ->
+            if (event.key == Key.Backspace) {
+                onBackspace()
+                true
+            } else false
+        },
         value = value,
         onValueChange = onValueChanged,
         textStyle = DaysTheme.typography.semiBold28.copy(
-            fontSize = 40.dp,
-            lineHeight = 60.dp,
-            textAlign = TextAlign.Center
+            fontSize = 40.dp, lineHeight = 60.dp, textAlign = TextAlign.Center
         ).toTextStyle(),
         singleLine = true,
         maxLines = 1,
         keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.Done
+            keyboardType = KeyboardType.Number, imeAction = ImeAction.Done
         ),
-        keyboardActions = KeyboardActions(
-            onDone = { focusManager.clearFocus() }
-        ),
+        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
         decorationBox = { innerTextField ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -430,18 +412,15 @@ private fun BirthYearDigitInput(
                 }
                 innerTextField()
             }
-        }
-    )
+        })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun BirthYearTooltip(
-    tooltipState: TooltipState,
-    scope: CoroutineScope
+    tooltipState: TooltipState, scope: CoroutineScope
 ) {
-    DaysTooltip(
-        tooltipState = tooltipState,
+    DaysTooltip(tooltipState = tooltipState,
         direction = TooltipDirection.Top,
         tooltipText = boldBirthYearMessage(),
         content = {
@@ -469,8 +448,7 @@ private fun BirthYearTooltip(
                     color = DaysTheme.colors.grey200
                 )
             }
-        }
-    )
+        })
 }
 
 @Composable
@@ -481,7 +459,11 @@ private fun NextButton(
     padding: PaddingValues,
     onClick: () -> Unit
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .imePadding()
+    ) {
         DaysNextButton(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -504,8 +486,5 @@ private fun NextButton(
 @Preview
 @Composable
 fun MyProfileBirthYearScreenPreview() {
-    MyProfileBirthYearScreen(
-        onNextBtnClicked = {},
-        onBackBtnClicked = {}
-    )
+    MyProfileBirthYearScreen(onNextBtnClicked = {}, onBackBtnClicked = {})
 }
