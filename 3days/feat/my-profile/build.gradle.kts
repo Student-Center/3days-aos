@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:utils"))
     implementation(project(":core:design-system"))
+    implementation(project(":domain:company"))
 
     implementation(libs.bundles.compose)
     debugImplementation(libs.bundles.compose.debug)
