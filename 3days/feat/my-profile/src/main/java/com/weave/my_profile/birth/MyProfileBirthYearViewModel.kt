@@ -1,4 +1,4 @@
-package com.weave.my_profile
+package com.weave.my_profile.birth
 
 import com.weave.design_system.component.SnackBarType
 import com.weave.utils.base.BaseViewModel

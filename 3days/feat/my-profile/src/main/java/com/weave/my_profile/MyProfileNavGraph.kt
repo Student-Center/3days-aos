@@ -11,9 +11,15 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.weave.my_profile.birth.MyProfileBirthYearScreen
+import com.weave.my_profile.gender.MyProfileGenderScreen
+import com.weave.my_profile.init.MyProfileInitScreen
 
 fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
-    navigation(startDestination = "my_profile_init/{registerToken}", route = "my_profile/{registerToken}") {
+    navigation(
+        startDestination = "my_profile_init/{registerToken}",
+        route = "my_profile/{registerToken}"
+    ) {
         composable(
             route = "my_profile_init/{registerToken}",
             arguments = listOf(navArgument("registerToken") { type = NavType.StringType })
@@ -29,7 +35,8 @@ fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
             arguments = listOf(navArgument("registerToken") { type = NavType.StringType })
         ) { backStackEntry ->
             val registerToken = backStackEntry.arguments?.getString("registerToken") ?: ""
-            val sharedViewModel = backStackEntry.sharedViewModel<MyProfileSharedViewModel>(navController = navController)
+            val sharedViewModel =
+                backStackEntry.sharedViewModel<MyProfileSharedViewModel>(navController = navController)
             sharedViewModel.registerToken = registerToken
 
             MyProfileGenderScreen(
@@ -39,7 +46,8 @@ fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
             )
         }
         composable("my_profile_birth") {
-            val sharedViewModel = it.sharedViewModel<MyProfileSharedViewModel>(navController = navController)
+            val sharedViewModel =
+                it.sharedViewModel<MyProfileSharedViewModel>(navController = navController)
 
             MyProfileBirthYearScreen(
                 sharedViewModel = sharedViewModel,

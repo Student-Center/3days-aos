@@ -1,4 +1,4 @@
-package com.weave.my_profile
+package com.weave.my_profile.birth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -73,6 +73,7 @@ import com.weave.design_system.component.tooltip.DaysTooltip
 import com.weave.design_system.component.tooltip.TooltipDirection
 import com.weave.design_system.extension.addFocusCleaner
 import com.weave.design_system.extension.noRippleClickable
+import com.weave.my_profile.MyProfileSharedViewModel
 import com.weave.utils.Keyboard
 import com.weave.utils.keyboardAsState
 import kotlinx.coroutines.CoroutineScope

@@ -1,4 +1,4 @@
-package com.weave.my_profile
+package com.weave.my_profile.init
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

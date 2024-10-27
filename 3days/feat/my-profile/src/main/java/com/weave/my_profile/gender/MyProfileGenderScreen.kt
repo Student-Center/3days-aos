@@ -1,4 +1,4 @@
-package com.weave.my_profile
+package com.weave.my_profile.gender
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,6 +37,7 @@ import com.weave.design_system.component.DaysSnackBar
 import com.weave.design_system.component.DaysStepIndicator
 import com.weave.design_system.component.Gender
 import com.weave.design_system.component.SnackBarType
+import com.weave.my_profile.MyProfileSharedViewModel
 import com.weave.utils.Keyboard
 import com.weave.utils.keyboardAsState
 import kotlinx.coroutines.delay
