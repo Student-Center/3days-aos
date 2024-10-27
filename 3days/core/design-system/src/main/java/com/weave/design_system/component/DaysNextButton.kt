@@ -80,11 +80,7 @@ fun NextButton(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(
-                    bottom = if (isKeyboardVisible == Keyboard.Closed) {
-                        padding.calculateBottomPadding()
-                    } else {
-                        0.dp
-                    }
+                    bottom = if (isKeyboardVisible == Keyboard.Closed) padding.calculateBottomPadding() else 0.dp
                 ),
             message = stringResource(id = R.string.next_button_message),
             type = if (isKeyboardVisible == Keyboard.Opened) BtnType.Short else BtnType.Tall,
