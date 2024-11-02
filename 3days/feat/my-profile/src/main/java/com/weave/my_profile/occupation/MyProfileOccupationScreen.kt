@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
@@ -56,12 +55,12 @@ fun MyProfileOccupationScreen(
     val focusManager = LocalFocusManager.current
     val isKeyboardVisible by keyboardAsState()
     val scope = rememberCoroutineScope()
-    val lazyListState = rememberLazyListState()
     val snackState = remember { SnackbarHostState() }
+    val jobToggleItems = remember { toggleItems }
     val uiState = viewModel.uiState
 
     LaunchedEffect(Unit) {
-        sharedViewModel.company?.let {
+        sharedViewModel.occupation?.let {
             viewModel.setAction(
                 OccupationAction.SelectOccupation(sharedViewModel.occupation!!)
             )
@@ -131,7 +130,7 @@ fun MyProfileOccupationScreen(
                     horizontalArrangement = Arrangement.spacedBy(14.dp),
                     verticalArrangement = Arrangement.spacedBy(14.dp),
                 ) {
-                    items(toggleItems, key = { it.text }) { item ->
+                    items(jobToggleItems, key = { it.text }) { item ->
                         DaysJobToggleButton(
                             isChecked = uiState.selectedOccupation?.koValue == item.text,
                             onToggleChanged = {
@@ -153,7 +152,7 @@ fun MyProfileOccupationScreen(
 
             NextButton(
                 isKeyboardVisible = isKeyboardVisible,
-                isEnabled = uiState.isChecked || uiState.selectedOccupation != null,
+                isEnabled = uiState.selectedOccupation != null,
                 padding = innerPadding,
                 onClick = { viewModel.setAction(OccupationAction.ValidateOccupationState) }
             )
