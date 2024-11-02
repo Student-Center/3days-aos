@@ -26,7 +26,6 @@ sealed class OccupationIntent : UIIntent {
 data class OccupationState(
     val errorMessage: String = "",
     val selectedOccupation: JobOccupation? = null,
-    val isChecked: Boolean = false,
 ) : UIState
 
 sealed class OccupationEffect : UIEffect {
@@ -55,7 +54,7 @@ class MyProfileOccupationViewModel @Inject constructor(
     }
 
     private fun selectOccupation(occupation: JobOccupation?) {
-        setState { copy(selectedOccupation = occupation, isChecked = false) }
+        setState { copy(selectedOccupation = occupation) }
     }
 
     private fun validateOccupationState() {
