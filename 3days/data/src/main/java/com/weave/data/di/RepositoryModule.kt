@@ -2,8 +2,10 @@ package com.weave.data.di
 
 import com.weave.data.repository.AuthRepositoryImpl
 import com.weave.data.repository.CompanyRepositoryImpl
+import com.weave.data.repository.LocationRepositoryImpl
 import com.weave.domain.repository.AuthRepository
 import com.weave.domain.repository.CompanyRepository
+import com.weave.domain.repository.LocationRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -21,4 +23,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindsCompanyRepository(impl: CompanyRepositoryImpl): CompanyRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsLocationRepository(impl: LocationRepositoryImpl): LocationRepository
 }
