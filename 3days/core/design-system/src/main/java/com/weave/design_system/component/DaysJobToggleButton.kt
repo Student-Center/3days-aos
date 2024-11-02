@@ -30,13 +30,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.weave.design_system.DaysTheme
 import com.weave.design_system.R
+import com.weave.design_system.extension.applyShadow
 import com.weave.design_system.extension.noRippleClickable
 
 @Composable
 fun DaysJobToggleButton(
     modifier: Modifier = Modifier,
     isChecked: Boolean,
-    onToggle: (Boolean) -> Unit,
+    onToggleChanged: (String) -> Unit,
     icon: Painter,
     text: String
 ) {
@@ -44,6 +45,9 @@ fun DaysJobToggleButton(
         Color(0xFFE1DDA5),
         Color(0xFFC6C277)
     ) else listOf(DaysTheme.colors.yellow50, DaysTheme.colors.yellow50)
+
+    val textStyle =
+        if (isChecked) DaysTheme.typography.semiBold14 else DaysTheme.typography.medium14
 
     Box(
         modifier = modifier
@@ -57,7 +61,13 @@ fun DaysJobToggleButton(
                 color = Color.White,
                 shape = RoundedCornerShape(26.dp)
             )
-            .noRippleClickable { onToggle(!isChecked) },
+            .noRippleClickable { onToggleChanged(text) }
+            .applyShadow(
+                shape = RoundedCornerShape(26.dp),
+                shadowType = DaysTheme.shadow.default.copy(
+                    shadowColor = Color(0x144F4743)
+                )
+            ),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -67,12 +77,12 @@ fun DaysJobToggleButton(
             Image(
                 painter = icon,
                 contentDescription = null,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(30.dp)
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = text,
-                style = DaysTheme.typography.semiBold14.toTextStyle(),
+                style = textStyle.toTextStyle(),
                 color = if (isChecked) DaysTheme.colors.white else DaysTheme.colors.grey400,
                 textAlign = TextAlign.Center
             )
@@ -103,18 +113,19 @@ fun DaysJobToggleButtonPreview() {
         JobToggleItem("기타", R.drawable.ic_others),
     )
 
+    var isChecked by remember { mutableStateOf("") }
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
-        modifier = Modifier.size(312.dp, 426.dp) // 크기 조정
+        modifier = Modifier.size(312.dp, 426.dp)
     ) {
         items(toggleItems) { item ->
-            var isChecked by remember { mutableStateOf(false) }
 
             DaysJobToggleButton(
-                isChecked = isChecked,
-                onToggle = { isChecked = it },
+                isChecked = isChecked == item.text,
+                onToggleChanged = { isChecked = it },
                 icon = painterResource(id = item.resourceId),
                 text = item.text
             )
