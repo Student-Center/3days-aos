@@ -1,14 +1,11 @@
 package com.weave.network.api
 
-import com.weave.network.infrastructure.CollectionFormats.*
-import retrofit2.http.*
-import retrofit2.Response
-import okhttp3.RequestBody
-import com.google.gson.annotations.SerializedName
-
-import com.weave.network.model.ErrorResponse
 import com.weave.network.model.GetCompanyDetailsResponse
 import com.weave.network.model.SearchCompaniesResponse
+import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface CompaniesApi {
     /**
@@ -38,6 +35,10 @@ interface CompaniesApi {
      * @return [SearchCompaniesResponse]
      */
     @GET("companies")
-    suspend fun searchCompanies(@Query("name") name: kotlin.String, @Query("next") next: java.util.UUID? = null, @Query("limit") limit: kotlin.Int? = 20): Response<SearchCompaniesResponse>
+    suspend fun searchCompanies(
+        @Query("name") name: kotlin.String,
+        @Query("next") next: java.util.UUID? = null,
+        @Query("limit") limit: kotlin.Int? = 20
+    ): Response<SearchCompaniesResponse>
 
 }

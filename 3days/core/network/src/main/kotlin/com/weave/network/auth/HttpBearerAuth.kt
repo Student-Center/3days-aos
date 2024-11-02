@@ -1,10 +1,9 @@
 package com.weave.network.auth
 
-import java.io.IOException
-
 import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
 import okhttp3.Response
+import java.io.IOException
 
 class HttpBearerAuth(
     private var schema: String = "",

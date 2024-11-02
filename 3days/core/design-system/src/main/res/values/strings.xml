@@ -85,4 +85,9 @@
     <string name="my_profile_company_text_field_hint">내 회사 검색</string>
     <string name="my_profile_company_not_visible_my_company">회사 검색 목록에 없어요</string>
     <string name="my_profile_company_not_selected_error_message">내 회사를 선택해 주세요</string>
+
+    <string name="my_profile_company_bottom_sheet_title">같은 회사 사람도 소개 받을까요?</string>
+    <string name="my_profile_company_bottom_sheet_sub_title">잠시만요!</string>
+    <string name="my_profile_company_bottom_sheet_button_true">네, 받을래요</string>
+    <string name="my_profile_company_bottom_sheet_button_false">같은 회사는 소개받기 싫어요</string>
 </resources>

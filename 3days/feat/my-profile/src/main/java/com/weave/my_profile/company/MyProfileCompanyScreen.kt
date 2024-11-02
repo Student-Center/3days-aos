@@ -65,6 +65,7 @@ fun MyProfileCompanyScreen(
     val scope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
 
+    var showBottomSheetState by remember { mutableStateOf(false) }
     val snackState = remember { SnackbarHostState() }
     var inputText by remember { mutableStateOf("") }
 
@@ -88,6 +89,10 @@ fun MyProfileCompanyScreen(
                     onNextBtnClicked()
                 }
 
+                is CompanyEffect.ShowBottomSheet -> {
+                    showBottomSheetState = true
+                }
+
                 is CompanyEffect.ShowToast -> scope.launch {
                     val job = launch {
                         snackState.showSnackbar(
@@ -108,6 +113,7 @@ fun MyProfileCompanyScreen(
         isKeyboardVisible = isKeyboardVisible,
         snackState = snackState,
         focusManager = focusManager,
+        showBottomSheetState = showBottomSheetState,
         lazyListState = lazyListState,
         inputText = inputText,
         onTextChanged = { inputText = it },
@@ -124,6 +130,11 @@ fun MyProfileCompanyScreen(
         onBackBtnClicked = onBackBtnClicked,
         onNextBtnClicked = {
             viewModel.setAction(CompanyAction.ValidateInput)
+        },
+        onBottomSheetCanceled = { showBottomSheetState = false },
+        onClickBottomSheetConfirm = {
+            sharedViewModel.isMatchSameCompany = it
+            viewModel.setEffect { CompanyEffect.NavigateToNextScreen }
         }
     )
 }
@@ -134,6 +145,7 @@ private fun CompanyScreenContent(
     uiState: CompanyState,
     isKeyboardVisible: Keyboard,
     focusManager: FocusManager,
+    showBottomSheetState: Boolean,
     lazyListState: LazyListState,
     inputText: String,
     onTextChanged: (String) -> Unit,
@@ -145,6 +157,8 @@ private fun CompanyScreenContent(
     onCompanyChanged: (Company) -> Unit,
     onBackBtnClicked: () -> Unit,
     onNextBtnClicked: () -> Unit,
+    onBottomSheetCanceled: () -> Unit,
+    onClickBottomSheetConfirm: (Boolean) -> Unit
 ) {
     val snackBarPadding = if (isKeyboardVisible == Keyboard.Closed) 110.dp else 36.dp
 
@@ -193,7 +207,10 @@ private fun CompanyScreenContent(
 
                 NotVisibleMyCompanyCheckBox(
                     checkState = checkState,
-                    onCheckChanged = onCheckChanged
+                    onCheckChanged = {
+                        focusManager.clearFocus()
+                        onCheckChanged()
+                    }
                 )
             }
 
@@ -202,6 +219,14 @@ private fun CompanyScreenContent(
                 isEnabled = uiState.isChecked || uiState.selectedCompany != null,
                 padding = innerPadding,
                 onClick = onNextBtnClicked
+            )
+        }
+
+        if (showBottomSheetState) {
+            CompanyMatchOptionSheet(
+                onClickCancel = onBottomSheetCanceled,
+                onClickConfirmTrue = { onClickBottomSheetConfirm(true) },
+                onClickConfirmFalse = { onClickBottomSheetConfirm(false) }
             )
         }
     }

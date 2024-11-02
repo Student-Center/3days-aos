@@ -1,15 +1,13 @@
 package com.weave.network.api
 
-import com.weave.network.infrastructure.CollectionFormats.*
-import retrofit2.http.*
-import retrofit2.Response
-import okhttp3.RequestBody
-import com.google.gson.annotations.SerializedName
-
-import com.weave.network.model.ErrorResponse
 import com.weave.network.model.GetMyUserInfoResponse
 import com.weave.network.model.RegisterUserRequest
 import com.weave.network.model.TokenResponse
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.POST
 
 interface UsersApi {
     /**
@@ -35,10 +33,13 @@ interface UsersApi {
      *  - 500: 서버 오류
      *
      * @param xRegisterToken 번호 인증 후 발급받은 회원가입용 토큰
-     * @param registerUserRequest 
+     * @param registerUserRequest
      * @return [TokenResponse]
      */
     @POST("users")
-    suspend fun registerUser(@Header("X-Register-Token") xRegisterToken: kotlin.String, @Body registerUserRequest: RegisterUserRequest): Response<TokenResponse>
+    suspend fun registerUser(
+        @Header("X-Register-Token") xRegisterToken: kotlin.String,
+        @Body registerUserRequest: RegisterUserRequest
+    ): Response<TokenResponse>
 
 }
