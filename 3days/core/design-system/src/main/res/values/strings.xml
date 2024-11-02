@@ -90,4 +90,8 @@
     <string name="my_profile_company_bottom_sheet_sub_title">잠시만요!</string>
     <string name="my_profile_company_bottom_sheet_button_true">네, 받을래요</string>
     <string name="my_profile_company_bottom_sheet_button_false">같은 회사는 소개받기 싫어요</string>
+
+    <string name="my_profile_occupation_sub_title">좋아요, 조금만 더 알려주세요!</string>
+    <string name="my_profile_occupation_title">재직 중인 회사에서\n당신의 직군은 무엇인가요?</string>
+    <string name="my_profile_occupation_not_selected_error_message">내 직군을 선택해 주세요</string>
 </resources>

@@ -134,6 +134,7 @@ fun MyProfileCompanyScreen(
         onBottomSheetCanceled = { showBottomSheetState = false },
         onClickBottomSheetConfirm = {
             sharedViewModel.isMatchSameCompany = it
+            showBottomSheetState = false
             viewModel.setEffect { CompanyEffect.NavigateToNextScreen }
         }
     )

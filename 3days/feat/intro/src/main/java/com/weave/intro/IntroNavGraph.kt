@@ -19,9 +19,7 @@ enum class Route(val routeName: String) {
     fun withArgs(vararg args: String): String {
         return buildString {
             append(routeName)
-            args.forEach { arg ->
-                append("/$arg")
-            }
+            args.forEach { arg -> append("/$arg") }
         }
     }
 }
@@ -29,10 +27,9 @@ enum class Route(val routeName: String) {
 fun NavGraphBuilder.navGraphIntro(navController: NavController) {
     navigation(startDestination = Route.Welcome.routeName, route = Route.Intro.routeName) {
         composable(Route.Welcome.routeName) {
-            IntroScreen(
-                onClicked = { navController.navigate(Route.MobileSendAuth.routeName) }
-            )
+            IntroScreen(onClicked = { navController.navigate(Route.MobileSendAuth.routeName) })
         }
+
         composable(Route.MobileSendAuth.routeName) {
             MobileSendAuthScreen(
                 onBackBtnClicked = { navController.popBackStack() },
@@ -41,6 +38,7 @@ fun NavGraphBuilder.navGraphIntro(navController: NavController) {
                 }
             )
         }
+
         composable(
             route = Route.MobileEnterAuth.withArgs("{mobileNum}"),
             arguments = listOf(navArgument("mobileNum") { type = NavType.StringType })
@@ -65,7 +63,7 @@ fun NavGraphBuilder.navGraphIntro(navController: NavController) {
                 onBackBtnClicked = { navController.popBackStack() },
                 onNextBtnClicked = {
                     navController.navigate(Route.MyProfile.withArgs(registerToken)) {
-                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        popUpTo(navController.graph.id) { inclusive = true }
                     }
                 }
             )
