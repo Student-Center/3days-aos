@@ -2,7 +2,7 @@ package com.weave.my_profile.company
 
 import android.content.Context
 import androidx.lifecycle.viewModelScope
-import com.moon.company.SearchCompaniesUseCase
+import com.weave.company.SearchCompaniesUseCase
 import com.weave.design_system.R
 import com.weave.design_system.component.SnackBarType
 import com.weave.model.domain.myprofile.Company
