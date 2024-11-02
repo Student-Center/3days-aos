@@ -1,5 +1,6 @@
 package com.weave.a3days
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -14,28 +15,30 @@ enum class Route(val routeName: String) {
     MyProfile("my_profile");
 
     fun withArgs(vararg args: String): String {
-        return buildString {
-            append(routeName)
-            args.forEach { arg ->
-                append("/$arg")
-            }
-        }
+        return args.joinToString(prefix = "$routeName/", separator = "/")
     }
 }
 
 @Composable
 fun DaysNavGraph(navController: NavHostController) {
+    navController.addOnDestinationChangedListener { controller, destination, _ ->
+        val currentBackStack = controller.currentBackStack.value
+        val routes = currentBackStack.mapNotNull { it.destination.route }.joinToString(", ")
+        Log.d(
+            "BackStackLog",
+            "BackStack: $routes${if (routes.isNotBlank()) ", ${destination.route}" else ""}"
+        )
+    }
+
     NavHost(navController, startDestination = Route.Splash.routeName) {
         composable(Route.Splash.routeName) {
-            SplashScreen(
-                onDataLoadedResult = {
-                    navController.navigate(
-                        if (it) Route.Home.routeName else Route.Intro.routeName
-                    ) {
-                        popUpTo(Route.Splash.routeName) { inclusive = true }
-                    }
+            SplashScreen { isDataLoaded ->
+                navController.navigate(
+                    if (isDataLoaded) Route.Home.routeName else Route.Intro.routeName
+                ) {
+                    popUpTo(Route.Splash.routeName) { inclusive = true }
                 }
-            )
+            }
         }
         navGraphIntro(navController)
         navGraphMyProfile(navController)
