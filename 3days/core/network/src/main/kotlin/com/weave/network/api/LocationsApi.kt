@@ -1,13 +1,9 @@
 package com.weave.network.api
 
-import com.weave.network.infrastructure.CollectionFormats.*
-import retrofit2.http.*
-import retrofit2.Response
-import okhttp3.RequestBody
-import com.google.gson.annotations.SerializedName
-
-import com.weave.network.model.ErrorResponse
 import com.weave.network.model.Location
+import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface LocationsApi {
     /**

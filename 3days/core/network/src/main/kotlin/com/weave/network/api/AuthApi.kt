@@ -1,12 +1,5 @@
 package com.weave.network.api
 
-import com.weave.network.infrastructure.CollectionFormats.*
-import retrofit2.http.*
-import retrofit2.Response
-import okhttp3.RequestBody
-import com.google.gson.annotations.SerializedName
-
-import com.weave.network.model.ErrorResponse
 import com.weave.network.model.ExistingUserVerifyCodeResponse
 import com.weave.network.model.NewUserVerifyCodeResponse
 import com.weave.network.model.OSType
@@ -15,6 +8,11 @@ import com.weave.network.model.SendAuthCodeRequest
 import com.weave.network.model.SendAuthCodeResponse
 import com.weave.network.model.TokenResponse
 import com.weave.network.model.VerifyCodeRequest
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.Header
+import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface AuthApi {
     /**
@@ -27,11 +25,14 @@ interface AuthApi {
      *  - 500: 서버 오류
      *
      * @param authCodeId 인증 요청 시 발급된 고유 식별자 (UUID 형식)
-     * @param verifyCodeRequest 
+     * @param verifyCodeRequest
      * @return [ExistingUserVerifyCodeResponse]
      */
     @POST("auth/codes/{authCodeId}/existingUser")
-    suspend fun existingUserVerifyCode(@Path("authCodeId") authCodeId: java.util.UUID, @Body verifyCodeRequest: VerifyCodeRequest): Response<ExistingUserVerifyCodeResponse>
+    suspend fun existingUserVerifyCode(
+        @Path("authCodeId") authCodeId: java.util.UUID,
+        @Body verifyCodeRequest: VerifyCodeRequest
+    ): Response<ExistingUserVerifyCodeResponse>
 
     /**
      * SMS 인증 코드 확인 (신규 유저)
@@ -43,11 +44,14 @@ interface AuthApi {
      *  - 500: 서버 오류
      *
      * @param authCodeId 인증 요청 시 발급된 고유 식별자 (UUID 형식)
-     * @param verifyCodeRequest 
+     * @param verifyCodeRequest
      * @return [NewUserVerifyCodeResponse]
      */
     @POST("auth/codes/{authCodeId}/newUser")
-    suspend fun newUserVerifyCode(@Path("authCodeId") authCodeId: java.util.UUID, @Body verifyCodeRequest: VerifyCodeRequest): Response<NewUserVerifyCodeResponse>
+    suspend fun newUserVerifyCode(
+        @Path("authCodeId") authCodeId: java.util.UUID,
+        @Body verifyCodeRequest: VerifyCodeRequest
+    ): Response<NewUserVerifyCodeResponse>
 
     /**
      * 액세스 토큰 갱신
@@ -58,7 +62,7 @@ interface AuthApi {
      *  - 401: 리프레시 토큰 만료
      *  - 500: 서버 오류
      *
-     * @param refreshTokenRequest 
+     * @param refreshTokenRequest
      * @return [TokenResponse]
      */
     @POST("auth/token/refresh")
@@ -72,10 +76,13 @@ interface AuthApi {
      *  - 400: 잘못된 요청
      *
      * @param xOSType 사용자의 OS 유형 (IOS 또는 AOS)
-     * @param sendAuthCodeRequest 
+     * @param sendAuthCodeRequest
      * @return [SendAuthCodeResponse]
      */
     @POST("auth/codes")
-    suspend fun requestVerification(@Header("X-OS-Type") xOSType: OSType, @Body sendAuthCodeRequest: SendAuthCodeRequest): Response<SendAuthCodeResponse>
+    suspend fun requestVerification(
+        @Header("X-OS-Type") xOSType: OSType,
+        @Body sendAuthCodeRequest: SendAuthCodeRequest
+    ): Response<SendAuthCodeResponse>
 
 }

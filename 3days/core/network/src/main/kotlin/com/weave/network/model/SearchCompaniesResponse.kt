@@ -15,19 +15,17 @@
 
 package com.weave.network.model
 
-import com.weave.network.model.Company
-
 import com.google.gson.annotations.SerializedName
 
 /**
- * 
  *
- * @param companies 
+ *
+ * @param companies
  * @param next 다음 페이지를 위한 키, 더 이상 결과가 없으면 null
  */
 
 
-data class SearchCompaniesResponse (
+data class SearchCompaniesResponse(
 
     @SerializedName("companies")
     val companies: kotlin.collections.List<Company>,
