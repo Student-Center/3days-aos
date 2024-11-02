@@ -18,4 +18,5 @@ class MyProfileSharedViewModel @Inject constructor(
     var genderState by mutableStateOf(Gender.EMPTY)
     val birthYear = mutableStateListOf("", "", "", "")
     var company: Company? = null
+    var isMatchSameCompany: Boolean? = null
 }

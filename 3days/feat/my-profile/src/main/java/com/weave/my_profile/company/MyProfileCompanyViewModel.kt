@@ -45,6 +45,7 @@ data class CompanyState(
 sealed class CompanyEffect : UIEffect {
     data object NavigateToNextScreen : CompanyEffect()
     data class ShowToast(val message: String, val type: SnackBarType) : CompanyEffect()
+    data object ShowBottomSheet : CompanyEffect()
 }
 
 @HiltViewModel
@@ -74,7 +75,7 @@ class MyProfileCompanyViewModel @Inject constructor(
 
     private fun validateInput() {
         if (uiState.isChecked || uiState.selectedCompany != null) {
-            setEffect { CompanyEffect.NavigateToNextScreen }
+            setEffect { CompanyEffect.ShowBottomSheet }
         } else {
             setState { copy(errorMessage = context.getString(R.string.my_profile_company_not_selected_error_message)) }
             setEffect {
