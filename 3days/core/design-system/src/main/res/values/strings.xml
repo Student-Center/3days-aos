@@ -94,4 +94,8 @@
     <string name="my_profile_occupation_sub_title">좋아요, 조금만 더 알려주세요!</string>
     <string name="my_profile_occupation_title">재직 중인 회사에서\n당신의 직군은 무엇인가요?</string>
     <string name="my_profile_occupation_not_selected_error_message">내 직군을 선택해 주세요</string>
+
+    <string name="my_profile_location_sub_title">설레는 만남이 다가오고 있어요.</string>
+    <string name="my_profile_location_title">당신의 활동 지역은 어디인가요?</string>
+    <string name="my_profile_location_not_selected_error_message">내 활동 지역을 선택해 주세요</string>
 </resources>
