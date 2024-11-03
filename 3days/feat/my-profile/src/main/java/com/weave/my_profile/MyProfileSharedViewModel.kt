@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.weave.design_system.component.Gender
 import com.weave.model.domain.myprofile.Company
 import com.weave.model.domain.myprofile.JobOccupation
+import com.weave.model.domain.myprofile.Location
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -21,4 +22,5 @@ class MyProfileSharedViewModel @Inject constructor(
     var company: Company? = null
     var isMatchSameCompany: Boolean? = null
     var occupation: JobOccupation? = null
+    var locations: List<Location> = listOf()
 }
