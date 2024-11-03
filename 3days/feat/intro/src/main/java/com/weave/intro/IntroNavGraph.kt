@@ -27,7 +27,9 @@ enum class Route(val routeName: String) {
 fun NavGraphBuilder.navGraphIntro(navController: NavController) {
     navigation(startDestination = Route.Welcome.routeName, route = Route.Intro.routeName) {
         composable(Route.Welcome.routeName) {
-            IntroScreen(onClicked = { navController.navigate(Route.MobileSendAuth.routeName) })
+            // 개발 편의를 위한 주석 처리
+//            IntroScreen(onClicked = { navController.navigate(Route.MobileSendAuth.routeName) })
+            IntroScreen(onClicked = { navController.navigate(Route.MyProfile.withArgs("Test Register Token")) })
         }
 
         composable(Route.MobileSendAuth.routeName) {
