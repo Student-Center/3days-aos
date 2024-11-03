@@ -133,6 +133,13 @@ class MyProfileLocationViewModel @Inject constructor(
                     if (uiState.locations.isNotEmpty()) setAction(
                         LocationAction.SelectRegionName(uiState.locations[0].regionName)
                     )
+                } else if (!isLoading) {
+                    setEffect {
+                        LocationEffect.ShowToast(
+                            message = context.getString(R.string.my_profile_location_fetch_data_failure_message),
+                            type = SnackBarType.ERROR
+                        )
+                    }
                 }
             }
         }
@@ -153,6 +160,13 @@ class MyProfileLocationViewModel @Inject constructor(
                     }
 
                     setState { copy(locations = updatedLocations) }
+                } else if (!isLoading) {
+                    setEffect {
+                        LocationEffect.ShowToast(
+                            message = context.getString(R.string.my_profile_location_fetch_data_failure_message),
+                            type = SnackBarType.ERROR
+                        )
+                    }
                 }
             }
         }
