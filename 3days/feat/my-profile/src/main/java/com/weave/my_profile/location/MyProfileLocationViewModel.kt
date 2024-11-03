@@ -114,8 +114,12 @@ class MyProfileLocationViewModel @Inject constructor(
         setState { copy(selectedLocations = newLocations) }
     }
 
-    private fun selectRegionName(regionName: String) = setState {
-        copy(selectedRegionName = regionName)
+    private fun selectRegionName(regionName: String) {
+        setState {
+            copy(selectedRegionName = regionName)
+        }
+
+        if (regionName.isNotBlank()) setAction(LocationAction.GetLocations(regionName))
     }
 
     private fun getRegions() {
@@ -127,9 +131,7 @@ class MyProfileLocationViewModel @Inject constructor(
                     setState { copy(locations = regions.map { region -> MyProfileLocation(region) }) }
 
                     if (uiState.locations.isNotEmpty()) setAction(
-                        LocationAction.GetLocations(
-                            uiState.locations[0].regionName
-                        )
+                        LocationAction.SelectRegionName(uiState.locations[0].regionName)
                     )
                 }
             }

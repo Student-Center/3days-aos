@@ -175,7 +175,6 @@ fun MyProfileLocationScreen(
                     onClickLocation = { viewModel.setAction(LocationAction.SelectLocation(it)) },
                     onClickRegionName = {
                         viewModel.setAction(LocationAction.SelectRegionName(it))
-                        viewModel.setAction(LocationAction.GetLocations(it))
                     },
                 )
             }
