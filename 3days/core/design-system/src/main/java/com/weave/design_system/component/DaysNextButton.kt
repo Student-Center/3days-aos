@@ -42,6 +42,9 @@ fun DaysNextButton(
         BtnType.Short -> 68.dp
     }
 
+    val transparentGradient = listOf(Color.Transparent, Color.Transparent)
+    val transparentBrush = Brush.horizontalGradient(transparentGradient)
+
     val colors = if (useGradient.isEmpty() || !isEnabled) {
         ButtonColors(
             containerColor = if (isEnabled) DaysTheme.colors.grey500 else DaysTheme.colors.grey100,
@@ -64,12 +67,9 @@ fun DaysNextButton(
             .fillMaxWidth()
             .height(buttonHeight)
             .background(
-                brush = Brush.horizontalGradient(useGradient.ifEmpty {
-                    listOf(
-                        Color.Transparent,
-                        Color.Transparent
-                    )
-                }),
+                brush = if (useGradient.isEmpty()) transparentBrush else Brush.horizontalGradient(
+                    useGradient
+                ),
                 shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
             )
     ) {
