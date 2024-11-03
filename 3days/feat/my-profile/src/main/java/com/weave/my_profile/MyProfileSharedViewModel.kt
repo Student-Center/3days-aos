@@ -23,4 +23,5 @@ class MyProfileSharedViewModel @Inject constructor(
     var isMatchSameCompany: Boolean? = null
     var occupation: JobOccupation? = null
     var locations: List<Location> = listOf()
+    var nickname: String = ""
 }
