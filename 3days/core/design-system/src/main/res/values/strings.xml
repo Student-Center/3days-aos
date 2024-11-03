@@ -99,4 +99,8 @@
     <string name="my_profile_location_title">당신의 활동 지역은 어디인가요?</string>
     <string name="my_profile_location_not_selected_error_message">내 활동 지역을 선택해 주세요</string>
     <string name="my_profile_location_fetch_data_failure_message">지역 정보 조회에 실패했습니다</string>
+
+    <string name="my_profile_nick_sub_title">이제 마지막이예요.</string>
+    <string name="my_profile_nick_title">당신의 이름은 무엇인가요?</string>
+    <string name="my_profile_nick_not_input_error_message">이름을 입력해 주세요</string>
 </resources>
