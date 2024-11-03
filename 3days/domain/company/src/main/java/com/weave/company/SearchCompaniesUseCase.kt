@@ -1,4 +1,4 @@
-package com.moon.company
+package com.weave.company
 
 import com.weave.domain.repository.CompanyRepository
 import com.weave.model.domain.myprofile.Company

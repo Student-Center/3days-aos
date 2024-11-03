@@ -4,6 +4,8 @@ import com.weave.data.datasource.AuthRemoteDataSource
 import com.weave.data.datasource.AuthRemoteDataSourceImpl
 import com.weave.data.datasource.CompanyRemoteDataSource
 import com.weave.data.datasource.CompanyRemoteDataSourceImpl
+import com.weave.data.datasource.LocationRemoteDataSource
+import com.weave.data.datasource.LocationRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -21,4 +23,8 @@ abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindsCompanyDataSource(impl: CompanyRemoteDataSourceImpl): CompanyRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindsLocationDataSource(impl: LocationRemoteDataSourceImpl): LocationRemoteDataSource
 }

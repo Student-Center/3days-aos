@@ -15,6 +15,7 @@ import com.weave.my_profile.birth.MyProfileBirthYearScreen
 import com.weave.my_profile.company.MyProfileCompanyScreen
 import com.weave.my_profile.gender.MyProfileGenderScreen
 import com.weave.my_profile.init.MyProfileInitScreen
+import com.weave.my_profile.location.MyProfileLocationScreen
 import com.weave.my_profile.occupation.MyProfileOccupationScreen
 import com.weave.utils.navigation.navigateWithClearBackStack
 
@@ -25,6 +26,7 @@ enum class Route(val routeName: String) {
     MyProfileBirth("my_profile_birth"),
     MyProfileCompany("my_profile_company"),
     MyProfileOccupation("my_profile_occupation"),
+    MyProfileLocation("my_profile_location"),
     NextScreen("next_screen");
 
     fun withArgs(vararg args: String): String {
@@ -82,8 +84,13 @@ fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
                     )
                 },
                 onNextBtnClicked = {
+                    // 개발 편의를 위한 주석 처리
+//                    navController.navigateWithClearBackStack(
+//                        Route.MyProfileBirth.routeName,
+//                        Route.MyProfileInit.withArgs(registerToken)
+//                    )
                     navController.navigateWithClearBackStack(
-                        Route.MyProfileBirth.routeName,
+                        Route.MyProfileLocation.routeName,
                         Route.MyProfileInit.withArgs(registerToken)
                     )
                 }
@@ -149,8 +156,30 @@ fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
                 },
                 onNextBtnClicked = {
                     navController.navigateWithClearBackStack(
-                        Route.NextScreen.routeName,
+                        Route.MyProfileLocation.routeName,
                         Route.MyProfileCompany.routeName
+                    )
+                }
+            )
+        }
+
+        composable(Route.MyProfileLocation.routeName) {
+            val sharedViewModel =
+                it.sharedViewModel<MyProfileSharedViewModel>(navController = navController)
+
+            MyProfileLocationScreen(
+                sharedViewModel = sharedViewModel,
+                onBackBtnClicked = {
+                    navController.navigateWithClearBackStack(
+                        Route.MyProfileOccupation.routeName,
+                        Route.MyProfileLocation.routeName,
+                        launchSingleTop = true
+                    )
+                },
+                onNextBtnClicked = {
+                    navController.navigateWithClearBackStack(
+                        Route.NextScreen.routeName,
+                        Route.MyProfileOccupation.routeName
                     )
                 }
             )
