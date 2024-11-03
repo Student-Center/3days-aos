@@ -1,5 +1,6 @@
 package com.weave.design_system.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,15 +11,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.weave.design_system.DaysTheme
-import com.weave.design_system.R
 import com.weave.utils.Keyboard
 
 enum class BtnType {
@@ -30,6 +32,7 @@ fun DaysNextButton(
     modifier: Modifier = Modifier,
     message: String = "다음",
     type: BtnType = BtnType.Tall,
+    useGradient: List<Color> = listOf(),
     isEnabled: Boolean = false,
     onDisabledClick: () -> Unit = {},
     onEnabledClick: () -> Unit
@@ -39,21 +42,36 @@ fun DaysNextButton(
         BtnType.Short -> 68.dp
     }
 
+    val colors = if (useGradient.isEmpty() || !isEnabled) {
+        ButtonColors(
+            containerColor = if (isEnabled) DaysTheme.colors.grey500 else DaysTheme.colors.grey100,
+            contentColor = if (isEnabled) DaysTheme.colors.white else DaysTheme.colors.white,
+            disabledContainerColor = DaysTheme.colors.grey100,
+            disabledContentColor = DaysTheme.colors.white,
+        )
+    } else {
+        ButtonDefaults.buttonColors().copy(containerColor = Color.Transparent)
+    }
+
     Button(
         onClick = {
             if (isEnabled) onEnabledClick() else onDisabledClick()
         },
         enabled = true,
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
-        colors = ButtonColors(
-            containerColor = if (isEnabled) DaysTheme.colors.grey500 else DaysTheme.colors.grey100,
-            contentColor = if (isEnabled) DaysTheme.colors.white else DaysTheme.colors.white,
-            disabledContainerColor = DaysTheme.colors.grey100,
-            disabledContentColor = DaysTheme.colors.white,
-        ),
+        colors = colors,
         modifier = modifier
             .fillMaxWidth()
             .height(buttonHeight)
+            .background(
+                brush = Brush.horizontalGradient(useGradient.ifEmpty {
+                    listOf(
+                        Color.Transparent,
+                        Color.Transparent
+                    )
+                }),
+                shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
+            )
     ) {
         Text(
             text = message,
@@ -68,7 +86,9 @@ fun NextButton(
     modifier: Modifier = Modifier,
     isKeyboardVisible: Keyboard,
     isEnabled: Boolean,
+    message: String = "다음",
     padding: PaddingValues,
+    useGradient: List<Color> = listOf(),
     onClick: () -> Unit
 ) {
     Box(
@@ -82,8 +102,9 @@ fun NextButton(
                 .padding(
                     bottom = if (isKeyboardVisible == Keyboard.Closed) padding.calculateBottomPadding() else 0.dp
                 ),
-            message = stringResource(id = R.string.next_button_message),
+            message = message,
             type = if (isKeyboardVisible == Keyboard.Opened) BtnType.Short else BtnType.Tall,
+            useGradient = useGradient,
             isEnabled = isEnabled,
             onEnabledClick = onClick,
             onDisabledClick = onClick
