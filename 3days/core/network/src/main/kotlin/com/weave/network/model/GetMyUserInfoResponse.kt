@@ -24,6 +24,7 @@ import com.google.gson.annotations.SerializedName
  * @param phoneNumber 사용자의 전화번호 (한국 휴대폰 번호 형식)
  * @param profile
  * @param desiredPartner
+ * @param profileWidgets
  * @param id 사용자 식별자
  */
 
@@ -43,6 +44,9 @@ data class GetMyUserInfoResponse(
 
     @SerializedName("desiredPartner")
     val desiredPartner: UserDesiredPartner,
+
+    @SerializedName("profileWidgets")
+    val profileWidgets: kotlin.collections.List<ProfileWidget>,
 
     /* 사용자 식별자 */
     @SerializedName("id")

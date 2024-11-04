@@ -23,6 +23,7 @@ import com.google.gson.annotations.SerializedName
  * @param birthYearRange
  * @param jobOccupations
  * @param preferDistance
+ * @param allowSameCompany 같은 회사에 근무하는 파트너를 허용하는지 여부 (companyID가 없을 경우 null)
  */
 
 
@@ -35,7 +36,11 @@ data class UserDesiredPartner(
     val jobOccupations: kotlin.collections.List<JobOccupation>,
 
     @SerializedName("preferDistance")
-    val preferDistance: PreferDistance
+    val preferDistance: PreferDistance,
+
+    /* 같은 회사에 근무하는 파트너를 허용하는지 여부 (companyID가 없을 경우 null) */
+    @SerializedName("allowSameCompany")
+    val allowSameCompany: kotlin.Boolean? = null
 
 ) {
 

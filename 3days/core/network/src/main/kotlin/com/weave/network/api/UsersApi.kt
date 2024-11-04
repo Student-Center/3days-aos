@@ -1,6 +1,7 @@
 package com.weave.network.api
 
 import com.weave.network.model.GetMyUserInfoResponse
+import com.weave.network.model.ProfileWidget
 import com.weave.network.model.RegisterUserRequest
 import com.weave.network.model.TokenResponse
 import retrofit2.Response
@@ -8,6 +9,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 
 interface UsersApi {
     /**
@@ -22,6 +24,21 @@ interface UsersApi {
      */
     @GET("users/my")
     suspend fun getMyUserInfo(): Response<GetMyUserInfoResponse>
+
+    /**
+     * 프로필 위젯 추가 및 수정
+     * 현재 사용자의 프로필 위젯을 추가 및 수정합니다.
+     * Responses:
+     *  - 200: 프로필 위젯 추가/수정 성공
+     *  - 400: 잘못된 요청
+     *  - 401: 인증 실패 (토큰 만료 또는 유효하지 않은 토큰)
+     *  - 500: 서버 오류
+     *
+     * @param body
+     * @return [ProfileWidget]
+     */
+    @PUT("users/profileWidgets")
+    suspend fun putProfileWidget(@Body body: ProfileWidget): Response<ProfileWidget>
 
     /**
      * 회원 가입

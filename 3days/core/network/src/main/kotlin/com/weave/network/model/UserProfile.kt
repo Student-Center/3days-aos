@@ -22,9 +22,9 @@ import com.google.gson.annotations.SerializedName
  *
  * @param gender
  * @param birthYear 사용자의 출생년도
- * @param companyId 사용자의 회사 ID
  * @param jobOccupation
  * @param locationIds 사용자의 활동 지역 목록 ID 리스트
+ * @param companyId 사용자의 회사 ID
  */
 
 
@@ -37,16 +37,16 @@ data class UserProfile(
     @SerializedName("birthYear")
     val birthYear: kotlin.Int,
 
-    /* 사용자의 회사 ID */
-    @SerializedName("companyId")
-    val companyId: java.util.UUID,
-
     @SerializedName("jobOccupation")
     val jobOccupation: JobOccupation,
 
     /* 사용자의 활동 지역 목록 ID 리스트 */
     @SerializedName("locationIds")
-    val locationIds: kotlin.collections.List<java.util.UUID>
+    val locationIds: kotlin.collections.List<java.util.UUID>,
+
+    /* 사용자의 회사 ID */
+    @SerializedName("companyId")
+    val companyId: java.util.UUID? = null
 
 ) {
 
