@@ -27,6 +27,8 @@ src/main/kotlin/com/weave/network/model/Location.kt
 src/main/kotlin/com/weave/network/model/NewUserVerifyCodeResponse.kt
 src/main/kotlin/com/weave/network/model/OSType.kt
 src/main/kotlin/com/weave/network/model/PreferDistance.kt
+src/main/kotlin/com/weave/network/model/ProfileWidget.kt
+src/main/kotlin/com/weave/network/model/ProfileWidgetType.kt
 src/main/kotlin/com/weave/network/model/RefreshTokenRequest.kt
 src/main/kotlin/com/weave/network/model/RegisterUserRequest.kt
 src/main/kotlin/com/weave/network/model/SearchCompaniesResponse.kt
