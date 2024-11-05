@@ -46,13 +46,11 @@ fun Picker(
 ) {
     val visibleItemsMiddle = visibleItemsCount / 2
 
-    val newItems = items.toMutableList()
-    newItems.add(0, "상관없어요")
-    repeat(visibleItemsMiddle) {
-        newItems.add(0, "")
-    }
-    repeat(visibleItemsMiddle) {
-        newItems.add("")
+    val newItems = buildList {
+        addAll(List(visibleItemsMiddle) { "" })
+        add("상관없어요")
+        addAll(items)
+        addAll(List(visibleItemsMiddle) { "" })
     }
 
     fun getItem(index: Int) = newItems[index % newItems.size]
