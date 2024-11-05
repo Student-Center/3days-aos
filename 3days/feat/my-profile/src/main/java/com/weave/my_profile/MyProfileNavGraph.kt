@@ -184,7 +184,7 @@ fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
                 },
                 onNextBtnClicked = {
                     navController.navigateWithClearBackStack(
-                        Route.NextScreen.routeName,
+                        Route.MyProfileNickName.routeName,
                         Route.MyProfileOccupation.routeName
                     )
                 }

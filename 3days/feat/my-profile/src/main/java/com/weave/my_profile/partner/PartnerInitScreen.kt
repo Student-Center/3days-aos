@@ -27,9 +27,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.weave.design_system.DaysTheme
 import com.weave.design_system.component.DaysOnlyBackAppbar
-import com.weave.design_system.R as design
 import com.weave.my_profile.R
 import kotlinx.coroutines.delay
+import com.weave.design_system.R as design
 
 @Composable
 fun PartnerInitScreen(
