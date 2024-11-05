@@ -85,7 +85,7 @@ fun PartnerInitScreen(
                 Image(
                     modifier = Modifier.size(48.dp),
                     painter = painterResource(id = R.drawable.ic_heart_with_arrow),
-                    contentDescription = ""
+                    contentDescription = "Heart With Arrow Logo"
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
