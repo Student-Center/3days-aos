@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -20,7 +21,8 @@ import com.weave.design_system.DaysTheme
 fun DaysStepIndicator(
     modifier: Modifier = Modifier,
     currentStep: Int,
-    totalStep: Int
+    totalStep: Int,
+    pointColor: Color = DaysTheme.colors.blue300
 ) {
     Box(
         modifier = modifier
@@ -34,7 +36,7 @@ fun DaysStepIndicator(
     ) {
         Text(
             text = buildAnnotatedString {
-                withStyle(style = SpanStyle(color = DaysTheme.colors.blue300)) {
+                withStyle(style = SpanStyle(color = pointColor)) {
                     append(currentStep.toString())
                 }
                 withStyle(style = SpanStyle(color = DaysTheme.colors.grey300)) {
