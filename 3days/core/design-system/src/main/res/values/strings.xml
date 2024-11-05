@@ -103,4 +103,9 @@
     <string name="my_profile_nick_sub_title">이제 마지막이예요.</string>
     <string name="my_profile_nick_title">당신의 이름은 무엇인가요?</string>
     <string name="my_profile_nick_not_input_error_message">이름을 입력해 주세요</string>
+
+    <string name="partner_init_title">이제 당신의 취향을 알고 싶어요!\n어떤 상대를 만나면 좋을 지 알려주세요.</string>
+
+    <string name="partner_age_sub_title">연상, 동갑, 연하... 최대한 맞춰줄게요!</string>
+    <string name="partner_age_title">상대의 나이대는\n어느 정도가 좋을까요?</string>
 </resources>

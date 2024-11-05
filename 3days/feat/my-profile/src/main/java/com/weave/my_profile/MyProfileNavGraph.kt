@@ -18,6 +18,8 @@ import com.weave.my_profile.init.MyProfileInitScreen
 import com.weave.my_profile.location.MyProfileLocationScreen
 import com.weave.my_profile.nick.MyProfileNickScreen
 import com.weave.my_profile.occupation.MyProfileOccupationScreen
+import com.weave.my_profile.partner.PartnerInitScreen
+import com.weave.my_profile.partner.age.PartnerAgeScreen
 import com.weave.utils.navigation.navigateWithClearBackStack
 
 enum class Route(val routeName: String) {
@@ -29,6 +31,8 @@ enum class Route(val routeName: String) {
     MyProfileOccupation("my_profile_occupation"),
     MyProfileLocation("my_profile_location"),
     MyProfileNickName("my_profile_nick"),
+    PartnerInit("partner_init"),
+    PartnerAge("partner_age"),
     NextScreen("next_screen");
 
     fun withArgs(vararg args: String): String {
@@ -92,7 +96,7 @@ fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
 //                        Route.MyProfileInit.withArgs(registerToken)
 //                    )
                     navController.navigateWithClearBackStack(
-                        Route.MyProfileNickName.routeName,
+                        Route.PartnerInit.routeName,
                         Route.MyProfileInit.withArgs(registerToken)
                     )
                 }
@@ -192,7 +196,7 @@ fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
                 it.sharedViewModel<MyProfileSharedViewModel>(navController = navController)
 
             MyProfileNickScreen(
-//                sharedViewModel = sharedViewModel,
+                sharedViewModel = sharedViewModel,
                 onBackBtnClicked = {
                     navController.navigateWithClearBackStack(
                         Route.MyProfileLocation.routeName,
@@ -202,12 +206,53 @@ fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
                 },
                 onNextBtnClicked = {
                     navController.navigateWithClearBackStack(
-                        Route.NextScreen.routeName,
+                        Route.PartnerInit.routeName,
                         Route.MyProfileLocation.routeName
                     )
                 }
             )
         }
+
+        composable(Route.PartnerInit.routeName) {
+            PartnerInitScreen(
+                onBackBtnClicked = {
+                    navController.navigateWithClearBackStack(
+                        Route.MyProfileNickName.routeName,
+                        Route.PartnerInit.routeName,
+                        launchSingleTop = true
+                    )
+                },
+                onNextBtnClicked = {
+                    navController.navigateWithClearBackStack(
+                        Route.PartnerAge.routeName,
+                        Route.MyProfileNickName.routeName
+                    )
+                }
+            )
+        }
+
+        composable(Route.PartnerAge.routeName) {
+            val sharedViewModel =
+                it.sharedViewModel<MyProfileSharedViewModel>(navController = navController)
+
+            PartnerAgeScreen(
+                sharedViewModel = sharedViewModel,
+                onBackBtnClicked = {
+                    navController.navigateWithClearBackStack(
+                        Route.PartnerInit.routeName,
+                        Route.PartnerAge.routeName,
+                        launchSingleTop = true
+                    )
+                },
+                onNextBtnClicked = {
+                    navController.navigateWithClearBackStack(
+                        Route.NextScreen.routeName,
+                        Route.PartnerInit.routeName
+                    )
+                }
+            )
+        }
+
     }
 }
 

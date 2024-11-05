@@ -16,12 +16,14 @@ import javax.inject.Inject
 class MyProfileSharedViewModel @Inject constructor(
 
 ) : ViewModel() {
-    var registerToken by mutableStateOf("")
-    var genderState by mutableStateOf(Gender.EMPTY)
-    val birthYear = mutableStateListOf("", "", "", "")
+    var registerToken: String = ""
+    var genderState : Gender = Gender.EMPTY
+    val birthYear = mutableListOf("", "", "", "")
     var company: Company? = null
     var isMatchSameCompany: Boolean? = null
     var occupation: JobOccupation? = null
     var locations: List<Location> = listOf()
     var nickname: String = ""
+    var upperAge: Int? = null
+    var underAge: Int? = null
 }
