@@ -69,7 +69,7 @@ fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
                 onNextBtnClicked = {
                     navController.navigateWithClearBackStack(
                         Route.MyProfileGender.withArgs(registerToken, mobileNum),
-                        Route.MyProfile.withArgs(registerToken)
+                        Route.MyProfile.withArgs(registerToken, mobileNum)
                     )
                 },
             )
