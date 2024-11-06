@@ -14,11 +14,14 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 sealed class OccupationAction : UIAction {
+    data class FetchOccupation(val occupations: List<JobOccupation>) : OccupationAction()
     data class SelectOccupation(val occupation: JobOccupation) : OccupationAction()
     data object ValidateOccupationState : OccupationAction()
 }
 
 sealed class OccupationIntent : UIIntent {
+    data class FetchOccupation(val occupations: List<JobOccupation>) : OccupationIntent()
+
     data class SelectOccupation(val occupation: JobOccupation) : OccupationIntent()
     data object ValidateOccupationState : OccupationIntent()
 }
@@ -41,6 +44,7 @@ class PartnerOccupationViewModel @Inject constructor(
 ) {
     override fun actionPredicate(action: OccupationAction): OccupationIntent {
         return when (action) {
+            is OccupationAction.FetchOccupation -> OccupationIntent.FetchOccupation(action.occupations)
             is OccupationAction.SelectOccupation -> OccupationIntent.SelectOccupation(action.occupation)
             is OccupationAction.ValidateOccupationState -> OccupationIntent.ValidateOccupationState
         }
@@ -48,10 +52,14 @@ class PartnerOccupationViewModel @Inject constructor(
 
     override fun collectIntent(intent: OccupationIntent) {
         when (intent) {
+            is OccupationIntent.FetchOccupation -> fetchOccupations(intent.occupations)
             is OccupationIntent.SelectOccupation -> selectOccupation(intent.occupation)
             is OccupationIntent.ValidateOccupationState -> validateOccupationState()
         }
     }
+
+    private fun fetchOccupations(occupations: List<JobOccupation>) =
+        setState { copy(selectedOccupations = occupations) }
 
     private fun selectOccupation(occupation: JobOccupation) {
         val newList = uiState.selectedOccupations.toMutableList()

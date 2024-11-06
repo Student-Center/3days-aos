@@ -60,13 +60,7 @@ fun PartnerOccupationScreen(
     val uiState = viewModel.uiState
 
     LaunchedEffect(Unit) {
-        if(sharedViewModel.partnerOccupations.isNotEmpty()){
-            sharedViewModel.partnerOccupations.forEach {
-                viewModel.setAction(
-                    OccupationAction.SelectOccupation(it)
-                )
-            }
-        }
+        viewModel.setAction(OccupationAction.FetchOccupation(sharedViewModel.partnerOccupations))
     }
 
     LaunchedEffect(uiState) {
