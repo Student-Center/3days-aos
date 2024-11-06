@@ -108,4 +108,9 @@
 
     <string name="partner_age_sub_title">연상, 동갑, 연하... 최대한 맞춰줄게요!</string>
     <string name="partner_age_title">상대의 나이대는\n어느 정도가 좋을까요?</string>
+
+    <string name="partner_occupation_sub_title">연인이 되었을 때의 모습을 상상해 보세요.</string>
+    <string name="partner_occupation_title">상대는 어떤 직군이라면 좋을까요?</string>
+    <string name="partner_occupation_not_selected_error_message">상대 직군을 선택해 주세요</string>
+
 </resources>

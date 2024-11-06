@@ -20,6 +20,7 @@ import com.weave.my_profile.nick.MyProfileNickScreen
 import com.weave.my_profile.occupation.MyProfileOccupationScreen
 import com.weave.my_profile.partner.PartnerInitScreen
 import com.weave.my_profile.partner.age.PartnerAgeScreen
+import com.weave.my_profile.partner.occupation.PartnerOccupationScreen
 import com.weave.utils.navigation.navigateWithClearBackStack
 
 enum class Route(val routeName: String) {
@@ -33,6 +34,7 @@ enum class Route(val routeName: String) {
     MyProfileNickName("my_profile_nick"),
     PartnerInit("partner_init"),
     PartnerAge("partner_age"),
+    PartnerOccupation("partner_occupation"),
     NextScreen("next_screen");
 
     fun withArgs(vararg args: String): String {
@@ -96,7 +98,7 @@ fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
 //                        Route.MyProfileInit.withArgs(registerToken)
 //                    )
                     navController.navigateWithClearBackStack(
-                        Route.PartnerInit.routeName,
+                        Route.PartnerAge.routeName,
                         Route.MyProfileInit.withArgs(registerToken)
                     )
                 }
@@ -246,8 +248,30 @@ fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
                 },
                 onNextBtnClicked = {
                     navController.navigateWithClearBackStack(
-                        Route.NextScreen.routeName,
+                        Route.PartnerOccupation.routeName,
                         Route.PartnerInit.routeName
+                    )
+                }
+            )
+        }
+
+        composable(Route.PartnerOccupation.routeName) {
+            val sharedViewModel =
+                it.sharedViewModel<MyProfileSharedViewModel>(navController = navController)
+
+            PartnerOccupationScreen(
+                sharedViewModel = sharedViewModel,
+                onBackBtnClicked = {
+                    navController.navigateWithClearBackStack(
+                        Route.PartnerAge.routeName,
+                        Route.PartnerOccupation.routeName,
+                        launchSingleTop = true
+                    )
+                },
+                onNextBtnClicked = {
+                    navController.navigateWithClearBackStack(
+                        Route.NextScreen.routeName,
+                        Route.PartnerAge.routeName
                     )
                 }
             )

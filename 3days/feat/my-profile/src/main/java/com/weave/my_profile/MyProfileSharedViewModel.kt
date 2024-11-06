@@ -22,4 +22,5 @@ class MyProfileSharedViewModel @Inject constructor(
     var nickname: String = ""
     var upperAge: Int? = null
     var underAge: Int? = null
+    var partnerOccupations: List<JobOccupation> = listOf()
 }
