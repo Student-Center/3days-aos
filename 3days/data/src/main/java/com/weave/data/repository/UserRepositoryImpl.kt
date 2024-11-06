@@ -8,10 +8,8 @@ import com.weave.domain.repository.UserRepository
 import com.weave.model.auth.AuthToken
 import com.weave.model.domain.user.MyInfo
 import com.weave.model.domain.user.ProfileWidget
-import com.weave.model.domain.user.UserDesiredPartner
-import com.weave.model.domain.user.UserProfile
+import com.weave.model.domain.user.RegisterInfo
 import com.weave.model.network.NetworkResult
-import com.weave.network.model.RegisterUserRequest
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -36,20 +34,12 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun registerUser(
         xRegisterToken: String,
-        name: String,
-        phoneNumber: String,
-        profile: UserProfile,
-        desiredPartner: UserDesiredPartner
+        registerInfo: RegisterInfo,
     ): Flow<NetworkResult<AuthToken>> = handleNetworkCall(
         networkCall = {
             dataSource.registerUser(
                 xRegisterToken = xRegisterToken,
-                registerUserRequest = RegisterUserRequest(
-                    name = name,
-                    phoneNumber = phoneNumber,
-                    profile = profile.toDTO,
-                    desiredPartner = desiredPartner.toDTO
-                )
+                registerUserRequest = registerInfo.toDTO
             )
         },
         mapToDomain = {

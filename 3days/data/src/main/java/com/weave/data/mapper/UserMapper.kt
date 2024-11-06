@@ -1,6 +1,7 @@
 package com.weave.data.mapper
 
 import com.weave.model.domain.user.MyInfo
+import com.weave.model.domain.user.RegisterInfo
 import com.weave.network.model.BirthYearRange
 import com.weave.network.model.Gender
 import com.weave.network.model.GetMyUserInfoResponse
@@ -8,6 +9,7 @@ import com.weave.network.model.JobOccupation
 import com.weave.network.model.PreferDistance
 import com.weave.network.model.ProfileWidget
 import com.weave.network.model.ProfileWidgetType
+import com.weave.network.model.RegisterUserRequest
 import com.weave.network.model.UserDesiredPartner
 import com.weave.network.model.UserProfile
 
@@ -65,6 +67,14 @@ val ProfileWidget.toDomain
 val ProfileWidgetType.toDomain
     get() = com.weave.model.domain.user.ProfileWidgetType.entries.find { it.value == this.value }
         ?: com.weave.model.domain.user.ProfileWidgetType.HOBBY
+
+val RegisterInfo.toDTO
+    get() = RegisterUserRequest(
+        name = name,
+        phoneNumber = phoneNumber,
+        profile = profile.toDTO,
+        desiredPartner = desiredPartner.toDTO
+    )
 
 val MyInfo.toDTO
     get() = GetMyUserInfoResponse(
