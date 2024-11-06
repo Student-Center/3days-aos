@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -42,6 +43,7 @@ import com.weave.design_system.extension.noRippleClickable
 import com.weave.model.domain.myprofile.Location
 import com.weave.model.enum.PreferDistance
 import com.weave.my_profile.MyProfileSharedViewModel
+import com.weave.design_system.R as design
 import com.weave.utils.Keyboard
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -171,8 +173,7 @@ private fun PartnerDistanceHeader() {
     Spacer(modifier = Modifier.height(20.dp))
 
     Text(
-//        text = stringResource(id = R.string.partner_distance_sub_title),
-        text = "연인이 되었을 때의 모습을 상상해 보세요.",
+        text = stringResource(id = design.string.partner_distance_sub_title),
         style = DaysTheme.typography.regular14.toTextStyle(),
         color = DaysTheme.colors.grey200
     )
@@ -180,8 +181,7 @@ private fun PartnerDistanceHeader() {
     Spacer(modifier = Modifier.height(4.dp))
 
     Text(
-//        text = stringResource(id = R.string.partner_distance_title),
-        text = "상대와의 거리는\n어느 정도가 좋을까요?",
+        text = stringResource(id = design.string.partner_distance_title),
         style = DaysTheme.typography.semiBold24.toTextStyle(),
         color = DaysTheme.colors.grey500
     )
