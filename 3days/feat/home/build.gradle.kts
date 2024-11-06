@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.weave.my_profile"
+    namespace = "com.weave.home"
     compileSdk = 34
 
     defaultConfig {
@@ -44,8 +44,6 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:utils"))
     implementation(project(":core:design-system"))
-    implementation(project(":domain:company"))
-    implementation(project(":domain:location"))
     implementation(project(":domain:user"))
 
     implementation(libs.bundles.compose)

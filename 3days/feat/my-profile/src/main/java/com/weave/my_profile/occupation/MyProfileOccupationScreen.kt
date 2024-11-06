@@ -67,7 +67,7 @@ fun MyProfileOccupationScreen(
         }
     }
 
-    LaunchedEffect(uiState) {
+    LaunchedEffect(viewModel.uiEffect) {
         viewModel.uiEffect.collect { effect ->
             when (effect) {
                 is OccupationEffect.NavigateToNextScreen -> {

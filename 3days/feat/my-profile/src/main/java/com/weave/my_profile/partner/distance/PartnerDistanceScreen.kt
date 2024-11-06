@@ -43,11 +43,11 @@ import com.weave.design_system.extension.noRippleClickable
 import com.weave.model.domain.myprofile.Location
 import com.weave.model.enum.PreferDistance
 import com.weave.my_profile.MyProfileSharedViewModel
-import com.weave.design_system.R as design
 import com.weave.utils.Keyboard
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.UUID
+import com.weave.design_system.R as design
 
 
 @Composable
@@ -68,10 +68,22 @@ fun PartnerDistanceScreen(
     }
 
     LaunchedEffect(uiState) {
+        if (uiState.isValidated) {
+            sharedViewModel.distance = uiState.distance
+
+            viewModel.setAction(
+                PartnerDistanceAction.RegisterUser(
+                    sharedViewModel.registerToken,
+                    sharedViewModel.getRegisterInfo()
+                )
+            )
+        }
+    }
+
+    LaunchedEffect(viewModel.uiEffect) {
         viewModel.uiEffect.collect { effect ->
             when (effect) {
                 is PartnerDistanceEffect.NavigateToNextScreen -> {
-                    sharedViewModel.distance = uiState.distance
                     onNextBtnClicked()
                 }
 

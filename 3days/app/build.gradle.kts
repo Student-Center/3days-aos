@@ -97,4 +97,5 @@ dependencies {
 
     implementation(project(":feat:intro"))
     implementation(project(":feat:my-profile"))
+    implementation(project(":feat:home"))
 }

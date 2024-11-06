@@ -1,5 +1,6 @@
 package com.weave.a3days
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -7,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.weave.intro.navGraphIntro
 import com.weave.my_profile.navGraphMyProfile
+import com.weave.navGraphHome
 
 enum class Route(val routeName: String) {
     Splash("splash"),
@@ -19,6 +21,7 @@ enum class Route(val routeName: String) {
     }
 }
 
+@SuppressLint("RestrictedApi")
 @Composable
 fun DaysNavGraph(navController: NavHostController) {
     navController.addOnDestinationChangedListener { controller, destination, _ ->
@@ -42,5 +45,6 @@ fun DaysNavGraph(navController: NavHostController) {
         }
         navGraphIntro(navController)
         navGraphMyProfile(navController)
+        navGraphHome(navController)
     }
 }

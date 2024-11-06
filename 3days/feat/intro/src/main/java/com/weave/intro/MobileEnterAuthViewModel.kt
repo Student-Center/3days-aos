@@ -92,96 +92,76 @@ class MobileEnterAuthViewModel @Inject constructor(
     // 인증번호 발송 로직
     private fun sendVerificationCode(phoneNum: String) {
         viewModelScope.launch {
+            requestVerificationUseCase.invoke(phoneNum).mapMerge().collect {
+                if (it != null) {
+                    setState {
+                        uiState.copy(
+                            isNewUser = it.userStatus == "NEW",
+                            authCodeId = it.authCodeId
+                        )
+                    }
 
-            // Simulation 위해 주석 처리
-//            requestVerificationUseCase.invoke(phoneNum).mapMerge().collect {
-//                if (it != null) {
-//                    setState { uiState.copy(
-//                        isNewUser = it.userStatus == "NEW",
-//                        authCodeId = it.authCodeId
-//                    ) }
-//
-//                    if (uiState.isNotFirstSend) {
-//                        setEffect {
-//                            AuthEffect.ShowToast(
-//                                application.getString(R.string.mobile_auth_resend_message),
-//                                SnackBarType.DEFAULT
-//                            )
-//                        }
-//                    } else {
-//                        setState { uiState.copy(isNotFirstSend = true) }
-//                    }
-//                } else if (!isLoading) {
-//                    setState { copy(errorMessage = application.getString(com.weave.design_system.R.string.mobile_auth_send_error_message)) }
-//                    setEffect {
-//                        AuthEffect.ShowToast(
-//                            application.getString(R.string.mobile_auth_send_error_message),
-//                            SnackBarType.ERROR
-//                        )
-//                    }
-//                }
-//            }
+                    if (uiState.isNotFirstSend) {
+                        setEffect {
+                            AuthEffect.ShowToast(
+                                context.getString(R.string.mobile_auth_resend_message),
+                                SnackBarType.DEFAULT
+                            )
+                        }
+                    } else {
+                        setState { uiState.copy(isNotFirstSend = true) }
+                    }
+                } else if (!isLoading) {
+                    setState { copy(errorMessage = context.getString(R.string.mobile_auth_send_error_message)) }
+                    setEffect {
+                        AuthEffect.ShowToast(
+                            context.getString(R.string.mobile_auth_send_error_message),
+                            SnackBarType.ERROR
+                        )
+                    }
+                }
+            }
         }
     }
 
     private fun verifyCode(inputCode: String) {
         viewModelScope.launch {
-            // Simulation
-            val simulationResult = verifyCodeWithServer(inputCode)
-            if (simulationResult) {
-                setState { copy(isVerified = true) }
-                setEffect { AuthEffect.NavigateToRegisterFlow("Test Register Token") }
+            if (uiState.isNewUser == true) {
+                newUserVerifyCodeUseCase.invoke(
+                    authCodeId = uiState.authCodeId ?: UUID.fromString(""), verifyCode = inputCode
+                ).mapMerge().collect {
+                    if (it != null) {
+                        setState { copy(isVerified = true) }
+                        setEffect { AuthEffect.NavigateToRegisterFlow(it.registerToken) }
+                    } else {
+                        setState { copy(errorMessage = context.getString(R.string.mobile_auth_verify_error_message)) }
+                        setEffect {
+                            AuthEffect.ShowToast(
+                                context.getString(R.string.mobile_auth_verify_error_message),
+                                SnackBarType.ERROR
+                            )
+                        }
+                    }
+                }
             } else {
-                setState { copy(errorMessage = context.getString(com.weave.design_system.R.string.mobile_auth_verify_error_message)) }
-                setEffect {
-                    AuthEffect.ShowToast(
-                        context.getString(R.string.mobile_auth_verify_error_message),
-                        SnackBarType.ERROR
-                    )
+                existingUserVerifyCodeUseCase.invoke(
+                    authCodeId = uiState.authCodeId ?: UUID.fromString(""), verifyCode = inputCode
+                ).mapMerge().collect {
+                    if (it != null) {
+                        setState { copy(isVerified = true) }
+                        setEffect { AuthEffect.NavigateToMainScreen }
+                    } else {
+                        setState { copy(errorMessage = context.getString(R.string.mobile_auth_verify_error_message)) }
+                        setEffect {
+                            AuthEffect.ShowToast(
+                                context.getString(R.string.mobile_auth_verify_error_message),
+                                SnackBarType.ERROR
+                            )
+                        }
+                    }
                 }
             }
-
-//            if (uiState.isNewUser == true){
-//                newUserVerifyCodeUseCase.invoke(authCodeId = uiState.authCodeId ?: UUID.fromString(""), verifyCode = inputCode).mapMerge().collect {
-//                    if(it != null){
-//                        setState { copy(isVerified = true) }
-//                        setEffect { AuthEffect.NavigateToRegisterFlow(it.registerToken) }
-//                    } else {
-//                        setState { copy(errorMessage = application.getString(com.weave.design_system.R.string.mobile_auth_verify_error_message)) }
-//                        setEffect {
-//                            AuthEffect.ShowToast(
-//                                application.getString(R.string.mobile_auth_verify_error_message),
-//                                SnackBarType.ERROR
-//                            )
-//                        }
-//                    }
-//                }
-//            } else {
-//                existingUserVerifyCodeUseCase.invoke(authCodeId = uiState.authCodeId ?: UUID.fromString(""), verifyCode = inputCode).mapMerge().collect {
-//                    if(it != null){
-//                        setState { copy(isVerified = true) }
-//                        setEffect { AuthEffect.NavigateToMainScreen }
-//                    } else {
-//                        setState { copy(errorMessage = application.getString(com.weave.design_system.R.string.mobile_auth_verify_error_message)) }
-//                        setEffect {
-//                            AuthEffect.ShowToast(
-//                                application.getString(R.string.mobile_auth_verify_error_message),
-//                                SnackBarType.ERROR
-//                            )
-//                        }
-//                    }
-//                }
-//            }
         }
-    }
-
-    // 서버 통신 시뮬레이션
-    private suspend fun sendCodeToServer(): Boolean {
-        return true // 인증번호 발송 성공 가정
-    }
-
-    private suspend fun verifyCodeWithServer(code: String): Boolean {
-        return code == "123456"  // 인증번호 검증 성공 조건 가정
     }
 
     private var smsReceiver: AuthSmsReceiver? = null
