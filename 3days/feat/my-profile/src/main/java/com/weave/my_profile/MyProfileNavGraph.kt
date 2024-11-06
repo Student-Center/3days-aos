@@ -20,6 +20,7 @@ import com.weave.my_profile.nick.MyProfileNickScreen
 import com.weave.my_profile.occupation.MyProfileOccupationScreen
 import com.weave.my_profile.partner.PartnerInitScreen
 import com.weave.my_profile.partner.age.PartnerAgeScreen
+import com.weave.my_profile.partner.distance.PartnerDistanceScreen
 import com.weave.my_profile.partner.occupation.PartnerOccupationScreen
 import com.weave.utils.navigation.navigateWithClearBackStack
 
@@ -35,6 +36,7 @@ enum class Route(val routeName: String) {
     PartnerInit("partner_init"),
     PartnerAge("partner_age"),
     PartnerOccupation("partner_occupation"),
+    PartnerDistance("partner_distance"),
     NextScreen("next_screen");
 
     fun withArgs(vararg args: String): String {
@@ -45,7 +47,6 @@ enum class Route(val routeName: String) {
     }
 }
 
-// 상수 정의
 private const val REGISTER_TOKEN_ARG = "{registerToken}"
 
 fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
@@ -92,13 +93,8 @@ fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
                     )
                 },
                 onNextBtnClicked = {
-                    // 개발 편의를 위한 주석 처리
-//                    navController.navigateWithClearBackStack(
-//                        Route.MyProfileBirth.routeName,
-//                        Route.MyProfileInit.withArgs(registerToken)
-//                    )
                     navController.navigateWithClearBackStack(
-                        Route.PartnerAge.routeName,
+                        Route.MyProfileBirth.routeName,
                         Route.MyProfileInit.withArgs(registerToken)
                     )
                 }
@@ -270,13 +266,34 @@ fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
                 },
                 onNextBtnClicked = {
                     navController.navigateWithClearBackStack(
-                        Route.NextScreen.routeName,
+                        Route.PartnerDistance.routeName,
                         Route.PartnerAge.routeName
                     )
                 }
             )
         }
 
+        composable(Route.PartnerDistance.routeName) {
+            val sharedViewModel =
+                it.sharedViewModel<MyProfileSharedViewModel>(navController = navController)
+
+            PartnerDistanceScreen(
+                sharedViewModel = sharedViewModel,
+                onBackBtnClicked = {
+                    navController.navigateWithClearBackStack(
+                        Route.PartnerOccupation.routeName,
+                        Route.PartnerDistance.routeName,
+                        launchSingleTop = true
+                    )
+                },
+                onNextBtnClicked = {
+                    navController.navigateWithClearBackStack(
+                        Route.NextScreen.routeName,
+                        Route.PartnerOccupation.routeName
+                    )
+                }
+            )
+        }
     }
 }
 

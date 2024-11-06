@@ -5,6 +5,7 @@ import com.weave.design_system.component.Gender
 import com.weave.model.domain.myprofile.Company
 import com.weave.model.domain.myprofile.JobOccupation
 import com.weave.model.domain.myprofile.Location
+import com.weave.model.enum.PreferDistance
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -20,7 +21,9 @@ class MyProfileSharedViewModel @Inject constructor(
     var occupation: JobOccupation? = null
     var locations: List<Location> = listOf()
     var nickname: String = ""
+
     var upperAge: Int? = null
     var underAge: Int? = null
     var partnerOccupations: List<JobOccupation> = listOf()
+    var distance: PreferDistance? = null
 }
