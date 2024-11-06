@@ -113,4 +113,7 @@
     <string name="partner_occupation_title">상대는 어떤 직군이라면 좋을까요?</string>
     <string name="partner_occupation_not_selected_error_message">상대 직군을 선택해 주세요</string>
 
+    <string name="partner_distance_sub_title">연인이 되었을 때의 모습을 상상해 보세요.</string>
+    <string name="partner_distance_title">상대와의 거리는\n어느 정도가 좋을까요?</string>
+    <string name="partner_distance_not_selected_error_message">선호 거리를 선택해 주세요</string>
 </resources>
