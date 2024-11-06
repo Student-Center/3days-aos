@@ -5,7 +5,6 @@ import android.content.ContextWrapper
 import android.content.pm.PackageManager
 import android.content.pm.Signature
 import android.util.Base64
-import android.util.Log
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
@@ -24,7 +23,7 @@ class AppSignatureHelper(context: Context?) : ContextWrapper(context) {
                     hashSignature(packageName, signature)?.let { appCodes.add(it) }
                 }
             } catch (e: PackageManager.NameNotFoundException) {
-                Log.e(TAG, "패키지를 찾을 수 없어 해시를 가져올 수 없습니다.", e)
+                LoggerUtil.error("패키지를 찾을 수 없어 해시를 가져올 수 없습니다.", e)
             }
 
             return appCodes
@@ -48,7 +47,7 @@ class AppSignatureHelper(context: Context?) : ContextWrapper(context) {
             val hashSignature = messageDigest.digest().take(NUM_HASHED_BYTES).toByteArray()
             encodeToBase64(hashSignature)
         } catch (e: NoSuchAlgorithmException) {
-            Log.e(TAG, "해시 알고리즘을 찾을 수 없습니다.", e)
+            LoggerUtil.error("해시 알고리즘을 찾을 수 없습니다.", e)
             null
         }
     }
@@ -59,7 +58,6 @@ class AppSignatureHelper(context: Context?) : ContextWrapper(context) {
     }
 
     companion object {
-        private val TAG: String = AppSignatureHelper::class.java.simpleName
         private const val HASH_TYPE = "SHA-256" // 해시 알고리즘 타입
         private const val NUM_HASHED_BYTES = 9 // 해시된 바이트 수
         private const val NUM_BASE64_CHAR = 11 // Base64 문자 수

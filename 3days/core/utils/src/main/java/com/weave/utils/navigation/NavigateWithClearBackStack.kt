@@ -1,7 +1,7 @@
 package com.weave.utils.navigation
 
-import android.util.Log
 import androidx.navigation.NavController
+import com.weave.utils.LoggerUtil
 
 fun NavController.navigateWithClearBackStack(
     destination: String,
@@ -14,9 +14,8 @@ fun NavController.navigateWithClearBackStack(
      * @param popUpToRoute 백 스택에서 제거할 기준 라우트
      * @param inclusive popUpToRoute를 백 스택에서 제거할지 여부
      */
-    Log.i(
-        "BackStackLog",
-        "Navigating to $destination, popping up to $popUpToRoute (inclusive: $inclusive)"
+    LoggerUtil.info(
+        "[BackStackLog] ${destination}로 이동, ${popUpToRoute}제거 (inclusive: $inclusive)"
     )
     this.navigate(destination) {
         popUpTo(popUpToRoute) { this.inclusive = inclusive }

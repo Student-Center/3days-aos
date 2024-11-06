@@ -36,6 +36,8 @@ retrofit = "2.11.0"
 coil = "2.7.0"
 navigationRuntimeKtx = "2.8.3"
 
+logger = "2.2.0"
+
 [libraries]
 androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -79,6 +81,8 @@ play-services-auth-api-phone = { module = "com.google.android.gms:play-services-
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+
+orhanobut-logger = { group = "com.orhanobut", name = "logger", version.ref = "logger" }
 
 [plugins]
 android-library = { id = "com.android.library", version.ref = "agp" }

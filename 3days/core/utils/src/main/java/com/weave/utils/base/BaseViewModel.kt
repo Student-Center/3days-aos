@@ -1,12 +1,12 @@
 package com.weave.utils.base
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weave.model.network.NetworkResult
+import com.weave.utils.LoggerUtil
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -90,16 +90,19 @@ abstract class BaseViewModel<Action : UIAction, Intent : UIIntent, State : UISta
 
     @OptIn(ExperimentalCoroutinesApi::class)
     protected fun <T> Flow<NetworkResult<T>>.mapMerge(): Flow<T?> = flatMapConcat { result ->
-        Log.d("NetworkResult", "$result")
+        LoggerUtil.debug("[NetworkResult] $result")
+
         when (result) {
             is NetworkResult.Loading -> {
                 _isLoading = true
                 flowOf(null)
             }
+
             is NetworkResult.Success -> {
                 _isLoading = false
                 flowOf(result.data)
             }
+
             is NetworkResult.Error -> {
                 _isLoading = false
                 _error = "[${result.error.code}] ${result.error.from()}"

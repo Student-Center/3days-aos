@@ -34,4 +34,5 @@ dependencies {
     debugImplementation(libs.bundles.compose.debug)
     androidTestImplementation(libs.bundles.android.test)
     testImplementation(libs.junit)
+    implementation(libs.orhanobut.logger)
 }
