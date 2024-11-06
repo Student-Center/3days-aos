@@ -62,7 +62,7 @@ fun PartnerOccupationScreen(
     LaunchedEffect(Unit) {
         sharedViewModel.occupation?.let {
             viewModel.setAction(
-                OccupationAction.SelectOccupation(sharedViewModel.occupation!!)
+                OccupationAction.SelectOccupation(it)
             )
         }
     }
