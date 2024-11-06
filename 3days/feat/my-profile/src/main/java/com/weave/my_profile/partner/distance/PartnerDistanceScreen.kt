@@ -69,6 +69,8 @@ fun PartnerDistanceScreen(
 
     LaunchedEffect(uiState) {
         if (uiState.isValidated) {
+            sharedViewModel.distance = uiState.distance
+
             viewModel.setAction(
                 PartnerDistanceAction.RegisterUser(
                     sharedViewModel.registerToken,
@@ -82,7 +84,6 @@ fun PartnerDistanceScreen(
         viewModel.uiEffect.collect { effect ->
             when (effect) {
                 is PartnerDistanceEffect.NavigateToNextScreen -> {
-//                    sharedViewModel.distance = uiState.distance
                     onNextBtnClicked()
                 }
 
