@@ -31,8 +31,8 @@ import com.weave.design_system.DaysTheme
 import com.weave.design_system.R
 import com.weave.design_system.extension.noRippleClickable
 
-enum class Gender(val koValue: String) {
-    MALE("남성"), FEMALE("여성"), EMPTY("")
+enum class Gender(val enValue: String, val koValue: String) {
+    MALE("MALE", "남성"), FEMALE("FEMALE", "여성"), EMPTY("", "")
 }
 
 @Composable
