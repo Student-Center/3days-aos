@@ -37,7 +37,7 @@ enum class Route(val routeName: String) {
     PartnerAge("partner_age"),
     PartnerOccupation("partner_occupation"),
     PartnerDistance("partner_distance"),
-    NextScreen("next_screen");
+    Home("home");
 
     fun withArgs(vararg args: String): String {
         return buildString {
@@ -48,24 +48,27 @@ enum class Route(val routeName: String) {
 }
 
 private const val REGISTER_TOKEN_ARG = "{registerToken}"
+private const val MOBILE_NUM_ARG = "{mobileNum}"
 
 fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
     navigation(
-        startDestination = Route.MyProfileInit.withArgs(REGISTER_TOKEN_ARG),
-        route = Route.MyProfile.withArgs(REGISTER_TOKEN_ARG)
+        startDestination = Route.MyProfileInit.withArgs(REGISTER_TOKEN_ARG, MOBILE_NUM_ARG),
+        route = Route.MyProfile.withArgs(REGISTER_TOKEN_ARG, MOBILE_NUM_ARG)
     ) {
         composable(
-            route = Route.MyProfileInit.withArgs(REGISTER_TOKEN_ARG),
-            arguments = listOf(navArgument("registerToken") {
-                type = NavType.StringType; defaultValue = ""
-            })
+            route = Route.MyProfileInit.withArgs(REGISTER_TOKEN_ARG, MOBILE_NUM_ARG),
+            arguments = listOf(
+                navArgument("registerToken") { type = NavType.StringType },
+                navArgument("mobileNum") { type = NavType.StringType }
+            )
         ) { backStackEntry ->
             val registerToken = backStackEntry.arguments?.getString("registerToken") ?: ""
+            val mobileNum = backStackEntry.arguments?.getString("mobileNum") ?: ""
 
             MyProfileInitScreen(
                 onNextBtnClicked = {
                     navController.navigateWithClearBackStack(
-                        Route.MyProfileGender.withArgs(registerToken),
+                        Route.MyProfileGender.withArgs(registerToken, mobileNum),
                         Route.MyProfile.withArgs(registerToken)
                     )
                 },
@@ -73,15 +76,19 @@ fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
         }
 
         composable(
-            route = Route.MyProfileGender.withArgs(REGISTER_TOKEN_ARG),
-            arguments = listOf(navArgument("registerToken") {
-                type = NavType.StringType; defaultValue = ""
-            })
+            route = Route.MyProfileGender.withArgs(REGISTER_TOKEN_ARG, MOBILE_NUM_ARG),
+            arguments = listOf(
+                navArgument("registerToken") { type = NavType.StringType },
+                navArgument("mobileNum") { type = NavType.StringType }
+            )
         ) { backStackEntry ->
             val registerToken = backStackEntry.arguments?.getString("registerToken") ?: ""
+            val mobileNum = backStackEntry.arguments?.getString("mobileNum") ?: ""
+
             val sharedViewModel =
                 backStackEntry.sharedViewModel<MyProfileSharedViewModel>(navController = navController)
             sharedViewModel.registerToken = registerToken
+            sharedViewModel.phoneNumber = mobileNum
 
             MyProfileGenderScreen(
                 sharedViewModel = sharedViewModel,
@@ -287,10 +294,9 @@ fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
                     )
                 },
                 onNextBtnClicked = {
-                    navController.navigateWithClearBackStack(
-                        Route.NextScreen.routeName,
-                        Route.PartnerOccupation.routeName
-                    )
+                    navController.navigate(Route.Home.routeName) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                    }
                 }
             )
         }

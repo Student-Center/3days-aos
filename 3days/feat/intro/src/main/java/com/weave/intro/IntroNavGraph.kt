@@ -13,7 +13,7 @@ enum class Route(val routeName: String) {
     MobileSendAuth("mobile_send_auth"),
     MobileEnterAuth("mobile_enter_auth"),
     TermsAgreement("terms_agreement"),
-    Main("main"),
+    Home("home"),
     MyProfile("my_profile");
 
     fun withArgs(vararg args: String): String {
@@ -27,9 +27,7 @@ enum class Route(val routeName: String) {
 fun NavGraphBuilder.navGraphIntro(navController: NavController) {
     navigation(startDestination = Route.Welcome.routeName, route = Route.Intro.routeName) {
         composable(Route.Welcome.routeName) {
-            // 개발 편의를 위한 주석 처리
-//            IntroScreen(onClicked = { navController.navigate(Route.MobileSendAuth.routeName) })
-            IntroScreen(onClicked = { navController.navigate(Route.MyProfile.withArgs("Test Register Token")) })
+            IntroScreen(onClicked = { navController.navigate(Route.MobileSendAuth.routeName) })
         }
 
         composable(Route.MobileSendAuth.routeName) {
@@ -49,22 +47,27 @@ fun NavGraphBuilder.navGraphIntro(navController: NavController) {
             MobileEnterAuthScreen(
                 mobileNum = mobileNum,
                 onBackBtnClicked = { navController.popBackStack() },
-                navigateToMainScreen = { navController.navigate(Route.Main.routeName) },
+                navigateToMainScreen = { navController.navigate(Route.Home.routeName) },
                 navigateToRegisterFlow = { registerToken ->
-                    navController.navigate(Route.TermsAgreement.withArgs(registerToken))
+                    navController.navigate(Route.TermsAgreement.withArgs(registerToken, mobileNum))
                 }
             )
         }
 
         composable(
-            route = Route.TermsAgreement.withArgs("{registerToken}"),
-            arguments = listOf(navArgument("registerToken") { type = NavType.StringType })
+            route = Route.TermsAgreement.withArgs("{registerToken}", "{mobileNum}"),
+            arguments = listOf(
+                navArgument("registerToken") { type = NavType.StringType },
+                navArgument("mobileNum") { type = NavType.StringType }
+            )
         ) { backStackEntry ->
             val registerToken = backStackEntry.arguments?.getString("registerToken") ?: ""
+            val mobileNum = backStackEntry.arguments?.getString("mobileNum") ?: ""
+
             TermsAgreementScreen(
                 onBackBtnClicked = { navController.popBackStack() },
                 onNextBtnClicked = {
-                    navController.navigate(Route.MyProfile.withArgs(registerToken)) {
+                    navController.navigate(Route.MyProfile.withArgs(registerToken, mobileNum)) {
                         popUpTo(navController.graph.id) { inclusive = true }
                     }
                 }
