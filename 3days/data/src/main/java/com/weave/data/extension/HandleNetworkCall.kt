@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.flow
 
 fun <T, R> handleNetworkCall(
     networkCall: suspend () -> NetworkResult<T>,
-    mapToDomain: (T) -> R
+    mapToDomain: suspend (T) -> R
 ): Flow<NetworkResult<R>> = flow {
     emit(NetworkResult.Loading)
     when (val result = networkCall()) {
