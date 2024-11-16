@@ -37,6 +37,7 @@ coil = "2.7.0"
 navigationRuntimeKtx = "2.8.3"
 
 logger = "2.2.0"
+datastore = "1.1.1"
 
 [libraries]
 androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
@@ -83,6 +84,7 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 
 orhanobut-logger = { group = "com.orhanobut", name = "logger", version.ref = "logger" }
+androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 [plugins]
 android-library = { id = "com.android.library", version.ref = "agp" }
