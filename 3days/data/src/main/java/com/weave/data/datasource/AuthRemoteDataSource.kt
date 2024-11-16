@@ -12,11 +12,17 @@ import java.util.UUID
 
 interface AuthRemoteDataSource {
 
-    suspend fun existingUserVerifyCode(authCodeId: UUID, verifyCodeRequest: VerifyCodeRequest): NetworkResult<ExistingUserVerifyCodeResponse>
+    suspend fun existingUserVerifyCode(
+        authCodeId: UUID,
+        verifyCodeRequest: VerifyCodeRequest
+    ): NetworkResult<ExistingUserVerifyCodeResponse>
 
-    suspend fun newUserVerifyCode(authCodeId: UUID, verifyCodeRequest: VerifyCodeRequest): NetworkResult<NewUserVerifyCodeResponse>
+    suspend fun newUserVerifyCode(
+        authCodeId: UUID,
+        verifyCodeRequest: VerifyCodeRequest
+    ): NetworkResult<NewUserVerifyCodeResponse>
 
-    suspend fun refreshToken(refreshTokenRequest: RefreshTokenRequest): NetworkResult<TokenResponse>
+    suspend fun refreshToken(body: RefreshTokenRequest): NetworkResult<TokenResponse>
 
     suspend fun requestVerification(sendAuthCodeRequest: SendAuthCodeRequest): NetworkResult<SendAuthCodeResponse>
 }

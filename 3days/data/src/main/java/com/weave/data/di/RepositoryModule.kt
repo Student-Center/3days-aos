@@ -3,10 +3,12 @@ package com.weave.data.di
 import com.weave.data.repository.AuthRepositoryImpl
 import com.weave.data.repository.CompanyRepositoryImpl
 import com.weave.data.repository.LocationRepositoryImpl
+import com.weave.data.repository.TokenRepositoryImpl
 import com.weave.data.repository.UserRepositoryImpl
 import com.weave.domain.repository.AuthRepository
 import com.weave.domain.repository.CompanyRepository
 import com.weave.domain.repository.LocationRepository
+import com.weave.domain.repository.TokenRepository
 import com.weave.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -33,4 +35,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindsUserRepository(impl: UserRepositoryImpl): UserRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsTokenRepository(impl: TokenRepositoryImpl): TokenRepository
 }

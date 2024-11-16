@@ -1,6 +1,7 @@
 package com.weave.data.repository
 
 import com.weave.data.datasource.AuthRemoteDataSource
+import com.weave.data.datasource.TokenLocalDataSource
 import com.weave.data.extension.handleNetworkCall
 import com.weave.data.mapper.toDomain
 import com.weave.domain.repository.AuthRepository
@@ -12,11 +13,13 @@ import com.weave.network.model.RefreshTokenRequest
 import com.weave.network.model.SendAuthCodeRequest
 import com.weave.network.model.VerifyCodeRequest
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import java.util.UUID
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    private val dataSource: AuthRemoteDataSource
+    private val dataSource: AuthRemoteDataSource,
+    private val tokenLocalDataSource: TokenLocalDataSource
 ) : AuthRepository {
 
     override suspend fun existingUserVerifyCode(
@@ -29,7 +32,14 @@ class AuthRepositoryImpl @Inject constructor(
                 verifyCodeRequest = VerifyCodeRequest(verifyCode)
             )
         },
-        mapToDomain = { it.toDomain }
+        mapToDomain = {
+            tokenLocalDataSource.saveTokens(
+                accessToken = it.accessToken,
+                refreshToken = it.refreshToken
+            )
+
+            it.toDomain
+        }
     )
 
     override suspend fun newUserVerifyCode(
@@ -45,14 +55,15 @@ class AuthRepositoryImpl @Inject constructor(
         mapToDomain = { it.toDomain }
     )
 
-    override suspend fun refreshToken(): Flow<NetworkResult<AuthToken>> = handleNetworkCall(
-        networkCall = {
-            dataSource.refreshToken(
-                RefreshTokenRequest("todo: JWT DataStore 추가 후 반영")
-            )
-        },
-        mapToDomain = { it.toDomain }
-    )
+    override suspend fun refreshToken(): Flow<NetworkResult<AuthToken>> =
+        handleNetworkCall(
+            networkCall = {
+                val token = tokenLocalDataSource.getTokens().first()
+
+                dataSource.refreshToken(RefreshTokenRequest(token.refreshToken))
+            },
+            mapToDomain = { it.toDomain }
+        )
 
     override suspend fun requestVerification(phoneNumber: String): Flow<NetworkResult<AuthVerifyToken>> =
         handleNetworkCall(

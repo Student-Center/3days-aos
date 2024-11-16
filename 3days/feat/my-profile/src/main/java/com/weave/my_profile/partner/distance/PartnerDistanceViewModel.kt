@@ -1,7 +1,6 @@
 package com.weave.my_profile.partner.distance
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.weave.design_system.component.SnackBarType
 import com.weave.model.domain.user.RegisterInfo
@@ -97,8 +96,6 @@ class PartnerDistanceViewModel @Inject constructor(
                 xRegisterToken = registerToken, registerInfo = registerInfo
             ).mapMerge().collect {
                 if (it != null) {
-                    Log.d("TEST", it.accessToken)
-                    Log.d("TEST", it.refreshToken)
                     setEffect { PartnerDistanceEffect.NavigateToNextScreen }
                 } else if (!isLoading) {
                     setEffect {

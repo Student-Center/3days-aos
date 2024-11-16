@@ -91,6 +91,7 @@ dependencies {
     implementation(libs.hilt.compose.navigation)
     ksp(libs.hilt.android.compiler)
 
+    implementation(project(":core:model"))
     implementation(project(":core:utils"))
     implementation(project(":core:design-system"))
     implementation(project(":data"))
@@ -98,4 +99,6 @@ dependencies {
     implementation(project(":feat:intro"))
     implementation(project(":feat:my-profile"))
     implementation(project(":feat:home"))
+
+    implementation(project(":domain:auth"))
 }

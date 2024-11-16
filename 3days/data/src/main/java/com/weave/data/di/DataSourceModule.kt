@@ -6,6 +6,10 @@ import com.weave.data.datasource.CompanyRemoteDataSource
 import com.weave.data.datasource.CompanyRemoteDataSourceImpl
 import com.weave.data.datasource.LocationRemoteDataSource
 import com.weave.data.datasource.LocationRemoteDataSourceImpl
+import com.weave.data.datasource.RegisterRemoteDataSource
+import com.weave.data.datasource.RegisterRemoteDataSourceImpl
+import com.weave.data.datasource.TokenLocalDataSource
+import com.weave.data.datasource.TokenLocalDataSourceImpl
 import com.weave.data.datasource.UserRemoteDataSource
 import com.weave.data.datasource.UserRemoteDataSourceImpl
 import dagger.Binds
@@ -33,4 +37,12 @@ abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindsUserDataSource(impl: UserRemoteDataSourceImpl): UserRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindsTokenLocalDataSource(impl: TokenLocalDataSourceImpl): TokenLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindsRegisterRemoteDataSource(impl: RegisterRemoteDataSourceImpl): RegisterRemoteDataSource
 }

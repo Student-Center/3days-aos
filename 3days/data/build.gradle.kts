@@ -42,6 +42,7 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.okhttp.logging)
     implementation(libs.gson.converter)
+    implementation(libs.androidx.datastore)
 
     implementation(libs.hilt.android)
     implementation(libs.hilt.compose.navigation)

@@ -1,7 +1,6 @@
 package com.weave.a3days
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -9,12 +8,12 @@ import androidx.navigation.compose.composable
 import com.weave.intro.navGraphIntro
 import com.weave.my_profile.navGraphMyProfile
 import com.weave.navGraphHome
+import com.weave.utils.LoggerUtil
 
 enum class Route(val routeName: String) {
     Splash("splash"),
     Home("home"),
-    Intro("intro"),
-    MyProfile("my_profile");
+    Intro("intro");
 
     fun withArgs(vararg args: String): String {
         return args.joinToString(prefix = "$routeName/", separator = "/")
@@ -27,9 +26,9 @@ fun DaysNavGraph(navController: NavHostController) {
     navController.addOnDestinationChangedListener { controller, destination, _ ->
         val currentBackStack = controller.currentBackStack.value
         val routes = currentBackStack.mapNotNull { it.destination.route }.joinToString(", ")
-        Log.d(
-            "BackStackLog",
-            "BackStack: $routes${if (routes.isNotBlank()) ", ${destination.route}" else ""}"
+
+        LoggerUtil.info(
+            "[BackStack] $routes${if (routes.isNotBlank()) ", ${destination.route}" else ""}"
         )
     }
 
