@@ -9,9 +9,15 @@ import java.util.UUID
 
 interface AuthRepository {
 
-    suspend fun existingUserVerifyCode(authCodeId: UUID, verifyCode: String): Flow<NetworkResult<AuthToken>>
+    suspend fun existingUserVerifyCode(
+        authCodeId: UUID,
+        verifyCode: String
+    ): Flow<NetworkResult<AuthToken>>
 
-    suspend fun newUserVerifyCode(authCodeId: UUID, verifyCode: String): Flow<NetworkResult<AuthRegisterToken>>
+    suspend fun newUserVerifyCode(
+        authCodeId: UUID,
+        verifyCode: String
+    ): Flow<NetworkResult<AuthRegisterToken>>
 
     suspend fun refreshToken(): Flow<NetworkResult<AuthToken>>
 

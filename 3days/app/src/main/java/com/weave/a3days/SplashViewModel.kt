@@ -1,38 +1,62 @@
 package com.weave.a3days
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weave.auth.GetTokensUseCase
+import com.weave.utils.base.BaseViewModel
+import com.weave.utils.base.UIAction
+import com.weave.utils.base.UIEffect
+import com.weave.utils.base.UIIntent
+import com.weave.utils.base.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+
+sealed class SplashUiAction : UIAction {
+    data object ValidateToken : SplashUiAction()
+}
+
+sealed class SplashUiIntent : UIIntent {
+    data object ValidateToken : SplashUiIntent()
+}
+
+sealed class SplashUiEffect : UIEffect {
+    data object NavigateToHome : SplashUiEffect()
+    data object NavigateToIntro : SplashUiEffect()
+}
 
 data class SplashUiState(
     val isDataLoaded: Boolean = false,
     val isValid: Boolean = false,
-)
+) : UIState
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
+//    private val getMyInfoUseCase: GetMyInfoUseCase
+    private val getTokensUseCase: GetTokensUseCase
+) : BaseViewModel<SplashUiAction, SplashUiIntent, SplashUiState, SplashUiEffect>(initialState = SplashUiState()) {
 
-) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(SplashUiState())
-    val uiState: StateFlow<SplashUiState> = _uiState
-
-    init {
-        loadData()
+    override fun actionPredicate(action: SplashUiAction): SplashUiIntent {
+        return when (action) {
+            is SplashUiAction.ValidateToken -> SplashUiIntent.ValidateToken
+        }
     }
 
-    private fun loadData() {
+    override fun collectIntent(intent: SplashUiIntent) {
+        return when (intent) {
+            is SplashUiIntent.ValidateToken -> validateToken()
+        }
+    }
+
+    private fun validateToken() {
         viewModelScope.launch {
-            delay(1000L) // TODO: 실제 데이터 로딩 로직으로 대체 필요. 현재는 로딩 화면을 보여주기 위한 임시 지연
-            _uiState.value = _uiState.value.copy(
-                isDataLoaded = true,
-                isValid = false // TODO: 실제 사용자 인증 상태를 반영하도록 수정 필요
-            )
+            val tokens = getTokensUseCase.invoke()
+
+            if (tokens.accessToken.isNotBlank() && tokens.refreshToken.isNotBlank()) {
+                setEffect { SplashUiEffect.NavigateToHome }
+            } else {
+                setEffect { SplashUiEffect.NavigateToIntro }
+            }
         }
     }
 }

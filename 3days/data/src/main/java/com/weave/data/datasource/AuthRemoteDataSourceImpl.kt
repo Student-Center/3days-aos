@@ -15,7 +15,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 class AuthRemoteDataSourceImpl @Inject constructor(
-    private val service: AuthApi
+    private val authService: AuthApi,
 ) : AuthRemoteDataSource {
 
     override suspend fun existingUserVerifyCode(
@@ -23,7 +23,7 @@ class AuthRemoteDataSourceImpl @Inject constructor(
         verifyCodeRequest: VerifyCodeRequest
     ): NetworkResult<ExistingUserVerifyCodeResponse> {
         return handleApiResponse {
-            service.existingUserVerifyCode(authCodeId, verifyCodeRequest)
+            authService.existingUserVerifyCode(authCodeId, verifyCodeRequest)
         }
     }
 
@@ -32,19 +32,19 @@ class AuthRemoteDataSourceImpl @Inject constructor(
         verifyCodeRequest: VerifyCodeRequest
     ): NetworkResult<NewUserVerifyCodeResponse> {
         return handleApiResponse {
-            service.newUserVerifyCode(authCodeId, verifyCodeRequest)
+            authService.newUserVerifyCode(authCodeId, verifyCodeRequest)
         }
     }
 
-    override suspend fun refreshToken(refreshTokenRequest: RefreshTokenRequest): NetworkResult<TokenResponse> {
+    override suspend fun refreshToken(body: RefreshTokenRequest): NetworkResult<TokenResponse> {
         return handleApiResponse {
-            service.refreshToken(refreshTokenRequest)
+            authService.refreshToken(body)
         }
     }
 
     override suspend fun requestVerification(sendAuthCodeRequest: SendAuthCodeRequest): NetworkResult<SendAuthCodeResponse> {
         return handleApiResponse {
-            service.requestVerification(OSType.AOS, sendAuthCodeRequest)
+            authService.requestVerification(OSType.AOS, sendAuthCodeRequest)
         }
     }
 }

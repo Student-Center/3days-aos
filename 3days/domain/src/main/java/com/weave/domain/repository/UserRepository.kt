@@ -13,6 +13,7 @@ interface UserRepository {
 
     suspend fun putProfileWidget(type: ProfileWidget): Flow<NetworkResult<ProfileWidget>>
 
+
     suspend fun registerUser(
         xRegisterToken: String,
         registerInfo: RegisterInfo

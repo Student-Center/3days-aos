@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -21,13 +19,17 @@ fun SplashScreen(
     viewModel: SplashViewModel = hiltViewModel(),
     onDataLoadedResult: (Boolean) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(uiState.isDataLoaded) {
-        if(uiState.isDataLoaded){
-            onDataLoadedResult(uiState.isValid)
+    LaunchedEffect(viewModel.uiEffect) {
+        viewModel.uiEffect.collect { effect ->
+            when (effect) {
+                is SplashUiEffect.NavigateToHome -> onDataLoadedResult(true)
+                is SplashUiEffect.NavigateToIntro -> onDataLoadedResult(false)
+            }
         }
     }
+
+    LaunchedEffect(Unit) { viewModel.setAction(SplashUiAction.ValidateToken) }
 
     Box(
         modifier = Modifier.fillMaxSize(),

@@ -15,18 +15,18 @@ import retrofit2.Retrofit
 class ServiceModule {
 
     @Provides
-    fun providesAuthService(client: Retrofit): AuthApi =
+    fun providesAuthService(@UnauthorizedClient client: Retrofit): AuthApi =
         client.create(AuthApi::class.java)
 
     @Provides
-    fun providesCompaniesService(client: Retrofit): CompaniesApi =
+    fun providesCompaniesService(@UnauthorizedClient client: Retrofit): CompaniesApi =
         client.create(CompaniesApi::class.java)
 
     @Provides
-    fun providesLocationsService(client: Retrofit): LocationsApi =
+    fun providesLocationsService(@UnauthorizedClient client: Retrofit): LocationsApi =
         client.create(LocationsApi::class.java)
 
     @Provides
-    fun providesUsersService(client: Retrofit): UsersApi =
+    fun providesUsersService(@AuthorizedClient client: Retrofit): UsersApi =
         client.create(UsersApi::class.java)
 }
