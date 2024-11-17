@@ -13,7 +13,7 @@ enum class Route(val routeName: String) {
     MobileSendAuth("mobile_send_auth"),
     MobileEnterAuth("mobile_enter_auth"),
     TermsAgreement("terms_agreement"),
-    Home("home"),
+    Main("main"),
     MyProfile("my_profile");
 
     fun withArgs(vararg args: String): String {
@@ -47,7 +47,7 @@ fun NavGraphBuilder.navGraphIntro(navController: NavController) {
             MobileEnterAuthScreen(
                 mobileNum = mobileNum,
                 onBackBtnClicked = { navController.popBackStack() },
-                navigateToMainScreen = { navController.navigate(Route.Home.routeName) },
+                navigateToMainScreen = { navController.navigate(Route.Main.routeName) },
                 navigateToRegisterFlow = { registerToken ->
                     navController.navigate(Route.TermsAgreement.withArgs(registerToken, mobileNum))
                 }

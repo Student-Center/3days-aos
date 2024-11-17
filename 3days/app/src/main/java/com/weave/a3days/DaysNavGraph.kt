@@ -12,7 +12,7 @@ import com.weave.utils.LoggerUtil
 
 enum class Route(val routeName: String) {
     Splash("splash"),
-    Home("home"),
+    Main("main"),
     Intro("intro");
 
     fun withArgs(vararg args: String): String {
@@ -36,7 +36,7 @@ fun DaysNavGraph(navController: NavHostController) {
         composable(Route.Splash.routeName) {
             SplashScreen { isDataLoaded ->
                 navController.navigate(
-                    if (isDataLoaded) Route.Home.routeName else Route.Intro.routeName
+                    if (isDataLoaded) Route.Main.routeName else Route.Intro.routeName
                 ) {
                     popUpTo(Route.Splash.routeName) { inclusive = true }
                 }
