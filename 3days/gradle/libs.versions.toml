@@ -104,3 +104,6 @@ compose-debug = [
 android-test = [
     "androidx-junit", "androidx-espresso-core", "androidx-ui-test-junit4"
 ]
+coil-compose = [
+    "coil-kt", "coil-kt-compose"
+]
