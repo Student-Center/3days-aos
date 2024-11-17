@@ -17,13 +17,16 @@ src/main/kotlin/com/weave/network/infrastructure/ResponseExt.kt
 src/main/kotlin/com/weave/network/infrastructure/Serializer.kt
 src/main/kotlin/com/weave/network/model/BirthYearRange.kt
 src/main/kotlin/com/weave/network/model/Company.kt
+src/main/kotlin/com/weave/network/model/CompanyDisplayInfo.kt
 src/main/kotlin/com/weave/network/model/ErrorResponse.kt
 src/main/kotlin/com/weave/network/model/ExistingUserVerifyCodeResponse.kt
 src/main/kotlin/com/weave/network/model/Gender.kt
 src/main/kotlin/com/weave/network/model/GetCompanyDetailsResponse.kt
 src/main/kotlin/com/weave/network/model/GetMyUserInfoResponse.kt
 src/main/kotlin/com/weave/network/model/JobOccupation.kt
+src/main/kotlin/com/weave/network/model/JobOccupationDisplayInfo.kt
 src/main/kotlin/com/weave/network/model/Location.kt
+src/main/kotlin/com/weave/network/model/LocationDisplayInfo.kt
 src/main/kotlin/com/weave/network/model/NewUserVerifyCodeResponse.kt
 src/main/kotlin/com/weave/network/model/OSType.kt
 src/main/kotlin/com/weave/network/model/PreferDistance.kt
@@ -35,6 +38,9 @@ src/main/kotlin/com/weave/network/model/SearchCompaniesResponse.kt
 src/main/kotlin/com/weave/network/model/SendAuthCodeRequest.kt
 src/main/kotlin/com/weave/network/model/SendAuthCodeResponse.kt
 src/main/kotlin/com/weave/network/model/TokenResponse.kt
+src/main/kotlin/com/weave/network/model/UpdateMyUserInfoRequest.kt
+src/main/kotlin/com/weave/network/model/UpdateMyUserInfoResponse.kt
 src/main/kotlin/com/weave/network/model/UserDesiredPartner.kt
 src/main/kotlin/com/weave/network/model/UserProfile.kt
+src/main/kotlin/com/weave/network/model/UserProfileDisplayInfo.kt
 src/main/kotlin/com/weave/network/model/VerifyCodeRequest.kt
