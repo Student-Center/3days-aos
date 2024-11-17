@@ -1,5 +1,7 @@
 package com.weave.data.mapper
 
+import com.weave.model.domain.myprofile.Company
+import com.weave.model.domain.myprofile.MyInfoDisplay
 import com.weave.model.domain.user.MyInfo
 import com.weave.model.domain.user.RegisterInfo
 import com.weave.network.model.BirthYearRange
@@ -12,6 +14,7 @@ import com.weave.network.model.ProfileWidgetType
 import com.weave.network.model.RegisterUserRequest
 import com.weave.network.model.UserDesiredPartner
 import com.weave.network.model.UserProfile
+import com.weave.network.model.UserProfileDisplayInfo
 
 val GetMyUserInfoResponse.toDomain
     get() = MyInfo(
@@ -23,13 +26,13 @@ val GetMyUserInfoResponse.toDomain
         profileWidgets = profileWidgets.map { it.toDomain }
     )
 
-val UserProfile.toDomain
-    get() = com.weave.model.domain.user.UserProfile(
+val UserProfileDisplayInfo.toDomain
+    get() = MyInfoDisplay(
         gender = gender.toDomain,
         birthYear = birthYear,
-        jobOccupation = jobOccupation.toDomain,
-        locationIds = locationIds,
-        companyId = companyId
+        jobOccupation = jobOccupation.code.toDomain,
+        locations = locations.map { Pair(it.id, it.display) },
+        company = company?.let { Company(it.id, it.display) }
     )
 
 val Gender.toDomain
@@ -74,16 +77,6 @@ val RegisterInfo.toDTO
         phoneNumber = phoneNumber,
         profile = profile.toDTO,
         desiredPartner = desiredPartner.toDTO
-    )
-
-val MyInfo.toDTO
-    get() = GetMyUserInfoResponse(
-        id = id,
-        name = name,
-        phoneNumber = phoneNumber,
-        profile = profile.toDTO,
-        desiredPartner = desiredPartner.toDTO,
-        profileWidgets = profileWidgets.map { it.toDTO }
     )
 
 val com.weave.model.domain.user.UserProfile.toDTO
