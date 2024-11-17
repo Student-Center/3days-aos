@@ -4,11 +4,12 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.weave.home.complete.CompleteRegisterScreen
+import com.weave.home.MainTabScreen
 
 enum class Route(val routeName: String) {
+    Main("main"),
     Home("home"),
-    HomeMain("home_main");
+    Profile("profile");
 
     fun withArgs(vararg args: String): String {
         return buildString {
@@ -19,9 +20,9 @@ enum class Route(val routeName: String) {
 }
 
 fun NavGraphBuilder.navGraphHome(navController: NavController) {
-    navigation(startDestination = Route.HomeMain.routeName, route = Route.Home.routeName) {
-        composable(Route.HomeMain.routeName) {
-            CompleteRegisterScreen()
+    navigation(startDestination = Route.Home.routeName, route = Route.Main.routeName) {
+        composable(Route.Home.routeName) {
+            MainTabScreen()
         }
     }
 }
