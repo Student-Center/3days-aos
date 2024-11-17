@@ -68,11 +68,12 @@ private fun MainTabScreenContent(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = padding.calculateTopPadding())
         ) {
             DaysBackgroundTextureImage()
 
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .padding(top = padding.calculateTopPadding())) {
                 TabRow(
                     selectedTab = selectedTab,
                     onTabSelected = onTabSelected
@@ -100,7 +101,7 @@ private fun TabRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         TabItem(
-            text = "Home",
+            text = "HOME",
             isSelected = selectedTab == TabType.HOME,
             onClick = { onTabSelected(TabType.HOME) }
         )
