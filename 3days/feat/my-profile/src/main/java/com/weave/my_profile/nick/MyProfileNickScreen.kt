@@ -175,7 +175,7 @@ private fun NickNameTextField(
                 .matchParentSize(),
             value = nickname,
             onValueChange = { newValue ->
-                val regex = Regex("^[가-힣ㄱ-ㅎㅏ-ㅣ\\s]+$")
+                val regex = Regex("^[가-힣ㆍᆞᆢㄱ-ㅎㅏ-ㅣ]*$")
                 if (newValue.isEmpty() || regex.matches(newValue)) {
                     nicknameChanged(newValue.replace(" ", ""))
                 }
