@@ -79,6 +79,12 @@ class EditJobViewModel @Inject constructor(
                     jobOccupation = uiState.occupation
                 ).mapMerge().collect { result ->
                     if (result != null) {
+                        setEffect {
+                            EditJobEffect.ShowToast(
+                                message = "내 직군이 변경되었어요",
+                                type = SnackBarType.DEFAULT
+                            )
+                        }
                         setEffect { EditJobEffect.NavigateToProfile(true) }
                     } else if (!isLoading) {
                         setEffect {
