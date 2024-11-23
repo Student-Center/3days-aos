@@ -102,7 +102,7 @@ class EditLocationViewModel @Inject constructor(
         }
 
     private fun validateInput() {
-        if (uiState.selectedLocations.isNotEmpty() || uiState.initLocations.toSet() != uiState.selectedLocations.toSet()) {
+        if (uiState.selectedLocations.isNotEmpty() && uiState.initLocations.toSet() != uiState.selectedLocations.toSet()) {
             viewModelScope.launch {
                 updateMyInfoUseCase.invoke(
                     locationIds = uiState.selectedLocations.map { it.id }
