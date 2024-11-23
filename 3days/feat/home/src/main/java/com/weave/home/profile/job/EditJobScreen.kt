@@ -130,7 +130,7 @@ private fun EditJobScreenContent(
                 Spacer(modifier = Modifier.height(34.dp))
 
                 CurrentItem(
-                    item = uiState.occupation ?: uiState.initOccupation
+                    item = uiState.initOccupation
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
