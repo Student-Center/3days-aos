@@ -75,7 +75,12 @@ fun ProfileScreen(
                     )
                 }
 
-                ProfileEditType.LOCATION -> {}
+                ProfileEditType.LOCATION -> {
+                    moveToMyProfileEdit(
+                        ProfileEditType.LOCATION,
+                        viewModel.uiState.locations
+                    )
+                }
             }
         }
     )
@@ -177,7 +182,8 @@ private fun ProfileSection(
             Spacer(modifier = Modifier.height(6.dp))
 
             ProfileLocation(
-                locations = uiState.locations.map { it.second }
+                locations = uiState.locations.map { it.second },
+                moveToMyProfileEdit = { moveToMyProfileEdit(ProfileEditType.LOCATION) }
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -323,7 +329,8 @@ private fun ProfileItem(
 
 @Composable
 private fun ProfileLocation(
-    locations: List<String> = listOf()
+    locations: List<String> = listOf(),
+    moveToMyProfileEdit: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -363,7 +370,9 @@ private fun ProfileLocation(
                 imageVector = Icons.Rounded.Edit,
                 contentDescription = "",
                 tint = DaysTheme.colors.black.copy(alpha = 0.3f),
-                modifier = Modifier.size(14.dp)
+                modifier = Modifier
+                    .size(14.dp)
+                    .noRippleClickable { moveToMyProfileEdit() }
             )
         }
 

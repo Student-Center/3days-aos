@@ -1,5 +1,6 @@
 package com.weave
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -11,30 +12,45 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.weave.home.MainTabScreen
 import com.weave.home.TabType
 import com.weave.home.profile.ProfileEditType
 import com.weave.home.profile.SnackBarViewModel
 import com.weave.home.profile.company.EditCompanyScreen
 import com.weave.home.profile.job.EditJobScreen
+import com.weave.home.profile.location.EditLocationScreen
+import com.weave.home.profile.location.LocationListType
 import com.weave.model.domain.myprofile.Company
 import com.weave.model.domain.myprofile.JobOccupation
 import com.weave.utils.navigation.navigateWithClearBackStack
 import java.util.UUID
+
+private const val LOCATIONS_KEY = "locations"
+private val gson = Gson()
+private val listType = object : TypeToken<List<Pair<UUID, String>>>() {}.type
 
 enum class Route(val routeName: String) {
     Main("main"),
     Home("home"),
     Profile("profile"),
     ProfileEditJob("edit_job"),
-    ProfileEditCompany("edit_company")
-    ;
+    ProfileEditCompany("edit_company"),
+    ProfileEditLocation("edit_location/{$LOCATIONS_KEY}");
 
     fun withArgs(vararg args: String): String {
         return buildString {
             append(routeName)
             args.forEach { arg -> append("/$arg") }
         }
+    }
+
+    fun createLocationRoute(locations: List<Pair<UUID, String>>): String {
+        return routeName.replace(
+            "{$LOCATIONS_KEY}",
+            Uri.encode(gson.toJson(locations))
+        )
     }
 }
 
@@ -66,7 +82,10 @@ fun NavGraphBuilder.navGraphHome(navController: NavController) {
                             )
                         }
 
-                        ProfileEditType.LOCATION -> Route.ProfileEditJob.routeName
+                        ProfileEditType.LOCATION -> {
+                            val locations = item as? List<Pair<UUID, String>> ?: emptyList()
+                            Route.ProfileEditLocation.createLocationRoute(locations)
+                        }
                     }
 
                     navController.navigateWithClearBackStack(
@@ -126,6 +145,36 @@ fun NavGraphBuilder.navGraphHome(navController: NavController) {
                     navController.navigateWithClearBackStack(
                         Route.Home.withArgs("1"),
                         Route.ProfileEditCompany.routeName,
+                    )
+                }
+            )
+        }
+
+        composable(
+            route = Route.ProfileEditLocation.routeName,
+            arguments = listOf(
+                navArgument(LOCATIONS_KEY) { type = LocationListType() }
+            )
+        ) { backStackEntry ->
+            val snackBarViewModel = backStackEntry.sharedViewModel<SnackBarViewModel>(navController)
+            val locations = try {
+                backStackEntry.arguments?.getString(LOCATIONS_KEY)?.let { jsonString ->
+                    gson.fromJson<List<Pair<String, String>>>(jsonString, listType)
+                        .map { (first, second) ->
+                            Pair(UUID.fromString(first), second)
+                        }
+                } ?: emptyList()
+            } catch (e: Exception) {
+                emptyList()
+            }
+
+            EditLocationScreen(
+                snackBarViewModel = snackBarViewModel,
+                initLocations = locations,
+                navigateToProfile = {
+                    navController.navigateWithClearBackStack(
+                        Route.Home.withArgs("1"),
+                        Route.ProfileEditLocation.routeName,
                     )
                 }
             )
