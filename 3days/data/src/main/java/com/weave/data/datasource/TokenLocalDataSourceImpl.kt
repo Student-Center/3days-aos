@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.weave.model.auth.AuthToken
+import com.weave.utils.LoggerUtil
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -20,8 +21,6 @@ class TokenLocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun saveTokens(accessToken: String, refreshToken: String): Result<Unit> {
-        Log.e("TEST", "SAVE: $accessToken, $refreshToken")
-
         return try {
             dataStore.edit { preferences ->
                 preferences[PreferencesKeys.ACCESS_TOKEN] = accessToken
@@ -34,13 +33,15 @@ class TokenLocalDataSourceImpl @Inject constructor(
     }
 
     override fun getTokens(): Flow<AuthToken> {
-        Log.e("TEST", "GET")
-
         return dataStore.data.map { preferences ->
-            AuthToken(
+
+            val data = AuthToken(
                 accessToken = preferences[PreferencesKeys.ACCESS_TOKEN] ?: "",
                 refreshToken = preferences[PreferencesKeys.REFRESH_TOKEN] ?: "",
             )
+            LoggerUtil.info(data.toString())
+
+            data
         }
     }
 
