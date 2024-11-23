@@ -46,6 +46,7 @@ dependencies {
     implementation(project(":core:design-system"))
     implementation(project(":domain:user"))
     implementation(project(":domain:company"))
+    implementation(project(":domain:location"))
 
     implementation(libs.bundles.compose)
     debugImplementation(libs.bundles.compose.debug)
@@ -57,4 +58,5 @@ dependencies {
     ksp(libs.hilt.android.compiler)
 
     implementation(libs.bundles.coil.compose)
+    implementation(libs.gson)
 }
