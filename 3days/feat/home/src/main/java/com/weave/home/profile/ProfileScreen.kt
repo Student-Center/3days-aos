@@ -51,7 +51,7 @@ import com.weave.model.domain.myprofile.JobOccupation
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
-    moveToMyProfileEdit: (ProfileEditType, Any) -> Unit
+    moveToMyProfileEdit: (ProfileEditType, Any?) -> Unit
 ) {
     LaunchedEffect(Unit) {
         if (viewModel.uiState.name.isBlank()) viewModel.setAction(ProfileAction.FetchData)
@@ -68,7 +68,13 @@ fun ProfileScreen(
                     )
                 }
 
-                ProfileEditType.COMPANY -> {}
+                ProfileEditType.COMPANY -> {
+                    moveToMyProfileEdit(
+                        ProfileEditType.COMPANY,
+                        viewModel.uiState.company
+                    )
+                }
+
                 ProfileEditType.LOCATION -> {}
             }
         }

@@ -34,7 +34,7 @@ android {
 dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:network"))
-
+    implementation(project(":core:utils"))
     implementation(project(":domain"))
 
     implementation(libs.okhttp)

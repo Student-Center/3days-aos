@@ -44,7 +44,7 @@ enum class TabType {
 fun MainTabScreen(
     snackBarViewModel: SnackBarViewModel = hiltViewModel(),
     targetScreen: TabType = TabType.HOME,
-    moveToMyProfileEdit: (ProfileEditType, Any) -> Unit
+    moveToMyProfileEdit: (ProfileEditType, Any?) -> Unit
 ) {
     var selectedTab by remember { mutableStateOf(targetScreen) }
 
@@ -62,7 +62,7 @@ private fun MainTabScreenContent(
     selectedTab: TabType,
     onTabSelected: (TabType) -> Unit,
     modifier: Modifier = Modifier,
-    moveToMyProfileEdit: (ProfileEditType, Any) -> Unit
+    moveToMyProfileEdit: (ProfileEditType, Any?) -> Unit
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -169,7 +169,7 @@ private fun TabIndicator(
 @Composable
 private fun TabContent(
     selectedTab: TabType,
-    moveToMyProfileEdit: (ProfileEditType, Any) -> Unit
+    moveToMyProfileEdit: (ProfileEditType, Any?) -> Unit
 ) {
     when (selectedTab) {
         TabType.HOME -> HomeScreen()
