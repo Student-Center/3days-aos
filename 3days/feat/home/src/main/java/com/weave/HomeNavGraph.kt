@@ -24,7 +24,6 @@ import com.weave.home.profile.location.EditLocationScreen
 import com.weave.home.profile.location.LocationListType
 import com.weave.model.domain.myprofile.Company
 import com.weave.model.domain.myprofile.JobOccupation
-import com.weave.utils.LoggerUtil
 import com.weave.utils.navigation.navigateWithClearBackStack
 import java.util.UUID
 
@@ -168,8 +167,6 @@ fun NavGraphBuilder.navGraphHome(navController: NavController) {
             } catch (e: Exception) {
                 emptyList()
             }
-
-            LoggerUtil.info(locations.toString())
 
             EditLocationScreen(
                 snackBarViewModel = snackBarViewModel,
