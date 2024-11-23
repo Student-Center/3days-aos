@@ -26,26 +26,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.weave.design_system.DaysTheme
 import com.weave.design_system.component.DaysBackgroundTextureImage
 import com.weave.design_system.component.DaysSnackBarHost
 import com.weave.design_system.extension.noRippleClickable
 import com.weave.home.home.HomeScreen
+import com.weave.home.profile.ProfileEditType
 import com.weave.home.profile.ProfileScreen
+import com.weave.home.profile.SnackBarViewModel
 
-private enum class TabType {
+enum class TabType {
     HOME, PROFILE
 }
 
 @Composable
-fun MainTabScreen() {
-    val snackState = remember { SnackbarHostState() }
-    var selectedTab by remember { mutableStateOf(TabType.HOME) }
+fun MainTabScreen(
+    snackBarViewModel: SnackBarViewModel = hiltViewModel(),
+    targetScreen: TabType = TabType.HOME,
+    moveToMyProfileEdit: (ProfileEditType, Any) -> Unit
+) {
+    var selectedTab by remember { mutableStateOf(targetScreen) }
 
     MainTabScreenContent(
-        snackState = snackState,
+        snackState = snackBarViewModel.snackBarHostState,
         selectedTab = selectedTab,
-        onTabSelected = { selectedTab = it }
+        onTabSelected = { selectedTab = it },
+        moveToMyProfileEdit = moveToMyProfileEdit
     )
 }
 
@@ -54,7 +61,8 @@ private fun MainTabScreenContent(
     snackState: SnackbarHostState,
     selectedTab: TabType,
     onTabSelected: (TabType) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    moveToMyProfileEdit: (ProfileEditType, Any) -> Unit
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -71,9 +79,11 @@ private fun MainTabScreenContent(
         ) {
             DaysBackgroundTextureImage()
 
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .padding(top = padding.calculateTopPadding())) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = padding.calculateTopPadding())
+            ) {
                 TabRow(
                     selectedTab = selectedTab,
                     onTabSelected = onTabSelected
@@ -81,7 +91,10 @@ private fun MainTabScreenContent(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                TabContent(selectedTab = selectedTab)
+                TabContent(
+                    selectedTab = selectedTab,
+                    moveToMyProfileEdit = moveToMyProfileEdit
+                )
             }
         }
     }
@@ -156,10 +169,15 @@ private fun TabIndicator(
 @Composable
 private fun TabContent(
     selectedTab: TabType,
+    moveToMyProfileEdit: (ProfileEditType, Any) -> Unit
 ) {
     when (selectedTab) {
         TabType.HOME -> HomeScreen()
-        TabType.PROFILE -> ProfileScreen()
+        TabType.PROFILE -> ProfileScreen(
+            moveToMyProfileEdit = { type, item ->
+                moveToMyProfileEdit(type, item)
+            }
+        )
     }
 }
 
@@ -172,6 +190,7 @@ private fun MainTabScreenPreview() {
     MainTabScreenContent(
         snackState = snackState,
         selectedTab = selectedTab,
-        onTabSelected = { selectedTab = it }
+        onTabSelected = { selectedTab = it },
+        moveToMyProfileEdit = { type, item -> }
     )
 }

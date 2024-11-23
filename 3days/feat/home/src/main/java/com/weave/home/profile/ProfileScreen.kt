@@ -43,24 +43,42 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import com.weave.design_system.DaysTheme
 import com.weave.design_system.extension.applyShadow
+import com.weave.design_system.extension.noRippleClickable
 import com.weave.home.R
 import com.weave.model.domain.myprofile.Company
 import com.weave.model.domain.myprofile.JobOccupation
 
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel(),
+    moveToMyProfileEdit: (ProfileEditType, Any) -> Unit
 ) {
     LaunchedEffect(Unit) {
         if (viewModel.uiState.name.isBlank()) viewModel.setAction(ProfileAction.FetchData)
     }
 
-    ProfileScreenContent(viewModel.uiState)
+    ProfileScreenContent(
+        uiState = viewModel.uiState,
+        moveToMyProfileEdit = { type ->
+            when (type) {
+                ProfileEditType.JOB_OCCUPATION -> {
+                    moveToMyProfileEdit(
+                        ProfileEditType.JOB_OCCUPATION,
+                        viewModel.uiState.occupation ?: JobOccupation.OTHER
+                    )
+                }
+
+                ProfileEditType.COMPANY -> {}
+                ProfileEditType.LOCATION -> {}
+            }
+        }
+    )
 }
 
 @Composable
 private fun ProfileScreenContent(
-    uiState: ProfileState
+    uiState: ProfileState,
+    moveToMyProfileEdit: (ProfileEditType) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -75,13 +93,17 @@ private fun ProfileScreenContent(
             color = DaysTheme.colors.grey500
         )
 
-        ProfileSection(uiState)
+        ProfileSection(
+            uiState = uiState,
+            moveToMyProfileEdit = { moveToMyProfileEdit(it) }
+        )
     }
 }
 
 @Composable
 private fun ProfileSection(
-    uiState: ProfileState
+    uiState: ProfileState,
+    moveToMyProfileEdit: (ProfileEditType) -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -134,14 +156,16 @@ private fun ProfileSection(
 
             ProfileItem(
                 type = "직군",
-                occupation = uiState.occupation
+                occupation = uiState.occupation,
+                moveToMyProfileEdit = { moveToMyProfileEdit(ProfileEditType.JOB_OCCUPATION) }
             )
 
             Spacer(modifier = Modifier.height(6.dp))
 
             ProfileItem(
                 type = "직장",
-                company = uiState.company
+                company = uiState.company,
+                moveToMyProfileEdit = { moveToMyProfileEdit(ProfileEditType.COMPANY) }
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -230,14 +254,15 @@ private fun text() = buildAnnotatedString {
 private fun ProfileItem(
     type: String,
     occupation: JobOccupation? = null,
-    company: Company? = null
+    company: Company? = null,
+    moveToMyProfileEdit: () -> Unit
 ) {
 
     val bgColor = if (type == "직군") DaysTheme.colors.green50 else DaysTheme.colors.pink50
     val borderColor = if (type == "직군") Color(0xFFE6EFDF) else Color(0xFFEFDFE5)
     val iconId = if (type == "직군") R.drawable.ic_round_business else R.drawable.ic_round_building
     val textColor = if (type == "직군") DaysTheme.colors.green500 else DaysTheme.colors.pink500
-    val value = if (type == "직군") occupation?.koValue else company?.name
+    val value = if (type == "직군") occupation?.koValue ?: "새회사" else company?.name ?: "새회사"
 
     Row(
         modifier = Modifier
@@ -282,7 +307,9 @@ private fun ProfileItem(
                 imageVector = Icons.Rounded.Edit,
                 contentDescription = "",
                 tint = DaysTheme.colors.black.copy(alpha = 0.3f),
-                modifier = Modifier.size(14.dp)
+                modifier = Modifier
+                    .size(14.dp)
+                    .noRippleClickable { moveToMyProfileEdit() }
             )
         }
     }
@@ -428,5 +455,14 @@ private fun ProfileScreenPreview() {
         occupation = JobOccupation.SPORTS,
     )
 
-    ProfileScreenContent(uiState)
+    ProfileScreenContent(
+        uiState = uiState,
+        moveToMyProfileEdit = { type ->
+            when (type) {
+                ProfileEditType.JOB_OCCUPATION -> {}
+                ProfileEditType.COMPANY -> {}
+                ProfileEditType.LOCATION -> {}
+            }
+        }
+    )
 }
