@@ -8,11 +8,14 @@ import com.weave.data.mapper.toDTO
 import com.weave.data.mapper.toDomain
 import com.weave.domain.repository.UserRepository
 import com.weave.model.auth.AuthToken
+import com.weave.model.domain.myprofile.JobOccupation
 import com.weave.model.domain.user.MyInfo
 import com.weave.model.domain.user.ProfileWidget
 import com.weave.model.domain.user.RegisterInfo
 import com.weave.model.network.NetworkResult
+import com.weave.network.model.UpdateMyUserInfoRequest
 import kotlinx.coroutines.flow.Flow
+import java.util.UUID
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -53,6 +56,27 @@ class UserRepositoryImpl @Inject constructor(
             )
 
             it.toDomain
+        }
+    )
+
+    override suspend fun updateMyUserInfo(
+        name: String?,
+        jobOccupation: JobOccupation?,
+        companyId: UUID?,
+        locationIds: List<UUID>?
+    ): Flow<NetworkResult<Boolean>> = handleNetworkCall(
+        networkCall = {
+            dataSource.updateMyUserInfo(
+                UpdateMyUserInfoRequest(
+                    name = name,
+                    jobOccupation = jobOccupation?.toDTO,
+                    companyId = companyId,
+                    locationIds = locationIds
+                )
+            )
+        },
+        mapToDomain = {
+            true
         }
     )
 }
