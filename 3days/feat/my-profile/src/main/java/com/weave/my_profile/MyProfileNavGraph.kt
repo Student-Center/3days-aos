@@ -37,7 +37,7 @@ enum class Route(val routeName: String) {
     PartnerAge("partner_age"),
     PartnerOccupation("partner_occupation"),
     PartnerDistance("partner_distance"),
-    Home("home");
+    Main("main");
 
     fun withArgs(vararg args: String): String {
         return buildString {
@@ -294,7 +294,7 @@ fun NavGraphBuilder.navGraphMyProfile(navController: NavController) {
                     )
                 },
                 onNextBtnClicked = {
-                    navController.navigate(Route.Home.routeName) {
+                    navController.navigate(Route.Main.routeName) {
                         popUpTo(navController.graph.id) { inclusive = true }
                     }
                 }
