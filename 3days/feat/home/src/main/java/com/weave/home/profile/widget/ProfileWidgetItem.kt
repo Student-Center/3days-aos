@@ -16,11 +16,17 @@ import androidx.compose.material.icons.filled.Create
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.weave.design_system.DaysTheme
@@ -32,8 +38,10 @@ import com.weave.model.domain.user.ProfileWidgetType
 fun ProfileWidgetItem(
     widgetType: ProfileWidgetType,
     content: String,
-    onClick: (ProfileWidgetType) -> Unit
+    onClick: (Offset) -> Unit
 ) {
+    var itemPosition by remember { mutableStateOf(Offset.Zero) }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -52,7 +60,7 @@ fun ProfileWidgetItem(
                 color = Color(0xFFFFFFFF),
                 shape = RoundedCornerShape(24.dp)
             )
-            .padding(16.dp)
+            .padding(20.dp)
     ) {
         Column(
             modifier = Modifier.matchParentSize(),
@@ -75,7 +83,14 @@ fun ProfileWidgetItem(
                     tint = Color(0x4D000000),
                     modifier = Modifier
                         .size(24.dp)
-                        .noRippleClickable { onClick(widgetType) }
+                        .onGloballyPositioned { coordinates ->
+                            itemPosition = coordinates.localToRoot(Offset.Zero)
+                        }
+                        .noRippleClickable {
+                            if (itemPosition != Offset.Zero) {
+                                onClick(itemPosition)
+                            }
+                        },
                 )
             }
 

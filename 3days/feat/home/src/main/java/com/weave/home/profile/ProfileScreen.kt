@@ -7,6 +7,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,12 +47,16 @@ import com.weave.design_system.DaysTheme
 import com.weave.design_system.extension.applyShadow
 import com.weave.design_system.extension.noRippleClickable
 import com.weave.home.R
+import com.weave.home.profile.widget.ProfileWidgetSection
 import com.weave.model.domain.myprofile.Company
 import com.weave.model.domain.myprofile.JobOccupation
+import com.weave.model.domain.user.ProfileWidget
+import com.weave.model.domain.user.ProfileWidgetType
 
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
+    innerPadding: PaddingValues,
     moveToMyProfileEdit: (ProfileEditType, Any?) -> Unit
 ) {
     LaunchedEffect(Unit) {
@@ -59,6 +65,7 @@ fun ProfileScreen(
 
     ProfileScreenContent(
         uiState = viewModel.uiState,
+        innerPadding = innerPadding,
         moveToMyProfileEdit = { type ->
             when (type) {
                 ProfileEditType.JOB_OCCUPATION -> {
@@ -88,26 +95,57 @@ fun ProfileScreen(
 
 @Composable
 private fun ProfileScreenContent(
+    innerPadding: PaddingValues,
     uiState: ProfileState,
     moveToMyProfileEdit: (ProfileEditType) -> Unit
 ) {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 18.dp)
+            .padding(bottom = innerPadding.calculateBottomPadding())
     ) {
-        Spacer(modifier = Modifier.height(32.dp))
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 18.dp)
+        ) {
+            item {
+                Spacer(modifier = Modifier.height(32.dp))
+            }
 
-        Text(
-            text = "My Profile",
-            style = DaysTheme.typography.enMedium20.toTextStyle(),
-            color = DaysTheme.colors.grey500
-        )
+            item {
+                Text(
+                    text = "My Profile",
+                    style = DaysTheme.typography.enMedium20.toTextStyle(),
+                    color = DaysTheme.colors.grey500
+                )
+            }
 
-        ProfileSection(
-            uiState = uiState,
-            moveToMyProfileEdit = { moveToMyProfileEdit(it) }
-        )
+            item {
+                ProfileSection(
+                    uiState = uiState,
+                    moveToMyProfileEdit = { moveToMyProfileEdit(it) }
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(40.dp))
+            }
+
+            item {
+                ProfileWidgetSection(
+                    modifier = Modifier.padding(horizontal = 2.dp),
+                    profileWidgets = uiState.profileWidgets,
+                    onWidgetEdit = {},
+                    onWidgetDelete = {},
+                    onBlankWidgetClick = {}
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(32.dp))
+            }
+        }
     }
 }
 
@@ -308,7 +346,7 @@ private fun ProfileItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = value ?: "",
+                text = value,
                 style = DaysTheme.typography.medium14.toTextStyle(),
                 color = textColor
             )
@@ -468,10 +506,16 @@ private fun ProfileScreenPreview() {
         name = "위브",
         birthYear = 2000,
         occupation = JobOccupation.SPORTS,
+        profileWidgets = ProfileWidgetType.entries.map {
+            ProfileWidget(
+                it, it.getExample()
+            )
+        }
     )
 
     ProfileScreenContent(
         uiState = uiState,
+        innerPadding = PaddingValues(),
         moveToMyProfileEdit = { type ->
             when (type) {
                 ProfileEditType.JOB_OCCUPATION -> {}

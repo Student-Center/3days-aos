@@ -22,7 +22,6 @@ fun WidgetInformation() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 18.dp)
             .applyShadow(
                 shape = RoundedCornerShape(60.dp),
                 shadowType = DaysTheme.shadow.default.copy(

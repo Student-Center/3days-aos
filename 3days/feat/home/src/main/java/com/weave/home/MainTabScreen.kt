@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -92,6 +93,7 @@ private fun MainTabScreenContent(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 TabContent(
+                    innerPadding = padding,
                     selectedTab = selectedTab,
                     moveToMyProfileEdit = moveToMyProfileEdit
                 )
@@ -168,12 +170,14 @@ private fun TabIndicator(
 
 @Composable
 private fun TabContent(
+    innerPadding: PaddingValues,
     selectedTab: TabType,
     moveToMyProfileEdit: (ProfileEditType, Any?) -> Unit
 ) {
     when (selectedTab) {
         TabType.HOME -> HomeScreen()
         TabType.PROFILE -> ProfileScreen(
+            innerPadding = innerPadding,
             moveToMyProfileEdit = { type, item ->
                 moveToMyProfileEdit(type, item)
             }

@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.weave.design_system.component.SnackBarType
 import com.weave.model.domain.myprofile.Company
 import com.weave.model.domain.myprofile.JobOccupation
+import com.weave.model.domain.user.ProfileWidget
 import com.weave.user.GetMyInfoUseCase
 import com.weave.utils.base.BaseViewModel
 import com.weave.utils.base.UIAction
@@ -29,7 +30,8 @@ data class ProfileState(
     val profileUrl: String = "",
     val occupation: JobOccupation? = null,
     val company: Company? = null,
-    val locations: List<Pair<UUID, String>> = listOf()
+    val locations: List<Pair<UUID, String>> = listOf(),
+    val profileWidgets: List<ProfileWidget> = listOf()
 ) : UIState
 
 sealed class ProfileEffect : UIEffect {
@@ -64,7 +66,8 @@ class ProfileViewModel @Inject constructor(
                             profileUrl = "",
                             occupation = myInfo.profile.jobOccupation,
                             company = myInfo.profile.company,
-                            locations = myInfo.profile.locations
+                            locations = myInfo.profile.locations,
+                            profileWidgets = myInfo.profileWidgets
                         )
                     }
 
