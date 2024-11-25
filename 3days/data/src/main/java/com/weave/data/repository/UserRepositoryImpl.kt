@@ -11,6 +11,7 @@ import com.weave.model.auth.AuthToken
 import com.weave.model.domain.myprofile.JobOccupation
 import com.weave.model.domain.user.MyInfo
 import com.weave.model.domain.user.ProfileWidget
+import com.weave.model.domain.user.ProfileWidgetType
 import com.weave.model.domain.user.RegisterInfo
 import com.weave.model.network.NetworkResult
 import com.weave.network.model.UpdateMyUserInfoRequest
@@ -30,14 +31,6 @@ class UserRepositoryImpl @Inject constructor(
         },
         mapToDomain = { it.toDomain }
     )
-
-    override suspend fun putProfileWidget(type: ProfileWidget): Flow<NetworkResult<ProfileWidget>> =
-        handleNetworkCall(
-            networkCall = {
-                dataSource.putProfileWidget(type.toDTO)
-            },
-            mapToDomain = { it.toDomain }
-        )
 
     override suspend fun registerUser(
         xRegisterToken: String,
@@ -79,4 +72,18 @@ class UserRepositoryImpl @Inject constructor(
             true
         }
     )
+
+    override suspend fun putProfileWidget(type: ProfileWidget): Flow<NetworkResult<ProfileWidget>> =
+        handleNetworkCall(
+            networkCall = {
+                dataSource.putProfileWidget(type.toDTO)
+            },
+            mapToDomain = { it.toDomain }
+        )
+
+    override suspend fun deleteProfileWidget(type: ProfileWidgetType): Flow<NetworkResult<Unit>> =
+        handleNetworkCall(
+            networkCall = { dataSource.deleteProfileWidget(type.toDTO) },
+            mapToDomain = { }
+        )
 }
