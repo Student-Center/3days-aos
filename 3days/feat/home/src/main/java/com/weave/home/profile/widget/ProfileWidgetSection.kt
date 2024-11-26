@@ -4,10 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -24,8 +24,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.weave.design_system.DaysTheme
@@ -38,7 +40,7 @@ fun ProfileWidgetSection(
     modifier: Modifier = Modifier,
     profileWidgets: List<ProfileWidget>,
     onWidgetEdit: (ProfileWidget) -> Unit = {},
-    onWidgetDelete: (ProfileWidget) -> Unit = {},
+    onWidgetDelete: (ProfileWidgetType) -> Unit = {},
     onBlankWidgetClick: () -> Unit = {}
 ) {
     var selectedWidget by remember { mutableStateOf<ProfileWidget?>(null) }
@@ -68,6 +70,7 @@ fun ProfileWidgetSection(
         }
 
         val isFullWidget = profileWidgets.size == ProfileWidgetType.entries.size
+        val maxHeight = screenHeightCalculator(ProfileWidgetType.entries)
 
         Box(
             modifier = Modifier.fillMaxWidth()
@@ -75,20 +78,15 @@ fun ProfileWidgetSection(
             LazyVerticalGrid(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(
-                        ratio = when {
-                            profileWidgets.isEmpty() -> 2f // 1행
-                            profileWidgets.size <= 2 -> 2f // 1행
-                            profileWidgets.size <= 4 -> 1f // 2행
-                            else -> 0.67f // 3행
-                        }
-                    ),
+                    .heightIn(max = maxHeight),
                 columns = GridCells.Fixed(2),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 userScrollEnabled = false
             ) {
-                items(profileWidgets.size) { index ->
+                items(
+                    profileWidgets.size,
+                    key = { index -> profileWidgets[index].type }) { index ->
                     ProfileWidgetItem(
                         widgetType = profileWidgets[index].type,
                         content = profileWidgets[index].content,
@@ -103,6 +101,16 @@ fun ProfileWidgetSection(
                     item {
                         BlankWidgetItem(onClick = onBlankWidgetClick)
                     }
+                }
+
+                if(profileWidgets.size % 2 == 0) {
+                    item {
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }
@@ -121,7 +129,7 @@ fun ProfileWidgetSection(
                 selectedWidget = null
             },
             onDelete = { widget ->
-                onWidgetDelete(widget)
+                onWidgetDelete(widget.type)
                 selectedWidget = null
             }
         )
@@ -180,6 +188,16 @@ private fun WidgetPopupMenu(
     }
 }
 
+@Composable
+private fun screenHeightCalculator(list: List<Any>): Dp {
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+
+    return remember(list) {
+        ((screenWidth.value / 2) * (list.size / 2 + 1)).dp
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun ProfileWidgetSectionPreview() {
@@ -189,7 +207,7 @@ private fun ProfileWidgetSectionPreview() {
             .padding(horizontal = 20.dp)
     ) {
         ProfileWidgetSection(
-            profileWidgets = ProfileWidgetType.entries.map {
+            profileWidgets = ProfileWidgetType.entries.take(3).map {
                 ProfileWidget(it, it.getExample())
             }
         )

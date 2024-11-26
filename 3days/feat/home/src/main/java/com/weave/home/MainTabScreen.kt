@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,6 +35,8 @@ import com.weave.home.home.HomeScreen
 import com.weave.home.profile.ProfileEditType
 import com.weave.home.profile.ProfileScreen
 import com.weave.home.profile.SnackBarViewModel
+import com.weave.utils.Keyboard
+import com.weave.utils.keyboardAsState
 
 enum class TabType {
     HOME, PROFILE
@@ -48,9 +49,11 @@ fun MainTabScreen(
     moveToMyProfileEdit: (ProfileEditType, Any?) -> Unit
 ) {
     var selectedTab by remember { mutableStateOf(targetScreen) }
+    val isKeyboardVisible by keyboardAsState()
 
     MainTabScreenContent(
-        snackState = snackBarViewModel.snackBarHostState,
+        snackBarViewModel = snackBarViewModel,
+        isKeyboardVisible = isKeyboardVisible,
         selectedTab = selectedTab,
         onTabSelected = { selectedTab = it },
         moveToMyProfileEdit = moveToMyProfileEdit
@@ -59,18 +62,21 @@ fun MainTabScreen(
 
 @Composable
 private fun MainTabScreenContent(
-    snackState: SnackbarHostState,
+    snackBarViewModel: SnackBarViewModel,
+    isKeyboardVisible: Keyboard,
     selectedTab: TabType,
     onTabSelected: (TabType) -> Unit,
     modifier: Modifier = Modifier,
     moveToMyProfileEdit: (ProfileEditType, Any?) -> Unit
 ) {
+//    val snackBarPadding = if (isKeyboardVisible == Keyboard.Closed) 110.dp else 36.dp
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         snackbarHost = {
             DaysSnackBarHost(
-                snackState = snackState,
-                modifier = Modifier.padding(bottom = 110.dp)
+                snackState = snackBarViewModel.snackBarHostState,
+                modifier = Modifier.padding(bottom = 36.dp)
             )
         }
     ) { padding ->
@@ -93,6 +99,7 @@ private fun MainTabScreenContent(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 TabContent(
+                    snackBarViewModel = snackBarViewModel,
                     innerPadding = padding,
                     selectedTab = selectedTab,
                     moveToMyProfileEdit = moveToMyProfileEdit
@@ -170,6 +177,7 @@ private fun TabIndicator(
 
 @Composable
 private fun TabContent(
+    snackBarViewModel: SnackBarViewModel,
     innerPadding: PaddingValues,
     selectedTab: TabType,
     moveToMyProfileEdit: (ProfileEditType, Any?) -> Unit
@@ -177,6 +185,7 @@ private fun TabContent(
     when (selectedTab) {
         TabType.HOME -> HomeScreen()
         TabType.PROFILE -> ProfileScreen(
+            snackBarViewModel = snackBarViewModel,
             innerPadding = innerPadding,
             moveToMyProfileEdit = { type, item ->
                 moveToMyProfileEdit(type, item)
@@ -188,11 +197,12 @@ private fun TabContent(
 @Preview
 @Composable
 private fun MainTabScreenPreview() {
-    val snackState = remember { SnackbarHostState() }
     var selectedTab by remember { mutableStateOf(TabType.HOME) }
+    val isKeyboardVisible by keyboardAsState()
 
     MainTabScreenContent(
-        snackState = snackState,
+        snackBarViewModel = SnackBarViewModel(),
+        isKeyboardVisible = isKeyboardVisible,
         selectedTab = selectedTab,
         onTabSelected = { selectedTab = it },
         moveToMyProfileEdit = { type, item -> }
