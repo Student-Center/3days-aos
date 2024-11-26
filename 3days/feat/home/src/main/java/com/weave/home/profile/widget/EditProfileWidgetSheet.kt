@@ -12,16 +12,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
@@ -42,26 +39,35 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.weave.design_system.DaysTheme
 import com.weave.design_system.component.NextButton
+import com.weave.model.domain.user.ProfileWidget
 import com.weave.model.domain.user.ProfileWidgetType
 import com.weave.utils.keyboardAsState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddProfileWidgetSheet(
+fun EditProfileWidgetSheet(
     sheetState: SheetState,
-    profileWidgetType: ProfileWidgetType,
+    profileWidget: ProfileWidget,
     onDismissRequest: () -> Unit,
-    onAddRequest: (ProfileWidgetType, String) -> Unit
+    onEditRequest: (ProfileWidgetType, String) -> Unit
 ) {
     val isKeyboardVisible by keyboardAsState()
-    var widgetContent by remember { mutableStateOf("") }
+    var widgetContent by remember { mutableStateOf(
+        TextFieldValue(
+            text = profileWidget.content,
+            selection = TextRange(profileWidget.content.length)
+        )
+    ) }
+
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
@@ -85,27 +91,28 @@ fun AddProfileWidgetSheet(
             Spacer(modifier = Modifier.height(36.dp))
 
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 18.dp),
-                contentAlignment = Alignment.CenterStart
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.CenterEnd
             ) {
                 Text(
-                    text = profileWidgetType.titleWithoutEmoji,
+                    text = "프로필 위젯 수정",
                     style = DaysTheme.typography.semiBold20.toTextStyle(),
                     color = DaysTheme.colors.black,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                IconButton(
-                    modifier = Modifier.size(24.dp),
+                Button(
+                    colors = ButtonDefaults.buttonColors().copy(
+                        containerColor = Color.Transparent,
+                    ),
                     onClick = onDismissRequest
                 ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                        contentDescription = "",
-                        tint = DaysTheme.colors.grey400,
+                    Text(
+                        text = "닫기",
+                        style = DaysTheme.typography.medium16.toTextStyle(),
+                        color = DaysTheme.colors.blue300,
+                        textAlign = TextAlign.Center,
                     )
                 }
             }
@@ -130,7 +137,7 @@ fun AddProfileWidgetSheet(
                     .clip(RoundedCornerShape(24.dp))
                     .background(
                         brush = Brush.verticalGradient(
-                            profileWidgetType.color.containerColor.map { Color(it) }
+                            profileWidget.type.color.containerColor.map { Color(it) }
                         )
                     )
                     .padding(24.dp)
@@ -145,10 +152,10 @@ fun AddProfileWidgetSheet(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = profileWidgetType.title,
+                            text = profileWidget.type.title,
                             style = DaysTheme.typography.semiBold20.copy(fontSize = 30.dp)
                                 .toTextStyle(),
-                            color = Color(profileWidgetType.color.textColor)
+                            color = Color(profileWidget.type.color.textColor)
                         )
                     }
 
@@ -157,20 +164,20 @@ fun AddProfileWidgetSheet(
                         value = widgetContent,
                         onValueChange = { newValue ->
                             widgetContent =
-                                if (newValue.length <= 40) newValue else newValue.take(40)
+                                if (newValue.text.length <= 40) newValue else newValue.copy(text = newValue.text.take(40))
                         },
-                        cursorBrush = SolidColor(Color(profileWidgetType.color.textColor).copy(alpha = 0.6f)),
+                        cursorBrush = SolidColor(Color(profileWidget.type.color.textColor).copy(alpha = 0.6f)),
                         textStyle = DaysTheme.typography.regular14.copy(
                             fontSize = 18.dp,
-                            color = Color(profileWidgetType.color.textColor).copy(alpha = 0.6f)
+                            color = Color(profileWidget.type.color.textColor).copy(alpha = 0.6f)
                         ).toTextStyle(),
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Done
                         ),
                         keyboardActions = KeyboardActions(
                             onDone = {
-                                if (widgetContent.length >= 5) {
-                                    onAddRequest(profileWidgetType, widgetContent)
+                                if (widgetContent.text.length >= 5) {
+                                    onEditRequest(profileWidget.type, widgetContent.text)
                                 }
                             }
                         ),
@@ -192,7 +199,7 @@ fun AddProfileWidgetSheet(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = widgetContent.length.toString(),
+                    text = widgetContent.text.length.toString(),
                     style = DaysTheme.typography.regular15.toTextStyle(),
                     color = DaysTheme.colors.blue300
                 )
@@ -207,11 +214,11 @@ fun AddProfileWidgetSheet(
             NextButton(
                 message = "다 썼어요",
                 isKeyboardVisible = isKeyboardVisible,
-                isEnabled = widgetContent.length >= 5,
+                isEnabled = widgetContent.text.length >= 5 && profileWidget.content != widgetContent.text,
                 padding = PaddingValues(),
                 onClick = {
-                    if (widgetContent.length >= 5) {
-                        onAddRequest(profileWidgetType, widgetContent)
+                    if (widgetContent.text.length >= 5 && profileWidget.content != widgetContent.text) {
+                        onEditRequest(profileWidget.type, widgetContent.text)
                     }
                 }
             )
@@ -222,7 +229,7 @@ fun AddProfileWidgetSheet(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-private fun AddProfileWidgetSheetPreview() {
+private fun EditProfileWidgetSheetPreview() {
     val sheetState =
         rememberModalBottomSheetState(skipPartiallyExpanded = true,
             confirmValueChange = { it != SheetValue.Hidden })
@@ -233,10 +240,10 @@ private fun AddProfileWidgetSheetPreview() {
         sheetState.show()
     }
 
-    AddProfileWidgetSheet(
+    EditProfileWidgetSheet(
         sheetState = sheetState,
-        profileWidgetType = ProfileWidgetType.HOBBY,
+        profileWidget = ProfileWidget(ProfileWidgetType.HOBBY, "init"),
         onDismissRequest = { scope.launch { sheetState.hide() } },
-        onAddRequest = { _, _ -> }
+        onEditRequest = { _, _ -> }
     )
 }

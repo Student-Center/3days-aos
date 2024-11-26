@@ -59,6 +59,7 @@ import com.weave.design_system.extension.applyShadow
 import com.weave.design_system.extension.noRippleClickable
 import com.weave.home.R
 import com.weave.home.profile.widget.AddProfileWidgetSheet
+import com.weave.home.profile.widget.EditProfileWidgetSheet
 import com.weave.home.profile.widget.ProfileWidgetSection
 import com.weave.home.profile.widget.ProfileWidgetSelectSheet
 import com.weave.model.domain.myprofile.Company
@@ -88,7 +89,14 @@ fun ProfileScreen(
         confirmValueChange = { it != SheetValue.Hidden }
     )
 
+    var openBottomSheet3 by rememberSaveable { mutableStateOf(false) }
+    val bottomSheetState3 = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = { it != SheetValue.Hidden }
+    )
+
     var widgetType by remember { mutableStateOf<ProfileWidgetType?>(null) }
+    var widget by remember { mutableStateOf<ProfileWidget?>(null) }
 
     LaunchedEffect(Unit) {
         if (viewModel.uiState.name.isBlank()) viewModel.setAction(ProfileAction.FetchData)
@@ -100,9 +108,11 @@ fun ProfileScreen(
                 is ProfileEffect.DismissSheet -> {
                     openBottomSheet = false
                     openBottomSheet2 = false
+                    openBottomSheet3 = false
 
                     bottomSheetState.hide()
                     bottomSheetState2.hide()
+                    bottomSheetState3.hide()
                 }
 
                 is ProfileEffect.ShowToast -> {
@@ -118,10 +128,13 @@ fun ProfileScreen(
     ProfileScreenContent(
         uiState = viewModel.uiState,
         type = widgetType,
+        widget = widget,
         sheetState = bottomSheetState,
         openBottomSheet = openBottomSheet,
         sheetState2 = bottomSheetState2,
         openBottomSheet2 = openBottomSheet2,
+        sheetState3 = bottomSheetState3,
+        openBottomSheet3 = openBottomSheet3,
         innerPadding = innerPadding,
         onDismissSheetRequest = {
             when (it) {
@@ -146,6 +159,17 @@ fun ProfileScreen(
                             }
                         }
                 }
+
+                3 -> {
+                    openBottomSheet3 = false
+                    scope
+                        .launch { bottomSheetState3.hide() }
+                        .invokeOnCompletion {
+                            if (!bottomSheetState3.isVisible) {
+                                openBottomSheet3 = false
+                            }
+                        }
+                }
             }
 
         },
@@ -155,6 +179,10 @@ fun ProfileScreen(
         onAddType = {
             widgetType = it
             openBottomSheet2 = !openBottomSheet2
+        },
+        onEditWidget = {
+            widget = it
+            openBottomSheet3 = !openBottomSheet3
         },
         onWidgetAdd = { type, content ->
             viewModel.setAction(ProfileAction.AddProfileWidget(type, content))
@@ -198,12 +226,16 @@ private fun ProfileScreenContent(
     innerPadding: PaddingValues,
     uiState: ProfileState,
     type: ProfileWidgetType?,
+    widget: ProfileWidget?,
     sheetState: SheetState,
     openBottomSheet: Boolean,
     sheetState2: SheetState,
     openBottomSheet2: Boolean,
+    sheetState3: SheetState,
+    openBottomSheet3: Boolean,
     onChangeSheet: () -> Unit,
     onAddType: (ProfileWidgetType) -> Unit,
+    onEditWidget: (ProfileWidget) -> Unit,
     onDismissSheetRequest: (Int) -> Unit,
     moveToMyProfileEdit: (ProfileEditType) -> Unit,
     onWidgetAdd: (ProfileWidgetType, String) -> Unit,
@@ -247,7 +279,7 @@ private fun ProfileScreenContent(
                 ProfileWidgetSection(
                     modifier = Modifier.padding(horizontal = 2.dp),
                     profileWidgets = uiState.profileWidgets,
-                    onWidgetEdit = {},
+                    onWidgetEdit = onEditWidget,
                     onWidgetDelete = onWidgetDelete,
                     onBlankWidgetClick = { onChangeSheet() }
                 )
@@ -287,6 +319,15 @@ private fun ProfileScreenContent(
                 profileWidgetType = type,
                 onDismissRequest = { onDismissSheetRequest(2) },
                 onAddRequest = onWidgetAdd
+            )
+        }
+
+        if (openBottomSheet3 && widget != null) {
+            EditProfileWidgetSheet(
+                sheetState = sheetState3,
+                profileWidget = widget,
+                onDismissRequest = { onDismissSheetRequest(3) },
+                onEditRequest = onWidgetEdit
             )
         }
     }
@@ -664,21 +705,31 @@ private fun ProfileScreenPreview() {
         confirmValueChange = { it != SheetValue.Hidden }
     )
 
-    var openBottomSheet2 by rememberSaveable { mutableStateOf(false) }
+    val openBottomSheet2 by rememberSaveable { mutableStateOf(false) }
     val bottomSheetState2 = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
         confirmValueChange = { it != SheetValue.Hidden }
     )
 
-    var widgetType by remember { mutableStateOf<ProfileWidgetType?>(null) }
+    val openBottomSheet3 by rememberSaveable { mutableStateOf(false) }
+    val bottomSheetState3 = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = { it != SheetValue.Hidden }
+    )
+
+    val widgetType by remember { mutableStateOf<ProfileWidgetType?>(null) }
+    val widget by remember { mutableStateOf<ProfileWidget?>(null) }
 
     ProfileScreenContent(
         uiState = uiState,
-        sheetState = bottomSheetState,
         type = widgetType,
+        widget = widget,
+        sheetState = bottomSheetState,
         openBottomSheet = openBottomSheet,
         sheetState2 = bottomSheetState2,
         openBottomSheet2 = openBottomSheet2,
+        sheetState3 = bottomSheetState2,
+        openBottomSheet3 = openBottomSheet2,
         innerPadding = PaddingValues(),
         onDismissSheetRequest = {
             openBottomSheet = false
@@ -694,9 +745,10 @@ private fun ProfileScreenPreview() {
             openBottomSheet = !openBottomSheet
         },
         onAddType = {},
-        onWidgetEdit = { type, content -> },
+        onEditWidget = {},
+        onWidgetEdit = { _, _ -> },
         onWidgetDelete = {},
-        onWidgetAdd = { type, content ->
+        onWidgetAdd = { _, _ ->
             openBottomSheet = true
             scope
                 .launch { bottomSheetState.show() }
