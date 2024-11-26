@@ -7,10 +7,12 @@ suspend fun <T> handleApiResponse(apiCall: suspend () -> retrofit2.Response<T>):
     return try {
         val response = apiCall()
         if (response.isSuccessful) {
-            NetworkResult.Success(response.body()!!)
-            response.body()?.let {
-                NetworkResult.Success(it)
-            } ?: NetworkResult.Error(NetworkError.NULL_RESPONSE_BODY)
+            when (response.code()) {
+                204 -> NetworkResult.Success(null as T)
+                else -> response.body()?.let {
+                    NetworkResult.Success(it)
+                } ?: NetworkResult.Error(NetworkError.NULL_RESPONSE_BODY)
+            }
         } else {
             NetworkResult.Error(NetworkError.getNetworkErrorByCode(response.code()))
         }

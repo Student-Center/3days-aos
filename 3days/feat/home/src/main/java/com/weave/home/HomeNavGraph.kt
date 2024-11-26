@@ -1,4 +1,4 @@
-package com.weave
+package com.weave.home
 
 import android.net.Uri
 import androidx.compose.runtime.Composable
@@ -14,8 +14,6 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.weave.home.MainTabScreen
-import com.weave.home.TabType
 import com.weave.home.profile.ProfileEditType
 import com.weave.home.profile.SnackBarViewModel
 import com.weave.home.profile.company.EditCompanyScreen

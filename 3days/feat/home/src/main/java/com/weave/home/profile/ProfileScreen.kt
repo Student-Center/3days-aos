@@ -7,6 +7,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,13 +24,24 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.LocationOn
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -45,20 +58,141 @@ import com.weave.design_system.DaysTheme
 import com.weave.design_system.extension.applyShadow
 import com.weave.design_system.extension.noRippleClickable
 import com.weave.home.R
+import com.weave.home.profile.widget.AddProfileWidgetSheet
+import com.weave.home.profile.widget.EditProfileWidgetSheet
+import com.weave.home.profile.widget.ProfileWidgetSection
+import com.weave.home.profile.widget.ProfileWidgetSelectSheet
 import com.weave.model.domain.myprofile.Company
 import com.weave.model.domain.myprofile.JobOccupation
+import com.weave.model.domain.user.ProfileWidget
+import com.weave.model.domain.user.ProfileWidgetType
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
+    snackBarViewModel: SnackBarViewModel = hiltViewModel(),
+    innerPadding: PaddingValues,
     moveToMyProfileEdit: (ProfileEditType, Any?) -> Unit
 ) {
+    var openBottomSheet by rememberSaveable { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = { it != SheetValue.Hidden }
+    )
+
+    var openBottomSheet2 by rememberSaveable { mutableStateOf(false) }
+    val bottomSheetState2 = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = { it != SheetValue.Hidden }
+    )
+
+    var openBottomSheet3 by rememberSaveable { mutableStateOf(false) }
+    val bottomSheetState3 = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = { it != SheetValue.Hidden }
+    )
+
+    var widgetType by remember { mutableStateOf<ProfileWidgetType?>(null) }
+    var widget by remember { mutableStateOf<ProfileWidget?>(null) }
+
     LaunchedEffect(Unit) {
         if (viewModel.uiState.name.isBlank()) viewModel.setAction(ProfileAction.FetchData)
     }
 
+    LaunchedEffect(viewModel.uiEffect) {
+        viewModel.uiEffect.collect { effect ->
+            when (effect) {
+                is ProfileEffect.DismissSheet -> {
+                    openBottomSheet = false
+                    openBottomSheet2 = false
+                    openBottomSheet3 = false
+
+                    bottomSheetState.hide()
+                    bottomSheetState2.hide()
+                    bottomSheetState3.hide()
+                }
+
+                is ProfileEffect.ShowToast -> {
+                    snackBarViewModel.showSnackBar(
+                        message = effect.message,
+                        type = effect.type
+                    )
+                }
+            }
+        }
+    }
+
     ProfileScreenContent(
         uiState = viewModel.uiState,
+        type = widgetType,
+        widget = widget,
+        sheetState = bottomSheetState,
+        openBottomSheet = openBottomSheet,
+        sheetState2 = bottomSheetState2,
+        openBottomSheet2 = openBottomSheet2,
+        sheetState3 = bottomSheetState3,
+        openBottomSheet3 = openBottomSheet3,
+        innerPadding = innerPadding,
+        onDismissSheetRequest = {
+            when (it) {
+                1 -> {
+                    openBottomSheet = false
+                    scope
+                        .launch { bottomSheetState.hide() }
+                        .invokeOnCompletion {
+                            if (!bottomSheetState.isVisible) {
+                                openBottomSheet = false
+                            }
+                        }
+                }
+
+                2 -> {
+                    openBottomSheet2 = false
+                    scope
+                        .launch { bottomSheetState2.hide() }
+                        .invokeOnCompletion {
+                            if (!bottomSheetState2.isVisible) {
+                                openBottomSheet2 = false
+                            }
+                        }
+                }
+
+                3 -> {
+                    openBottomSheet3 = false
+                    scope
+                        .launch { bottomSheetState3.hide() }
+                        .invokeOnCompletion {
+                            if (!bottomSheetState3.isVisible) {
+                                openBottomSheet3 = false
+                            }
+                        }
+                }
+            }
+
+        },
+        onChangeSheet = {
+            openBottomSheet = !openBottomSheet
+        },
+        onAddType = {
+            widgetType = it
+            openBottomSheet2 = !openBottomSheet2
+        },
+        onEditWidget = {
+            widget = it
+            openBottomSheet3 = !openBottomSheet3
+        },
+        onWidgetAdd = { type, content ->
+            viewModel.setAction(ProfileAction.AddProfileWidget(type, content))
+        },
+        onWidgetEdit = { type, content ->
+            viewModel.setAction(ProfileAction.EditProfileWidget(type, content))
+        },
+        onWidgetDelete = { type ->
+            viewModel.setAction(ProfileAction.DeleteProfileWidget(type))
+        },
         moveToMyProfileEdit = { type ->
             when (type) {
                 ProfileEditType.JOB_OCCUPATION -> {
@@ -86,28 +220,116 @@ fun ProfileScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ProfileScreenContent(
+    innerPadding: PaddingValues,
     uiState: ProfileState,
-    moveToMyProfileEdit: (ProfileEditType) -> Unit
+    type: ProfileWidgetType?,
+    widget: ProfileWidget?,
+    sheetState: SheetState,
+    openBottomSheet: Boolean,
+    sheetState2: SheetState,
+    openBottomSheet2: Boolean,
+    sheetState3: SheetState,
+    openBottomSheet3: Boolean,
+    onChangeSheet: () -> Unit,
+    onAddType: (ProfileWidgetType) -> Unit,
+    onEditWidget: (ProfileWidget) -> Unit,
+    onDismissSheetRequest: (Int) -> Unit,
+    moveToMyProfileEdit: (ProfileEditType) -> Unit,
+    onWidgetAdd: (ProfileWidgetType, String) -> Unit,
+    onWidgetEdit: (ProfileWidgetType, String) -> Unit,
+    onWidgetDelete: (ProfileWidgetType) -> Unit
 ) {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 18.dp)
+            .padding(bottom = innerPadding.calculateBottomPadding())
     ) {
-        Spacer(modifier = Modifier.height(32.dp))
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 18.dp)
+        ) {
+            item {
+                Spacer(modifier = Modifier.height(32.dp))
+            }
 
-        Text(
-            text = "My Profile",
-            style = DaysTheme.typography.enMedium20.toTextStyle(),
-            color = DaysTheme.colors.grey500
+            item {
+                Text(
+                    text = "My Profile",
+                    style = DaysTheme.typography.enMedium20.toTextStyle(),
+                    color = DaysTheme.colors.grey500
+                )
+            }
+
+            item {
+                ProfileSection(
+                    uiState = uiState,
+                    moveToMyProfileEdit = { moveToMyProfileEdit(it) }
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(40.dp))
+            }
+
+            item {
+                ProfileWidgetSection(
+                    modifier = Modifier.padding(horizontal = 2.dp),
+                    profileWidgets = uiState.profileWidgets,
+                    onWidgetEdit = onEditWidget,
+                    onWidgetDelete = onWidgetDelete,
+                    onBlankWidgetClick = { onChangeSheet() }
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(32.dp))
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .height(40.dp)
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.verticalGradient(
+                        listOf(
+                            DaysTheme.colors.bgDefault,
+                            DaysTheme.colors.bgDefault.copy(alpha = 0.1f)
+                        )
+                    )
+                )
         )
 
-        ProfileSection(
-            uiState = uiState,
-            moveToMyProfileEdit = { moveToMyProfileEdit(it) }
-        )
+        if (openBottomSheet) {
+            ProfileWidgetSelectSheet(
+                sheetState = sheetState,
+                myProfileWidgets = uiState.profileWidgets.map { it.type },
+                onDismissRequest = { onDismissSheetRequest(1) },
+                onSelectedType = { type -> onAddType(type) }
+            )
+        }
+
+        if (openBottomSheet2 && type != null) {
+            AddProfileWidgetSheet(
+                sheetState = sheetState2,
+                profileWidgetType = type,
+                onDismissRequest = { onDismissSheetRequest(2) },
+                onAddRequest = onWidgetAdd
+            )
+        }
+
+        if (openBottomSheet3 && widget != null) {
+            EditProfileWidgetSheet(
+                sheetState = sheetState3,
+                profileWidget = widget,
+                onDismissRequest = { onDismissSheetRequest(3) },
+                onEditRequest = onWidgetEdit
+            )
+        }
     }
 }
 
@@ -308,7 +530,7 @@ private fun ProfileItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = value ?: "",
+                text = value,
                 style = DaysTheme.typography.medium14.toTextStyle(),
                 color = textColor
             )
@@ -461,6 +683,7 @@ private fun ProfileSectionDeco() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true, backgroundColor = 0xFFF5F1EE)
 @Composable
 private fun ProfileScreenPreview() {
@@ -468,10 +691,73 @@ private fun ProfileScreenPreview() {
         name = "위브",
         birthYear = 2000,
         occupation = JobOccupation.SPORTS,
+        profileWidgets = ProfileWidgetType.entries.take(3).map {
+            ProfileWidget(
+                it, it.getExample()
+            )
+        }
     )
+
+    var openBottomSheet by rememberSaveable { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = { it != SheetValue.Hidden }
+    )
+
+    val openBottomSheet2 by rememberSaveable { mutableStateOf(false) }
+    val bottomSheetState2 = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = { it != SheetValue.Hidden }
+    )
+
+    val openBottomSheet3 by rememberSaveable { mutableStateOf(false) }
+    val bottomSheetState3 = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = { it != SheetValue.Hidden }
+    )
+
+    val widgetType by remember { mutableStateOf<ProfileWidgetType?>(null) }
+    val widget by remember { mutableStateOf<ProfileWidget?>(null) }
 
     ProfileScreenContent(
         uiState = uiState,
+        type = widgetType,
+        widget = widget,
+        sheetState = bottomSheetState,
+        openBottomSheet = openBottomSheet,
+        sheetState2 = bottomSheetState2,
+        openBottomSheet2 = openBottomSheet2,
+        sheetState3 = bottomSheetState2,
+        openBottomSheet3 = openBottomSheet2,
+        innerPadding = PaddingValues(),
+        onDismissSheetRequest = {
+            openBottomSheet = false
+            scope
+                .launch { bottomSheetState.hide() }
+                .invokeOnCompletion {
+                    if (!bottomSheetState.isVisible) {
+                        openBottomSheet = false
+                    }
+                }
+        },
+        onChangeSheet = {
+            openBottomSheet = !openBottomSheet
+        },
+        onAddType = {},
+        onEditWidget = {},
+        onWidgetEdit = { _, _ -> },
+        onWidgetDelete = {},
+        onWidgetAdd = { _, _ ->
+            openBottomSheet = true
+            scope
+                .launch { bottomSheetState.show() }
+                .invokeOnCompletion {
+                    if (bottomSheetState.isVisible) {
+                        openBottomSheet = true
+                    }
+                }
+        },
         moveToMyProfileEdit = { type ->
             when (type) {
                 ProfileEditType.JOB_OCCUPATION -> {}
