@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.weave.design_system.component.SnackBarType
 import com.weave.model.domain.myprofile.Company
 import com.weave.model.domain.myprofile.JobOccupation
+import com.weave.model.domain.user.MyInfo
 import com.weave.model.domain.user.ProfileWidget
 import com.weave.model.domain.user.ProfileWidgetType
 import com.weave.user.DeleteProfileWidgetUseCase
@@ -34,6 +35,7 @@ sealed class ProfileIntent : UIIntent {
 }
 
 data class ProfileState(
+    val userInfo: UserInfo? = null,
     val name: String = "",
     val birthYear: Int? = null,
     val profileUrl: String = "",
@@ -87,6 +89,7 @@ class ProfileViewModel @Inject constructor(
                 if (myInfo != null) {
                     setState {
                         copy(
+                            userInfo = myInfo.toUserInfo,
                             name = myInfo.name,
                             birthYear = myInfo.profile.birthYear,
                             profileUrl = "",
@@ -211,4 +214,13 @@ class ProfileViewModel @Inject constructor(
             }
         }
     }
+
+    private val MyInfo.toUserInfo
+        get() = UserInfo(
+            name = this.name,
+            jobOccupation = this.profile.jobOccupation,
+            locations = this.profile.locations,
+            company = this.profile.company,
+            allowSameCompany = this.desiredPartner.allowSameCompany
+        )
 }

@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.weave.company.SearchCompaniesUseCase
 import com.weave.design_system.R
 import com.weave.design_system.component.SnackBarType
+import com.weave.home.profile.UserInfo
 import com.weave.model.domain.myprofile.Company
+import com.weave.model.domain.myprofile.JobOccupation
 import com.weave.user.UpdateMyInfoUseCase
 import com.weave.utils.base.BaseViewModel
 import com.weave.utils.base.UIAction
@@ -20,24 +22,25 @@ import java.util.UUID
 import javax.inject.Inject
 
 sealed class EditCompanyAction : UIAction {
-    data class FetchData(val company: Company?) : EditCompanyAction()
+    data class FetchData(val userInfo: UserInfo) : EditCompanyAction()
     data class SearchCompanies(val keyword: String) : EditCompanyAction()
     data class GetNextPage(val keyword: String) : EditCompanyAction()
     data class SelectCompany(val company: Company) : EditCompanyAction()
     data class SetChecked(val isChecked: Boolean) : EditCompanyAction()
-    data object ValidateInput : EditCompanyAction()
+    data class ValidateInput(val allowSameCompany: Boolean) : EditCompanyAction()
 }
 
 sealed class EditCompanyIntent : UIIntent {
-    data class FetchData(val company: Company?) : EditCompanyIntent()
+    data class FetchData(val userInfo: UserInfo) : EditCompanyIntent()
     data class SearchCompanies(val keyword: String) : EditCompanyIntent()
     data class GetNextPage(val keyword: String) : EditCompanyIntent()
     data class SelectCompany(val company: Company) : EditCompanyIntent()
     data class SetChecked(val isChecked: Boolean) : EditCompanyIntent()
-    data object ValidateInput : EditCompanyIntent()
+    data class ValidateInput(val allowSameCompany: Boolean) : EditCompanyIntent()
 }
 
 data class EditCompanyState(
+    val userInfo: UserInfo? = null,
     val companies: List<Company> = listOf(),
     val selectedCompany: Company? = null,
     val isChecked: Boolean = false,
@@ -61,30 +64,31 @@ class EditCompanyViewModel @Inject constructor(
 
     override fun actionPredicate(action: EditCompanyAction): EditCompanyIntent {
         return when (action) {
-            is EditCompanyAction.FetchData -> EditCompanyIntent.FetchData(action.company)
+            is EditCompanyAction.FetchData -> EditCompanyIntent.FetchData(action.userInfo)
             is EditCompanyAction.SearchCompanies -> EditCompanyIntent.SearchCompanies(action.keyword)
             is EditCompanyAction.GetNextPage -> EditCompanyIntent.GetNextPage(action.keyword)
             is EditCompanyAction.SelectCompany -> EditCompanyIntent.SelectCompany(action.company)
             is EditCompanyAction.SetChecked -> EditCompanyIntent.SetChecked(action.isChecked)
-            is EditCompanyAction.ValidateInput -> EditCompanyIntent.ValidateInput
+            is EditCompanyAction.ValidateInput -> EditCompanyIntent.ValidateInput(action.allowSameCompany)
         }
     }
 
     override fun collectIntent(intent: EditCompanyIntent) {
         when (intent) {
-            is EditCompanyIntent.FetchData -> fetchData(intent.company)
+            is EditCompanyIntent.FetchData -> fetchData(intent.userInfo)
             is EditCompanyIntent.SearchCompanies -> debouncedSearch(intent.keyword)
             is EditCompanyIntent.GetNextPage -> search(intent.keyword)
             is EditCompanyIntent.SelectCompany -> selectCompany(intent.company)
             is EditCompanyIntent.SetChecked -> setChecked(intent.isChecked)
-            is EditCompanyIntent.ValidateInput -> validateInput()
+            is EditCompanyIntent.ValidateInput -> validateInput(intent.allowSameCompany)
         }
     }
 
-    private fun fetchData(data: Company?) = setState {
+    private fun fetchData(data: UserInfo?) = setState {
         copy(
-            initCompany = data,
-            isChecked = data == null
+            userInfo = data,
+            initCompany = data?.company,
+            isChecked = data?.company == null
         )
     }
 
@@ -140,17 +144,23 @@ class EditCompanyViewModel @Inject constructor(
         search(keyword = query)
     }
 
-    private fun validateInput() {
+    private fun validateInput(allowSameCompany: Boolean) {
         if (uiState.isChecked || uiState.selectedCompany != null) {
             viewModelScope.launch {
                 updateMyInfoUseCase.invoke(
-                    companyId = uiState.selectedCompany?.id
+                    name = uiState.userInfo?.name ?: "",
+                    jobOccupation = uiState.userInfo?.jobOccupation ?: JobOccupation.OTHER,
+                    locationIds = uiState.userInfo?.locations?.map { it.first } ?: emptyList(),
+                    companyId = uiState.selectedCompany?.id,
+                    allowSameCompany = allowSameCompany
                 ).mapMerge().collect { result ->
                     if (result != null) {
-                        setEffect { EditCompanyEffect.ShowToast(
-                            message = "내 회사가 변경되었어요",
-                            type = SnackBarType.DEFAULT
-                        ) }
+                        setEffect {
+                            EditCompanyEffect.ShowToast(
+                                message = "내 회사가 변경되었어요",
+                                type = SnackBarType.DEFAULT
+                            )
+                        }
                         setEffect { EditCompanyEffect.NavigateToProfile(true) }
                     } else if (!isLoading) {
                         setEffect {

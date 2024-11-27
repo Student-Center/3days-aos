@@ -328,8 +328,6 @@ fun DaysAutoCompleteTextFieldPreview() {
                 selectedSuggestion = selectedSuggestion,
                 onSuggestionSelected = { selectedItem ->
                     selectedSuggestion = selectedItem
-
-                    println("Selected: $selectedSuggestion")
                 },
                 placeholderText = "내 회사 검색 혹은 직접 입력",
                 focusManager = focusManager,

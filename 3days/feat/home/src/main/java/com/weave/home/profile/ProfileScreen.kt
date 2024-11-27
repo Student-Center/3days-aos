@@ -64,6 +64,7 @@ import com.weave.home.profile.widget.ProfileWidgetSection
 import com.weave.home.profile.widget.ProfileWidgetSelectSheet
 import com.weave.model.domain.myprofile.Company
 import com.weave.model.domain.myprofile.JobOccupation
+import com.weave.model.domain.myprofile.MyInfoDisplay
 import com.weave.model.domain.user.ProfileWidget
 import com.weave.model.domain.user.ProfileWidgetType
 import kotlinx.coroutines.launch
@@ -74,7 +75,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
     snackBarViewModel: SnackBarViewModel = hiltViewModel(),
     innerPadding: PaddingValues,
-    moveToMyProfileEdit: (ProfileEditType, Any?) -> Unit
+    moveToMyProfileEdit: (ProfileEditType, UserInfo?) -> Unit
 ) {
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -198,21 +199,21 @@ fun ProfileScreen(
                 ProfileEditType.JOB_OCCUPATION -> {
                     moveToMyProfileEdit(
                         ProfileEditType.JOB_OCCUPATION,
-                        viewModel.uiState.occupation ?: JobOccupation.OTHER
+                        viewModel.uiState.userInfo
                     )
                 }
 
                 ProfileEditType.COMPANY -> {
                     moveToMyProfileEdit(
                         ProfileEditType.COMPANY,
-                        viewModel.uiState.company
+                        viewModel.uiState.userInfo
                     )
                 }
 
                 ProfileEditType.LOCATION -> {
                     moveToMyProfileEdit(
                         ProfileEditType.LOCATION,
-                        viewModel.uiState.locations
+                        viewModel.uiState.userInfo
                     )
                 }
             }

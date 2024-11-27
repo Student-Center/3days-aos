@@ -2,6 +2,7 @@ package com.weave.home.profile.job
 
 import androidx.lifecycle.viewModelScope
 import com.weave.design_system.component.SnackBarType
+import com.weave.home.profile.UserInfo
 import com.weave.model.domain.myprofile.JobOccupation
 import com.weave.user.UpdateMyInfoUseCase
 import com.weave.utils.base.BaseViewModel
@@ -14,18 +15,19 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed class EditJobAction : UIAction {
-    data class FetchData(val occupation: JobOccupation) : EditJobAction()
+    data class FetchData(val userInfo: UserInfo) : EditJobAction()
     data class UpdateData(val occupation: JobOccupation) : EditJobAction()
     data object RequestUpdate : EditJobAction()
 }
 
 sealed class EditJobIntent : UIIntent {
-    data class FetchData(val occupation: JobOccupation) : EditJobIntent()
+    data class FetchData(val userInfo: UserInfo) : EditJobIntent()
     data class UpdateData(val occupation: JobOccupation) : EditJobIntent()
     data object RequestUpdate : EditJobIntent()
 }
 
 data class EditJobState(
+    val userInfo: UserInfo? = null,
     val occupation: JobOccupation? = null,
     val initOccupation: JobOccupation = JobOccupation.OTHER
 ) : UIState
@@ -42,7 +44,7 @@ class EditJobViewModel @Inject constructor(
 
     override fun actionPredicate(action: EditJobAction): EditJobIntent {
         return when (action) {
-            is EditJobAction.FetchData -> EditJobIntent.FetchData(action.occupation)
+            is EditJobAction.FetchData -> EditJobIntent.FetchData(action.userInfo)
             is EditJobAction.UpdateData -> EditJobIntent.UpdateData(action.occupation)
             is EditJobAction.RequestUpdate -> EditJobIntent.RequestUpdate
         }
@@ -50,16 +52,17 @@ class EditJobViewModel @Inject constructor(
 
     override fun collectIntent(intent: EditJobIntent) {
         when (intent) {
-            is EditJobIntent.FetchData -> fetchData(intent.occupation)
+            is EditJobIntent.FetchData -> fetchData(intent.userInfo)
             is EditJobIntent.UpdateData -> updateData(intent.occupation)
             is EditJobIntent.RequestUpdate -> requestUpdate()
         }
     }
 
-    private fun fetchData(data: JobOccupation) = setState {
+    private fun fetchData(data: UserInfo) = setState {
         copy(
-            initOccupation = data,
-            occupation = data
+            userInfo = data,
+            initOccupation = data.jobOccupation,
+            occupation = data.jobOccupation
         )
     }
 
@@ -76,7 +79,11 @@ class EditJobViewModel @Inject constructor(
         } else {
             viewModelScope.launch {
                 updateMyInfoUseCase.invoke(
-                    jobOccupation = uiState.occupation
+                    name = uiState.userInfo?.name ?: "",
+                    jobOccupation = uiState.occupation ?: JobOccupation.OTHER,
+                    locationIds = uiState.userInfo?.locations?.map { it.first } ?: emptyList(),
+                    companyId = uiState.userInfo?.company?.id,
+                    allowSameCompany = uiState.userInfo?.allowSameCompany
                 ).mapMerge().collect { result ->
                     if (result != null) {
                         setEffect {

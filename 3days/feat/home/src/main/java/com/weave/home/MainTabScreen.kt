@@ -35,6 +35,7 @@ import com.weave.home.home.HomeScreen
 import com.weave.home.profile.ProfileEditType
 import com.weave.home.profile.ProfileScreen
 import com.weave.home.profile.SnackBarViewModel
+import com.weave.home.profile.UserInfo
 import com.weave.utils.Keyboard
 import com.weave.utils.keyboardAsState
 
@@ -46,7 +47,7 @@ enum class TabType {
 fun MainTabScreen(
     snackBarViewModel: SnackBarViewModel = hiltViewModel(),
     targetScreen: TabType = TabType.HOME,
-    moveToMyProfileEdit: (ProfileEditType, Any?) -> Unit
+    moveToMyProfileEdit: (ProfileEditType, UserInfo?) -> Unit
 ) {
     var selectedTab by remember { mutableStateOf(targetScreen) }
     val isKeyboardVisible by keyboardAsState()
@@ -67,7 +68,7 @@ private fun MainTabScreenContent(
     selectedTab: TabType,
     onTabSelected: (TabType) -> Unit,
     modifier: Modifier = Modifier,
-    moveToMyProfileEdit: (ProfileEditType, Any?) -> Unit
+    moveToMyProfileEdit: (ProfileEditType, UserInfo?) -> Unit
 ) {
 //    val snackBarPadding = if (isKeyboardVisible == Keyboard.Closed) 110.dp else 36.dp
 
@@ -180,7 +181,7 @@ private fun TabContent(
     snackBarViewModel: SnackBarViewModel,
     innerPadding: PaddingValues,
     selectedTab: TabType,
-    moveToMyProfileEdit: (ProfileEditType, Any?) -> Unit
+    moveToMyProfileEdit: (ProfileEditType, UserInfo?) -> Unit
 ) {
     when (selectedTab) {
         TabType.HOME -> HomeScreen()

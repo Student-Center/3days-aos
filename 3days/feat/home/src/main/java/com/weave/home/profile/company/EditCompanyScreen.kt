@@ -46,6 +46,7 @@ import com.weave.design_system.component.DaysSnackBarHost
 import com.weave.design_system.component.NextButton
 import com.weave.design_system.extension.noRippleClickable
 import com.weave.home.profile.SnackBarViewModel
+import com.weave.home.profile.UserInfo
 import com.weave.model.domain.myprofile.Company
 import com.weave.utils.Keyboard
 import com.weave.utils.keyboardAsState
@@ -54,7 +55,7 @@ import com.weave.utils.keyboardAsState
 fun EditCompanyScreen(
     snackBarViewModel: SnackBarViewModel = hiltViewModel(),
     viewModel: EditCompanyViewModel = hiltViewModel(),
-    initCompany: Company?,
+    userInfo: UserInfo,
     navigateToProfile: (Boolean) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
@@ -64,7 +65,7 @@ fun EditCompanyScreen(
     var inputText by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
-        viewModel.setAction(EditCompanyAction.FetchData(initCompany))
+        viewModel.setAction(EditCompanyAction.FetchData(userInfo))
     }
 
     LaunchedEffect(inputText) {
@@ -107,7 +108,7 @@ fun EditCompanyScreen(
             viewModel.setAction(EditCompanyAction.SelectCompany(it))
         },
         requestUpdate = {
-            viewModel.setAction(EditCompanyAction.ValidateInput)
+            viewModel.setAction(EditCompanyAction.ValidateInput(true))
         }
     )
 }
@@ -235,7 +236,7 @@ private fun CurrentItem(
             Spacer(modifier = Modifier.width(16.dp))
 
             Text(
-                text = item?.name ?: "",
+                text = item?.name ?: "새회사",
                 style = DaysTheme.typography.semiBold14.copy(fontSize = 12.dp).toTextStyle(),
                 color = DaysTheme.colors.grey400
             )

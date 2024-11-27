@@ -16,26 +16,25 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.weave.home.profile.ProfileEditType
 import com.weave.home.profile.SnackBarViewModel
+import com.weave.home.profile.UserInfo
+import com.weave.home.profile.UserInfoType
 import com.weave.home.profile.company.EditCompanyScreen
 import com.weave.home.profile.job.EditJobScreen
 import com.weave.home.profile.location.EditLocationScreen
-import com.weave.home.profile.location.LocationListType
-import com.weave.model.domain.myprofile.Company
 import com.weave.model.domain.myprofile.JobOccupation
 import com.weave.utils.navigation.navigateWithClearBackStack
-import java.util.UUID
 
-private const val LOCATIONS_KEY = "locations"
+private const val USER_INFO_KEY = "user_info"
 private val gson = Gson()
-private val listType = object : TypeToken<List<Pair<UUID, String>>>() {}.type
+private val listType = object : TypeToken<UserInfo>() {}.type
 
 enum class Route(val routeName: String) {
     Main("main"),
     Home("home"),
     Profile("profile"),
-    ProfileEditJob("edit_job"),
-    ProfileEditCompany("edit_company"),
-    ProfileEditLocation("edit_location/{$LOCATIONS_KEY}");
+    ProfileEditJob("edit_job/{$USER_INFO_KEY}"),
+    ProfileEditCompany("edit_company/{$USER_INFO_KEY}"),
+    ProfileEditLocation("edit_location/{$USER_INFO_KEY}");
 
     fun withArgs(vararg args: String): String {
         return buildString {
@@ -44,10 +43,12 @@ enum class Route(val routeName: String) {
         }
     }
 
-    fun createLocationRoute(locations: List<Pair<UUID, String>>): String {
+    fun createEditProfileRoute(userInfo: UserInfo?): String {
+        userInfo ?: return routeName
+
         return routeName.replace(
-            "{$LOCATIONS_KEY}",
-            Uri.encode(gson.toJson(locations))
+            "{$USER_INFO_KEY}",
+            Uri.encode(gson.toJson(userInfo))
         )
     }
 }
@@ -70,19 +71,14 @@ fun NavGraphBuilder.navGraphHome(navController: NavController) {
                 moveToMyProfileEdit = { type, item ->
                     val destination = when (type) {
                         ProfileEditType.JOB_OCCUPATION ->
-                            Route.ProfileEditJob.withArgs((item as JobOccupation).koValue)
+                            Route.ProfileEditJob.createEditProfileRoute(item)
 
                         ProfileEditType.COMPANY -> {
-                            val company = if (item != null) item as Company else null
-                            Route.ProfileEditCompany.withArgs(
-                                company?.id?.toString() ?: "",
-                                company?.name ?: ""
-                            )
+                            Route.ProfileEditCompany.createEditProfileRoute(item)
                         }
 
                         ProfileEditType.LOCATION -> {
-                            val locations = item as? List<Pair<UUID, String>> ?: emptyList()
-                            Route.ProfileEditLocation.createLocationRoute(locations)
+                            Route.ProfileEditLocation.createEditProfileRoute(item)
                         }
                     }
 
@@ -95,20 +91,16 @@ fun NavGraphBuilder.navGraphHome(navController: NavController) {
         }
 
         composable(
-            route = Route.ProfileEditJob.withArgs("{occupation}"),
+            route = Route.ProfileEditJob.routeName,
             arguments = listOf(
-                navArgument("occupation") { type = NavType.StringType },
+                navArgument(USER_INFO_KEY) { type = UserInfoType() }
             )
         ) { backStackEntry ->
-            val occupation = backStackEntry.arguments?.getString("occupation")?.let {
-                JobOccupation.findFromKoValue(it)
-            } ?: JobOccupation.OTHER
-
             val snackBarViewModel = backStackEntry.sharedViewModel<SnackBarViewModel>(navController)
 
             EditJobScreen(
                 snackBarViewModel = snackBarViewModel,
-                initOccupation = occupation,
+                userInfo = parseMyInfoDisplay(backStackEntry),
                 navigateToProfile = {
                     navController.navigateWithClearBackStack(
                         Route.Home.withArgs("1"),
@@ -119,26 +111,16 @@ fun NavGraphBuilder.navGraphHome(navController: NavController) {
         }
 
         composable(
-            route = Route.ProfileEditCompany.withArgs("{uuid}", "{name}"),
+            route = Route.ProfileEditCompany.routeName,
             arguments = listOf(
-                navArgument("uuid") { type = NavType.StringType },
-                navArgument("name") { type = NavType.StringType },
+                navArgument(USER_INFO_KEY) { type = UserInfoType() }
             )
         ) { backStackEntry ->
             val snackBarViewModel = backStackEntry.sharedViewModel<SnackBarViewModel>(navController)
 
-            val name = backStackEntry.arguments?.getString("name")?.let {
-                it.ifBlank { null }
-            }
-            val uuid = backStackEntry.arguments?.getString("uuid")?.let {
-                if (it.isNotBlank()) UUID.fromString(it) else null
-            }
-
-            val company = if (name == null || uuid == null) null else Company(uuid, name)
-
             EditCompanyScreen(
                 snackBarViewModel = snackBarViewModel,
-                initCompany = company,
+                userInfo = parseMyInfoDisplay(backStackEntry),
                 navigateToProfile = {
                     navController.navigateWithClearBackStack(
                         Route.Home.withArgs("1"),
@@ -151,24 +133,14 @@ fun NavGraphBuilder.navGraphHome(navController: NavController) {
         composable(
             route = Route.ProfileEditLocation.routeName,
             arguments = listOf(
-                navArgument(LOCATIONS_KEY) { type = LocationListType() }
+                navArgument(USER_INFO_KEY) { type = UserInfoType() }
             )
         ) { backStackEntry ->
             val snackBarViewModel = backStackEntry.sharedViewModel<SnackBarViewModel>(navController)
-            val locations = try {
-                backStackEntry.arguments?.getString(LOCATIONS_KEY)?.let { jsonString ->
-                    gson.fromJson<List<Pair<String, String>>>(jsonString, listType)
-                        .map { (first, second) ->
-                            Pair(UUID.fromString(first), second)
-                        }
-                } ?: emptyList()
-            } catch (e: Exception) {
-                emptyList()
-            }
 
             EditLocationScreen(
                 snackBarViewModel = snackBarViewModel,
-                initLocations = locations,
+                userInfo = parseMyInfoDisplay(backStackEntry),
                 navigateToProfile = {
                     navController.navigateWithClearBackStack(
                         Route.Home.withArgs("1"),
@@ -177,6 +149,22 @@ fun NavGraphBuilder.navGraphHome(navController: NavController) {
                 }
             )
         }
+    }
+}
+
+private fun parseMyInfoDisplay(backStackEntry: NavBackStackEntry): UserInfo {
+    val defaultValue = UserInfo(
+        name = "",
+        jobOccupation = JobOccupation.OTHER,
+        locations = emptyList(),
+    )
+
+    return try {
+        backStackEntry.arguments?.getString(USER_INFO_KEY)?.let { jsonString ->
+            gson.fromJson(jsonString, listType)
+        } ?: defaultValue
+    } catch (e: Exception) {
+        defaultValue
     }
 }
 
