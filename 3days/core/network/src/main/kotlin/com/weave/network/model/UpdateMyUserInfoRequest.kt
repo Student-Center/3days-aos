@@ -22,8 +22,9 @@ import com.google.gson.annotations.SerializedName
  *
  * @param name 사용자 이름
  * @param jobOccupation
- * @param companyId 사용자의 회사 ID
  * @param locationIds 사용자의 활동 지역 목록 ID 리스트
+ * @param companyId 사용자의 회사 ID
+ * @param allowSameCompany 같은 회사에 근무하는 파트너를 허용하는지 여부 (companyID가 없을 경우 null)
  */
 
 
@@ -31,18 +32,22 @@ data class UpdateMyUserInfoRequest(
 
     /* 사용자 이름 */
     @SerializedName("name")
-    val name: kotlin.String? = null,
+    val name: kotlin.String,
 
     @SerializedName("jobOccupation")
-    val jobOccupation: JobOccupation? = null,
+    val jobOccupation: JobOccupation,
+
+    /* 사용자의 활동 지역 목록 ID 리스트 */
+    @SerializedName("locationIds")
+    val locationIds: kotlin.collections.List<java.util.UUID>,
 
     /* 사용자의 회사 ID */
     @SerializedName("companyId")
     val companyId: java.util.UUID? = null,
 
-    /* 사용자의 활동 지역 목록 ID 리스트 */
-    @SerializedName("locationIds")
-    val locationIds: kotlin.collections.List<java.util.UUID>? = null
+    /* 같은 회사에 근무하는 파트너를 허용하는지 여부 (companyID가 없을 경우 null) */
+    @SerializedName("allowSameCompany")
+    val allowSameCompany: kotlin.Boolean? = null
 
 ) {
 

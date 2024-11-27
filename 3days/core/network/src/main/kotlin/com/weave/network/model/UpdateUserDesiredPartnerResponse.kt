@@ -15,26 +15,19 @@
 
 package com.weave.network.model
 
-
 import com.google.gson.annotations.SerializedName
 
 /**
- * 회사 표시 정보
  *
- * @param id 회사 식별자
- * @param display 화면에 표시될 회사명
+ *
+ * @param desiredPartner
  */
 
 
-data class CompanyDisplayInfo(
+data class UpdateUserDesiredPartnerResponse(
 
-    /* 회사 식별자 */
-    @SerializedName("id")
-    val id: java.util.UUID,
-
-    /* 화면에 표시될 회사명 */
-    @SerializedName("display")
-    val display: kotlin.String
+    @SerializedName("desiredPartner")
+    val desiredPartner: UserDesiredPartner
 
 ) {
 

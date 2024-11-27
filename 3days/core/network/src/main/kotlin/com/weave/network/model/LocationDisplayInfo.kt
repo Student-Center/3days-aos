@@ -26,7 +26,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 
-data class LocationDisplayInfo (
+data class LocationDisplayInfo(
 
     /* 지역 식별자 */
     @SerializedName("id")

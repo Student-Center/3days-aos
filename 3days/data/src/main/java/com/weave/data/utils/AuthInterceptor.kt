@@ -137,7 +137,7 @@ class AuthInterceptor @Inject constructor(
 
                 else -> {
                     logDebug { Log.d(TAG, "Unhandled error code: ${errorResponse.code}") }
-                    handleInvalidToken(response)
+                    return response
                 }
             }
         } catch (e: JsonSyntaxException) {

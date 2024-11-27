@@ -50,19 +50,19 @@ import com.weave.design_system.component.NextButton
 import com.weave.design_system.extension.applyShadow
 import com.weave.design_system.extension.noRippleClickable
 import com.weave.home.profile.SnackBarViewModel
+import com.weave.home.profile.UserInfo
 import com.weave.model.domain.myprofile.Location
 import com.weave.utils.Keyboard
-import java.util.UUID
 
 @Composable
 fun EditLocationScreen(
     snackBarViewModel: SnackBarViewModel = hiltViewModel(),
     viewModel: EditLocationViewModel = hiltViewModel(),
-    initLocations: List<Pair<UUID, String>>,
+    userInfo: UserInfo,
     navigateToProfile: (Boolean) -> Unit
 ) {
     LaunchedEffect(Unit) {
-        viewModel.setAction(EditLocationAction.FetchData(initLocations))
+        viewModel.setAction(EditLocationAction.FetchData(userInfo))
         viewModel.setAction(EditLocationAction.GetRegions)
     }
 

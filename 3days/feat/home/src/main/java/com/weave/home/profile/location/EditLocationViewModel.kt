@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.weave.design_system.R
 import com.weave.design_system.component.SnackBarType
+import com.weave.home.profile.UserInfo
 import com.weave.location.GetLocationRegionsUseCase
 import com.weave.location.GetLocationsByRegionUseCase
+import com.weave.model.domain.myprofile.JobOccupation
 import com.weave.model.domain.myprofile.Location
 import com.weave.user.UpdateMyInfoUseCase
 import com.weave.utils.base.BaseViewModel
@@ -20,7 +22,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 sealed class EditLocationAction : UIAction {
-    data class FetchData(val locations: List<Pair<UUID, String>>) : EditLocationAction()
+    data class FetchData(val userInfo: UserInfo) : EditLocationAction()
     data object GetRegions : EditLocationAction()
     data class GetLocations(val regionName: String) : EditLocationAction()
     data class SelectLocation(val location: Location) : EditLocationAction()
@@ -29,7 +31,7 @@ sealed class EditLocationAction : UIAction {
 }
 
 sealed class EditLocationIntent : UIIntent {
-    data class FetchData(val locations: List<Pair<UUID, String>>) : EditLocationIntent()
+    data class FetchData(val userInfo: UserInfo) : EditLocationIntent()
     data object GetRegions : EditLocationIntent()
     data class GetLocations(val regionName: String) : EditLocationIntent()
     data class SelectLocation(val location: Location) : EditLocationIntent()
@@ -43,6 +45,7 @@ data class EditLocationState(
     val locations: List<EditLocation> = listOf(),
     val selectedLocations: List<Location> = listOf(),
     var selectedRegionName: String = "",
+    val userInfo: UserInfo? = null
 ) : UIState
 
 sealed class EditLocationEffect : UIEffect {
@@ -67,7 +70,7 @@ class EditLocationViewModel @Inject constructor(
     ) {
     override fun actionPredicate(action: EditLocationAction): EditLocationIntent {
         return when (action) {
-            is EditLocationAction.FetchData -> EditLocationIntent.FetchData(action.locations)
+            is EditLocationAction.FetchData -> EditLocationIntent.FetchData(action.userInfo)
             is EditLocationAction.GetRegions -> EditLocationIntent.GetRegions
             is EditLocationAction.GetLocations -> EditLocationIntent.GetLocations(action.regionName)
             is EditLocationAction.SelectLocation -> EditLocationIntent.SelectLocation(action.location)
@@ -78,7 +81,7 @@ class EditLocationViewModel @Inject constructor(
 
     override fun collectIntent(intent: EditLocationIntent) {
         when (intent) {
-            is EditLocationIntent.FetchData -> fetchData(intent.locations)
+            is EditLocationIntent.FetchData -> fetchData(intent.userInfo)
             is EditLocationIntent.GetRegions -> getRegions()
             is EditLocationIntent.GetLocations -> getLocations(intent.regionName)
             is EditLocationIntent.SelectLocation -> selectLocation(intent.location)
@@ -87,11 +90,12 @@ class EditLocationViewModel @Inject constructor(
         }
     }
 
-    private fun fetchData(data: List<Pair<UUID, String>>) =
+    private fun fetchData(data: UserInfo) =
         setState {
             copy(
-                initLocations = data,
-                selectedLocations = data.map {
+                userInfo = data,
+                initLocations = data.locations,
+                selectedLocations = data.locations.map {
                     Location(
                         id = it.first,
                         region = "",
@@ -105,7 +109,11 @@ class EditLocationViewModel @Inject constructor(
         if (uiState.selectedLocations.isNotEmpty() && uiState.initLocations.toSet() != uiState.selectedLocations.toSet()) {
             viewModelScope.launch {
                 updateMyInfoUseCase.invoke(
-                    locationIds = uiState.selectedLocations.map { it.id }
+                    name = uiState.userInfo?.name ?: "",
+                    jobOccupation = uiState.userInfo?.jobOccupation ?: JobOccupation.OTHER,
+                    locationIds = uiState.selectedLocations.map { it.id },
+                    companyId = uiState.userInfo?.company?.id,
+                    allowSameCompany = uiState.userInfo?.allowSameCompany
                 ).mapMerge().collect { result ->
                     if (result != null) {
                         setEffect {

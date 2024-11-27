@@ -20,10 +20,11 @@ interface UserRepository {
     ): Flow<NetworkResult<AuthToken>>
 
     suspend fun updateMyUserInfo(
-        name: String? = null,
-        jobOccupation: JobOccupation? = null,
+        name: String,
+        jobOccupation: JobOccupation,
+        locationIds: List<UUID>,
         companyId: UUID? = null,
-        locationIds: List<UUID>? = null
+        allowSameCompany: Boolean? = null
     ): Flow<NetworkResult<Boolean>>
 
     suspend fun putProfileWidget(type: ProfileWidget): Flow<NetworkResult<ProfileWidget>>

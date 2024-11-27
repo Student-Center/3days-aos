@@ -74,7 +74,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
     snackBarViewModel: SnackBarViewModel = hiltViewModel(),
     innerPadding: PaddingValues,
-    moveToMyProfileEdit: (ProfileEditType, Any?) -> Unit
+    moveToMyProfileEdit: (ProfileEditType, UserInfo?) -> Unit
 ) {
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -198,21 +198,21 @@ fun ProfileScreen(
                 ProfileEditType.JOB_OCCUPATION -> {
                     moveToMyProfileEdit(
                         ProfileEditType.JOB_OCCUPATION,
-                        viewModel.uiState.occupation ?: JobOccupation.OTHER
+                        viewModel.uiState.userInfo
                     )
                 }
 
                 ProfileEditType.COMPANY -> {
                     moveToMyProfileEdit(
                         ProfileEditType.COMPANY,
-                        viewModel.uiState.company
+                        viewModel.uiState.userInfo
                     )
                 }
 
                 ProfileEditType.LOCATION -> {
                     moveToMyProfileEdit(
                         ProfileEditType.LOCATION,
-                        viewModel.uiState.locations
+                        viewModel.uiState.userInfo
                     )
                 }
             }

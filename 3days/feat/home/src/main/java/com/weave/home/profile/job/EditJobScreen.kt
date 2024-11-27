@@ -42,6 +42,7 @@ import com.weave.design_system.component.DaysJobToggleButton
 import com.weave.design_system.component.DaysSnackBarHost
 import com.weave.design_system.component.NextButton
 import com.weave.home.profile.SnackBarViewModel
+import com.weave.home.profile.UserInfo
 import com.weave.model.domain.myprofile.JobOccupation
 import com.weave.utils.Keyboard
 
@@ -49,14 +50,14 @@ import com.weave.utils.Keyboard
 fun EditJobScreen(
     snackBarViewModel: SnackBarViewModel = hiltViewModel(),
     viewModel: EditJobViewModel = hiltViewModel(),
-    initOccupation: JobOccupation,
+    userInfo: UserInfo,
     navigateToProfile: (Boolean) -> Unit
 ) {
     val jobToggleItems = remember { toggleItems }
     val uiState = viewModel.uiState
 
     LaunchedEffect(Unit) {
-        viewModel.setAction(EditJobAction.FetchData(initOccupation))
+        viewModel.setAction(EditJobAction.FetchData(userInfo))
     }
 
     LaunchedEffect(viewModel.uiEffect) {
