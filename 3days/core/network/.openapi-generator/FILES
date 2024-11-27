@@ -40,6 +40,8 @@ src/main/kotlin/com/weave/network/model/SendAuthCodeResponse.kt
 src/main/kotlin/com/weave/network/model/TokenResponse.kt
 src/main/kotlin/com/weave/network/model/UpdateMyUserInfoRequest.kt
 src/main/kotlin/com/weave/network/model/UpdateMyUserInfoResponse.kt
+src/main/kotlin/com/weave/network/model/UpdateUserDesiredPartnerRequest.kt
+src/main/kotlin/com/weave/network/model/UpdateUserDesiredPartnerResponse.kt
 src/main/kotlin/com/weave/network/model/UserDesiredPartner.kt
 src/main/kotlin/com/weave/network/model/UserProfile.kt
 src/main/kotlin/com/weave/network/model/UserProfileDisplayInfo.kt

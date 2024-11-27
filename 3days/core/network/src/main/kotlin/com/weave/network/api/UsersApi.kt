@@ -7,12 +7,13 @@ import com.weave.network.model.RegisterUserRequest
 import com.weave.network.model.TokenResponse
 import com.weave.network.model.UpdateMyUserInfoRequest
 import com.weave.network.model.UpdateMyUserInfoResponse
+import com.weave.network.model.UpdateUserDesiredPartnerRequest
+import com.weave.network.model.UpdateUserDesiredPartnerResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -81,6 +82,21 @@ interface UsersApi {
     ): Response<TokenResponse>
 
     /**
+     * 내 원하는 파트너 수정
+     * 현재 로그인한 사용자의 원하는 파트너 정보를 수정합니다.
+     * Responses:
+     *  - 200: 수정 성공
+     *  - 400: 잘못된 요청
+     *  - 401: 인증 실패 (토큰 만료 또는 유효하지 않은 토큰)
+     *  - 500: 서버 오류
+     *
+     * @param updateUserDesiredPartnerRequest
+     * @return [UpdateUserDesiredPartnerResponse]
+     */
+    @PUT("users/my/desiredPartner")
+    suspend fun updateMyDesiredPartner(@Body updateUserDesiredPartnerRequest: UpdateUserDesiredPartnerRequest): Response<UpdateUserDesiredPartnerResponse>
+
+    /**
      * 내 프로필 수정
      * 현재 로그인한 사용자의 프로필 정보를 수정합니다. (이름, 직군, 직장, 활동 지역)
      * Responses:
@@ -92,7 +108,7 @@ interface UsersApi {
      * @param updateMyUserInfoRequest
      * @return [UpdateMyUserInfoResponse]
      */
-    @PATCH("users/my")
+    @PUT("users/my")
     suspend fun updateMyUserInfo(@Body updateMyUserInfoRequest: UpdateMyUserInfoRequest): Response<UpdateMyUserInfoResponse>
 
 }

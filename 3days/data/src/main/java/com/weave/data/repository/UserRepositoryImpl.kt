@@ -53,18 +53,20 @@ class UserRepositoryImpl @Inject constructor(
     )
 
     override suspend fun updateMyUserInfo(
-        name: String?,
-        jobOccupation: JobOccupation?,
+        name: String,
+        jobOccupation: JobOccupation,
+        locationIds: List<UUID>,
         companyId: UUID?,
-        locationIds: List<UUID>?
+        allowSameCompany: Boolean?
     ): Flow<NetworkResult<Boolean>> = handleNetworkCall(
         networkCall = {
             dataSource.updateMyUserInfo(
                 UpdateMyUserInfoRequest(
                     name = name,
-                    jobOccupation = jobOccupation?.toDTO,
+                    jobOccupation = jobOccupation.toDTO,
+                    locationIds = locationIds,
                     companyId = companyId,
-                    locationIds = locationIds
+                    allowSameCompany = allowSameCompany
                 )
             )
         },
