@@ -64,7 +64,6 @@ import com.weave.home.profile.widget.ProfileWidgetSection
 import com.weave.home.profile.widget.ProfileWidgetSelectSheet
 import com.weave.model.domain.myprofile.Company
 import com.weave.model.domain.myprofile.JobOccupation
-import com.weave.model.domain.myprofile.MyInfoDisplay
 import com.weave.model.domain.user.ProfileWidget
 import com.weave.model.domain.user.ProfileWidgetType
 import kotlinx.coroutines.launch
