@@ -1,4 +1,4 @@
-package com.weave.home.profile
+package com.weave.home.profile.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -58,6 +58,9 @@ import com.weave.design_system.DaysTheme
 import com.weave.design_system.extension.applyShadow
 import com.weave.design_system.extension.noRippleClickable
 import com.weave.home.R
+import com.weave.home.profile.ProfileEditType
+import com.weave.home.profile.UserInfo
+import com.weave.home.profile.main.date.DateProfileSection
 import com.weave.home.profile.widget.AddProfileWidgetSheet
 import com.weave.home.profile.widget.EditProfileWidgetSheet
 import com.weave.home.profile.widget.ProfileWidgetSection
@@ -215,6 +218,8 @@ fun ProfileScreen(
                         viewModel.uiState.userInfo
                     )
                 }
+
+                else -> {}
             }
         }
     )
@@ -254,6 +259,17 @@ private fun ProfileScreenContent(
         ) {
             item {
                 Spacer(modifier = Modifier.height(32.dp))
+            }
+
+            if(uiState.userInfo != null){
+                item {
+                    DateProfileSection(
+                        userInfo = uiState.userInfo,
+                        onEditPartnerInfo = { }
+                    )
+
+                    Spacer(modifier = Modifier.height(80.dp))
+                }
             }
 
             item {
@@ -763,6 +779,7 @@ private fun ProfileScreenPreview() {
                 ProfileEditType.JOB_OCCUPATION -> {}
                 ProfileEditType.COMPANY -> {}
                 ProfileEditType.LOCATION -> {}
+                else -> {}
             }
         }
     )

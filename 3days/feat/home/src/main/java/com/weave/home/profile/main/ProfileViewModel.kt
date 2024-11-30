@@ -1,7 +1,8 @@
-package com.weave.home.profile
+package com.weave.home.profile.main
 
 import androidx.lifecycle.viewModelScope
 import com.weave.design_system.component.SnackBarType
+import com.weave.home.profile.UserInfo
 import com.weave.model.domain.myprofile.Company
 import com.weave.model.domain.myprofile.JobOccupation
 import com.weave.model.domain.user.MyInfo
@@ -221,6 +222,6 @@ class ProfileViewModel @Inject constructor(
             jobOccupation = this.profile.jobOccupation,
             locations = this.profile.locations,
             company = this.profile.company,
-            allowSameCompany = this.desiredPartner.allowSameCompany
+            desiredPartner = this.desiredPartner
         )
 }

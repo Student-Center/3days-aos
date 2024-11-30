@@ -1,4 +1,4 @@
-package com.weave.home.profile
+package com.weave.home.profile.main
 
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
