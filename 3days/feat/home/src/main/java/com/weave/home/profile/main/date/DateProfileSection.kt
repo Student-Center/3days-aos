@@ -6,6 +6,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ContextualFlowRow
+import androidx.compose.foundation.layout.ContextualFlowRowOverflow
+import androidx.compose.foundation.layout.ContextualFlowRowOverflowScope
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,6 +44,7 @@ import com.weave.design_system.extension.noRippleClickable
 import com.weave.home.R
 import com.weave.home.profile.ProfileEditType
 import com.weave.home.profile.UserInfo
+import com.weave.home.profile.job.toggleItems
 import com.weave.model.domain.myprofile.JobOccupation
 import com.weave.model.domain.user.BirthYearRange
 import com.weave.model.domain.user.UserDesiredPartner
@@ -92,7 +97,7 @@ fun DateProfileCard(
     val pagerState = rememberPagerState(pageCount = { types.size })
 
     DateProfileCardContainer {
-        if(userInfo != null){
+        if (userInfo != null) {
             DateProfilePager(
                 types = types,
                 pagerState = pagerState,
@@ -304,10 +309,90 @@ private fun AgePreferenceRow(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PartnerJobView(jobOccupations: List<JobOccupation>) {
+    val moreIndicator = @Composable { scope: ContextualFlowRowOverflowScope ->
+        val remainingItems = jobOccupations.size - scope.shownItemCount
+        MoreChip(moreSize = remainingItems)
+    }
+
     Column(verticalArrangement = Arrangement.Center) {
-        // Implement job occupation view
+        ContextualFlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            maxLines = 1,
+            itemCount = jobOccupations.size,
+            overflow = ContextualFlowRowOverflow.expandIndicator(moreIndicator)
+        ) { index ->
+            JobChip(
+                jobOccupation = jobOccupations[index]
+            )
+        }
+    }
+}
+
+@Composable
+private fun JobChip(
+    jobOccupation: JobOccupation
+) {
+    val item = toggleItems.find { it.text == jobOccupation.koValue } ?: toggleItems[0]
+
+    Box(
+        modifier = Modifier
+            .background(
+                color = Color.White,
+                shape = RoundedCornerShape(68.dp)
+            )
+            .border(
+                width = 1.dp,
+                color = Color(0xFFF3E3F9),
+                shape = RoundedCornerShape(68.dp)
+            )
+            .padding(horizontal = 12.dp, vertical = 10.dp)
+    ) {
+        Row(
+            modifier = Modifier,
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Image(
+                modifier = Modifier.size(16.dp),
+                painter = painterResource(id = item.resourceId),
+                contentDescription = ""
+            )
+
+            Spacer(modifier = Modifier.width(4.dp))
+
+            Text(
+                text = item.text,
+                style = DaysTheme.typography.medium14.toTextStyle(),
+                color = DaysTheme.colors.grey400
+            )
+        }
+    }
+}
+
+@Composable
+private fun MoreChip(
+    moreSize: Int
+) {
+    if (moreSize >= 1) {
+        Box(
+            modifier = Modifier
+                .background(
+                    color = Color(0xFFF6DFFF),
+                    shape = RoundedCornerShape(68.dp)
+                )
+                .padding(horizontal = 12.dp, vertical = 10.dp)
+        ) {
+            Text(
+                text = "외 ${moreSize}개",
+                style = DaysTheme.typography.medium14.toTextStyle(),
+                color = DaysTheme.colors.grey400
+            )
+        }
     }
 }
 
@@ -329,7 +414,13 @@ private fun DateProfileSectionPreview() {
                 locations = emptyList(),
                 desiredPartner = UserDesiredPartner(
                     birthYearRange = BirthYearRange(null, 3),
-                    jobOccupations = listOf(JobOccupation.SPORTS, JobOccupation.ARTS_DESIGN),
+                    jobOccupations = listOf(
+                        JobOccupation.SPORTS,
+                        JobOccupation.ARTS_DESIGN,
+                        JobOccupation.OTHER,
+                        JobOccupation.HEALTHCARE_MEDICAL,
+                        JobOccupation.TRANSPORTATION_LOGISTICS
+                    ),
                     preferDistance = PreferDistance.ANYWHERE
                 )
             ),
