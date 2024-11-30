@@ -22,6 +22,7 @@ import com.weave.home.profile.job.EditJobScreen
 import com.weave.home.profile.location.EditLocationScreen
 import com.weave.home.profile.main.SnackBarViewModel
 import com.weave.home.profile.main.date.age.EditPartnerAgeScreen
+import com.weave.home.profile.main.date.distance.EditPartnerPreferDistanceScreen
 import com.weave.home.profile.main.date.job.EditPartnerJobScreen
 import com.weave.model.domain.myprofile.JobOccupation
 import com.weave.utils.navigation.navigateWithClearBackStack
@@ -196,6 +197,26 @@ fun NavGraphBuilder.navGraphHome(navController: NavController) {
             val snackBarViewModel = backStackEntry.sharedViewModel<SnackBarViewModel>(navController)
 
             EditPartnerJobScreen(
+                snackBarViewModel = snackBarViewModel,
+                userInfo = parseMyInfoDisplay(backStackEntry),
+                navigateToProfile = {
+                    navController.navigateWithClearBackStack(
+                        Route.Home.withArgs("1"),
+                        Route.ProfileEditLocation.routeName,
+                    )
+                }
+            )
+        }
+
+        composable(
+            route = Route.DateProfileEditPreferDistance.routeName,
+            arguments = listOf(
+                navArgument(USER_INFO_KEY) { type = UserInfoType() }
+            )
+        ) { backStackEntry ->
+            val snackBarViewModel = backStackEntry.sharedViewModel<SnackBarViewModel>(navController)
+
+            EditPartnerPreferDistanceScreen(
                 snackBarViewModel = snackBarViewModel,
                 userInfo = parseMyInfoDisplay(backStackEntry),
                 navigateToProfile = {

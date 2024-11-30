@@ -62,7 +62,6 @@ import com.weave.design_system.extension.addFocusCleaner
 import com.weave.design_system.extension.applyShadow
 import com.weave.design_system.extension.noRippleClickable
 import com.weave.my_profile.MyProfileSharedViewModel
-import com.weave.my_profile.R
 import com.weave.utils.Keyboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -252,7 +251,8 @@ private fun PartnerAgeTextField(
     val textColor = if (isUnderType) DaysTheme.colors.pink500 else DaysTheme.colors.green500
     val shape = RoundedCornerShape(16.dp)
 
-    val icon = if (isUnderType) com.weave.design_system.R.drawable.ic_pointing_down else com.weave.design_system.R.drawable.ic_pointing_up
+    val icon =
+        if (isUnderType) com.weave.design_system.R.drawable.ic_pointing_down else com.weave.design_system.R.drawable.ic_pointing_up
     val text = buildAnnotatedString {
         append("내 나이보다 ")
         withStyle(style = SpanStyle(color = textColor)) { append(if (isUnderType) "아래" else "위") }

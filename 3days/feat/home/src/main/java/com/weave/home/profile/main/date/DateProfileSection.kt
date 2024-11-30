@@ -399,7 +399,25 @@ private fun MoreChip(
 @Composable
 private fun PartnerDistanceView(distance: PreferDistance) {
     Column(verticalArrangement = Arrangement.Center) {
-        // Implement distance view
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Image(
+                modifier = Modifier.size(18.dp),
+                painter = painterResource(id = R.drawable.ic_compass),
+                contentDescription = ""
+            )
+
+            Spacer(modifier = Modifier.width(4.dp))
+
+            Text(
+                text = distance.koValue,
+                style = DaysTheme.typography.medium14.toTextStyle(),
+                color = DaysTheme.colors.grey400
+            )
+        }
     }
 }
 
