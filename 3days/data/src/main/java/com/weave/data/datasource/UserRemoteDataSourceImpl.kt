@@ -8,6 +8,8 @@ import com.weave.network.model.ProfileWidget
 import com.weave.network.model.ProfileWidgetType
 import com.weave.network.model.UpdateMyUserInfoRequest
 import com.weave.network.model.UpdateMyUserInfoResponse
+import com.weave.network.model.UpdateUserDesiredPartnerRequest
+import com.weave.network.model.UpdateUserDesiredPartnerResponse
 import javax.inject.Inject
 
 class UserRemoteDataSourceImpl @Inject constructor(
@@ -35,6 +37,12 @@ class UserRemoteDataSourceImpl @Inject constructor(
     override suspend fun deleteProfileWidget(type: ProfileWidgetType): NetworkResult<Unit> {
         return handleApiResponse {
             service.deleteProfileWidget(type)
+        }
+    }
+
+    override suspend fun updateMyDesiredPartner(body: UpdateUserDesiredPartnerRequest): NetworkResult<UpdateUserDesiredPartnerResponse> {
+        return handleApiResponse {
+            service.updateMyDesiredPartner(body)
         }
     }
 }
