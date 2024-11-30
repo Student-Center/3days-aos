@@ -280,15 +280,13 @@ private fun ProfileScreenContent(
                 Spacer(modifier = Modifier.height(32.dp))
             }
 
-            if (uiState.userInfo != null) {
-                item {
-                    DateProfileSection(
-                        userInfo = uiState.userInfo,
-                        onEditPartnerInfo = moveToProfileEdit
-                    )
+            item {
+                DateProfileSection(
+                    userInfo = uiState.userInfo,
+                    onEditPartnerInfo = moveToProfileEdit
+                )
 
-                    Spacer(modifier = Modifier.height(80.dp))
-                }
+                Spacer(modifier = Modifier.height(80.dp))
             }
 
             item {

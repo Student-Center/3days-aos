@@ -60,7 +60,7 @@ object DateProfileConstants {
 
 @Composable
 fun DateProfileSection(
-    userInfo: UserInfo,
+    userInfo: UserInfo?,
     onEditPartnerInfo: (ProfileEditType) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -85,19 +85,21 @@ private fun SectionTitle() {
 
 @Composable
 fun DateProfileCard(
-    userInfo: UserInfo,
+    userInfo: UserInfo?,
     onEditPartnerInfo: (ProfileEditType) -> Unit
 ) {
     val types = ProfileEditType.entries.filter { it.isPartnerType }
     val pagerState = rememberPagerState(pageCount = { types.size })
 
     DateProfileCardContainer {
-        DateProfilePager(
-            types = types,
-            pagerState = pagerState,
-            userInfo = userInfo,
-            onEditPartnerInfo = onEditPartnerInfo
-        )
+        if(userInfo != null){
+            DateProfilePager(
+                types = types,
+                pagerState = pagerState,
+                userInfo = userInfo,
+                onEditPartnerInfo = onEditPartnerInfo
+            )
+        }
     }
 }
 
@@ -265,14 +267,12 @@ private fun PartnerAgeView(birthYearRange: BirthYearRange) {
     Column(verticalArrangement = Arrangement.Center) {
         AgePreferenceRow(
             icon = com.weave.design_system.R.drawable.ic_pointing_up,
-            prefix = "내 나이보다 ",
             value = "위로 " + (birthYearRange.end?.let { "${it}살" } ?: "상관없어요"),
             valueColor = DaysTheme.colors.green500
         )
         Spacer(modifier = Modifier.height(8.dp))
         AgePreferenceRow(
             icon = com.weave.design_system.R.drawable.ic_pointing_down,
-            prefix = "내 나이보다 ",
             value = "아래로 " + (birthYearRange.start?.let { "${it}살" } ?: "상관없어요"),
             valueColor = DaysTheme.colors.pink500
         )
@@ -282,7 +282,6 @@ private fun PartnerAgeView(birthYearRange: BirthYearRange) {
 @Composable
 private fun AgePreferenceRow(
     icon: Int,
-    prefix: String,
     value: String,
     valueColor: Color
 ) {
@@ -294,7 +293,7 @@ private fun AgePreferenceRow(
         )
         Text(
             text = buildAnnotatedString {
-                append(prefix)
+                append("내 나이보다 ")
                 withStyle(SpanStyle(color = valueColor, fontWeight = FontWeight.W500)) {
                     append(value)
                 }
