@@ -15,13 +15,14 @@ import androidx.navigation.navigation
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.weave.home.profile.ProfileEditType
-import com.weave.home.profile.SnackBarViewModel
 import com.weave.home.profile.UserInfo
 import com.weave.home.profile.UserInfoType
 import com.weave.home.profile.company.EditCompanyScreen
 import com.weave.home.profile.job.EditJobScreen
 import com.weave.home.profile.location.EditLocationScreen
+import com.weave.home.profile.main.SnackBarViewModel
 import com.weave.model.domain.myprofile.JobOccupation
+import com.weave.model.domain.user.UserDesiredPartner
 import com.weave.utils.navigation.navigateWithClearBackStack
 
 private const val USER_INFO_KEY = "user_info"
@@ -80,6 +81,10 @@ fun NavGraphBuilder.navGraphHome(navController: NavController) {
                         ProfileEditType.LOCATION -> {
                             Route.ProfileEditLocation.createEditProfileRoute(item)
                         }
+
+                        ProfileEditType.PARTNER_AGE -> {Route.ProfileEditJob.createEditProfileRoute(item)}
+                        ProfileEditType.PARTNER_JOB_OCCUPATION -> {Route.ProfileEditJob.createEditProfileRoute(item)}
+                        ProfileEditType.PARTNER_DISTANCE -> {Route.ProfileEditJob.createEditProfileRoute(item)}
                     }
 
                     navController.navigateWithClearBackStack(
@@ -157,6 +162,7 @@ private fun parseMyInfoDisplay(backStackEntry: NavBackStackEntry): UserInfo {
         name = "",
         jobOccupation = JobOccupation.OTHER,
         locations = emptyList(),
+        desiredPartner = null
     )
 
     return try {

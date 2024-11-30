@@ -41,8 +41,8 @@ import com.weave.design_system.component.DaysEditTopBar
 import com.weave.design_system.component.DaysJobToggleButton
 import com.weave.design_system.component.DaysSnackBarHost
 import com.weave.design_system.component.NextButton
-import com.weave.home.profile.SnackBarViewModel
 import com.weave.home.profile.UserInfo
+import com.weave.home.profile.main.SnackBarViewModel
 import com.weave.model.domain.myprofile.JobOccupation
 import com.weave.utils.Keyboard
 

@@ -2,6 +2,7 @@ package com.weave.home.profile
 
 import com.weave.model.domain.myprofile.Company
 import com.weave.model.domain.myprofile.JobOccupation
+import com.weave.model.domain.user.UserDesiredPartner
 import java.util.UUID
 
 data class UserInfo(
@@ -9,5 +10,6 @@ data class UserInfo(
     val jobOccupation: JobOccupation,
     val locations: List<Pair<UUID, String>>,
     val company: Company? = null,
-    val allowSameCompany: Boolean? = null
+    val allowSameCompany: Boolean? = null,
+    val desiredPartner: UserDesiredPartner? = null
 )
