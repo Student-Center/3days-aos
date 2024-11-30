@@ -2,15 +2,10 @@ package com.weave.home.profile.main.date.distance
 
 import android.content.Context
 import androidx.lifecycle.viewModelScope
-import com.weave.design_system.R
 import com.weave.design_system.component.SnackBarType
 import com.weave.home.profile.UserInfo
-import com.weave.home.profile.main.date.job.EditPartnerJobAction
-import com.weave.home.profile.main.date.job.EditPartnerJobEffect
 import com.weave.model.domain.user.BirthYearRange
-import com.weave.model.domain.user.RegisterInfo
 import com.weave.model.enum.PreferDistance
-import com.weave.user.RegisterUserUseCase
 import com.weave.user.UpdateUserDesiredPartnerUseCase
 import com.weave.utils.base.BaseViewModel
 import com.weave.utils.base.UIAction
