@@ -9,12 +9,15 @@ import com.weave.data.mapper.toDomain
 import com.weave.domain.repository.UserRepository
 import com.weave.model.auth.AuthToken
 import com.weave.model.domain.myprofile.JobOccupation
+import com.weave.model.domain.user.BirthYearRange
 import com.weave.model.domain.user.MyInfo
 import com.weave.model.domain.user.ProfileWidget
 import com.weave.model.domain.user.ProfileWidgetType
 import com.weave.model.domain.user.RegisterInfo
+import com.weave.model.enum.PreferDistance
 import com.weave.model.network.NetworkResult
 import com.weave.network.model.UpdateMyUserInfoRequest
+import com.weave.network.model.UpdateUserDesiredPartnerRequest
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 import javax.inject.Inject
@@ -88,4 +91,21 @@ class UserRepositoryImpl @Inject constructor(
             networkCall = { dataSource.deleteProfileWidget(type.toDTO) },
             mapToDomain = { }
         )
+
+    override suspend fun updateMyDesiredPartner(
+        birthYearRange: BirthYearRange,
+        jobOccupations: List<JobOccupation>,
+        preferDistance: PreferDistance
+    ): Flow<NetworkResult<Boolean>> = handleNetworkCall(
+        networkCall = {
+            dataSource.updateMyDesiredPartner(
+                UpdateUserDesiredPartnerRequest(
+                    birthYearRange = birthYearRange.toDTO,
+                    jobOccupations = jobOccupations.map { it.toDTO },
+                    preferDistance = preferDistance.toDTO
+                )
+            )
+        },
+        mapToDomain = { true }
+    )
 }

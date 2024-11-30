@@ -55,7 +55,8 @@ fun Picker(
 
     fun getItem(index: Int) = newItems[index % newItems.size]
 
-    val listState = rememberLazyListState(initialFirstVisibleItemIndex = listStartIndex)
+    val listState =
+        rememberLazyListState(initialFirstVisibleItemIndex = if (listStartIndex == 0) 0 else listStartIndex + 1)
     val flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
 
     val fadingEdgeGradient = remember {

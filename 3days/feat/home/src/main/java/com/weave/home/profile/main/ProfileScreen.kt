@@ -1,4 +1,4 @@
-package com.weave.home.profile
+package com.weave.home.profile.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -58,6 +58,9 @@ import com.weave.design_system.DaysTheme
 import com.weave.design_system.extension.applyShadow
 import com.weave.design_system.extension.noRippleClickable
 import com.weave.home.R
+import com.weave.home.profile.ProfileEditType
+import com.weave.home.profile.UserInfo
+import com.weave.home.profile.main.date.DateProfileSection
 import com.weave.home.profile.widget.AddProfileWidgetSheet
 import com.weave.home.profile.widget.EditProfileWidgetSheet
 import com.weave.home.profile.widget.ProfileWidgetSection
@@ -74,7 +77,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
     snackBarViewModel: SnackBarViewModel = hiltViewModel(),
     innerPadding: PaddingValues,
-    moveToMyProfileEdit: (ProfileEditType, UserInfo?) -> Unit
+    moveToProfileEdit: (ProfileEditType, UserInfo?) -> Unit
 ) {
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -193,25 +196,46 @@ fun ProfileScreen(
         onWidgetDelete = { type ->
             viewModel.setAction(ProfileAction.DeleteProfileWidget(type))
         },
-        moveToMyProfileEdit = { type ->
+        moveToProfileEdit = { type ->
             when (type) {
                 ProfileEditType.JOB_OCCUPATION -> {
-                    moveToMyProfileEdit(
+                    moveToProfileEdit(
                         ProfileEditType.JOB_OCCUPATION,
                         viewModel.uiState.userInfo
                     )
                 }
 
                 ProfileEditType.COMPANY -> {
-                    moveToMyProfileEdit(
+                    moveToProfileEdit(
                         ProfileEditType.COMPANY,
                         viewModel.uiState.userInfo
                     )
                 }
 
                 ProfileEditType.LOCATION -> {
-                    moveToMyProfileEdit(
+                    moveToProfileEdit(
                         ProfileEditType.LOCATION,
+                        viewModel.uiState.userInfo
+                    )
+                }
+
+                ProfileEditType.PARTNER_AGE -> {
+                    moveToProfileEdit(
+                        ProfileEditType.PARTNER_AGE,
+                        viewModel.uiState.userInfo
+                    )
+                }
+
+                ProfileEditType.PARTNER_JOB_OCCUPATION -> {
+                    moveToProfileEdit(
+                        ProfileEditType.PARTNER_JOB_OCCUPATION,
+                        viewModel.uiState.userInfo
+                    )
+                }
+
+                ProfileEditType.PARTNER_DISTANCE -> {
+                    moveToProfileEdit(
+                        ProfileEditType.PARTNER_DISTANCE,
                         viewModel.uiState.userInfo
                     )
                 }
@@ -237,7 +261,7 @@ private fun ProfileScreenContent(
     onAddType: (ProfileWidgetType) -> Unit,
     onEditWidget: (ProfileWidget) -> Unit,
     onDismissSheetRequest: (Int) -> Unit,
-    moveToMyProfileEdit: (ProfileEditType) -> Unit,
+    moveToProfileEdit: (ProfileEditType) -> Unit,
     onWidgetAdd: (ProfileWidgetType, String) -> Unit,
     onWidgetEdit: (ProfileWidgetType, String) -> Unit,
     onWidgetDelete: (ProfileWidgetType) -> Unit
@@ -257,6 +281,15 @@ private fun ProfileScreenContent(
             }
 
             item {
+                DateProfileSection(
+                    userInfo = uiState.userInfo,
+                    onEditPartnerInfo = moveToProfileEdit
+                )
+
+                Spacer(modifier = Modifier.height(80.dp))
+            }
+
+            item {
                 Text(
                     text = "My Profile",
                     style = DaysTheme.typography.enMedium20.toTextStyle(),
@@ -267,7 +300,7 @@ private fun ProfileScreenContent(
             item {
                 ProfileSection(
                     uiState = uiState,
-                    moveToMyProfileEdit = { moveToMyProfileEdit(it) }
+                    moveToMyProfileEdit = { moveToProfileEdit(it) }
                 )
             }
 
@@ -758,11 +791,12 @@ private fun ProfileScreenPreview() {
                     }
                 }
         },
-        moveToMyProfileEdit = { type ->
+        moveToProfileEdit = { type ->
             when (type) {
                 ProfileEditType.JOB_OCCUPATION -> {}
                 ProfileEditType.COMPANY -> {}
                 ProfileEditType.LOCATION -> {}
+                else -> {}
             }
         }
     )

@@ -15,12 +15,13 @@ import androidx.navigation.navigation
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.weave.home.profile.ProfileEditType
-import com.weave.home.profile.SnackBarViewModel
 import com.weave.home.profile.UserInfo
 import com.weave.home.profile.UserInfoType
 import com.weave.home.profile.company.EditCompanyScreen
 import com.weave.home.profile.job.EditJobScreen
 import com.weave.home.profile.location.EditLocationScreen
+import com.weave.home.profile.main.SnackBarViewModel
+import com.weave.home.profile.main.date.age.EditPartnerAgeScreen
 import com.weave.model.domain.myprofile.JobOccupation
 import com.weave.utils.navigation.navigateWithClearBackStack
 
@@ -34,7 +35,10 @@ enum class Route(val routeName: String) {
     Profile("profile"),
     ProfileEditJob("edit_job/{$USER_INFO_KEY}"),
     ProfileEditCompany("edit_company/{$USER_INFO_KEY}"),
-    ProfileEditLocation("edit_location/{$USER_INFO_KEY}");
+    ProfileEditLocation("edit_location/{$USER_INFO_KEY}"),
+    DateProfileEditAge("date_edit_age/{$USER_INFO_KEY}"),
+    DateProfileEditJob("date_edit_job/{$USER_INFO_KEY}"),
+    DateProfileEditPreferDistance("date_edit_prefer_distance/{$USER_INFO_KEY}"), ;
 
     fun withArgs(vararg args: String): String {
         return buildString {
@@ -79,6 +83,18 @@ fun NavGraphBuilder.navGraphHome(navController: NavController) {
 
                         ProfileEditType.LOCATION -> {
                             Route.ProfileEditLocation.createEditProfileRoute(item)
+                        }
+
+                        ProfileEditType.PARTNER_AGE -> {
+                            Route.DateProfileEditAge.createEditProfileRoute(item)
+                        }
+
+                        ProfileEditType.PARTNER_JOB_OCCUPATION -> {
+                            Route.ProfileEditJob.createEditProfileRoute(item)
+                        }
+
+                        ProfileEditType.PARTNER_DISTANCE -> {
+                            Route.ProfileEditJob.createEditProfileRoute(item)
                         }
                     }
 
@@ -149,6 +165,26 @@ fun NavGraphBuilder.navGraphHome(navController: NavController) {
                 }
             )
         }
+
+        composable(
+            route = Route.DateProfileEditAge.routeName,
+            arguments = listOf(
+                navArgument(USER_INFO_KEY) { type = UserInfoType() }
+            )
+        ) { backStackEntry ->
+            val snackBarViewModel = backStackEntry.sharedViewModel<SnackBarViewModel>(navController)
+
+            EditPartnerAgeScreen(
+                snackBarViewModel = snackBarViewModel,
+                userInfo = parseMyInfoDisplay(backStackEntry),
+                navigateToProfile = {
+                    navController.navigateWithClearBackStack(
+                        Route.Home.withArgs("1"),
+                        Route.ProfileEditLocation.routeName,
+                    )
+                }
+            )
+        }
     }
 }
 
@@ -157,6 +193,7 @@ private fun parseMyInfoDisplay(backStackEntry: NavBackStackEntry): UserInfo {
         name = "",
         jobOccupation = JobOccupation.OTHER,
         locations = emptyList(),
+        desiredPartner = null
     )
 
     return try {

@@ -45,8 +45,8 @@ import com.weave.design_system.component.DaysEditTopBar
 import com.weave.design_system.component.DaysSnackBarHost
 import com.weave.design_system.component.NextButton
 import com.weave.design_system.extension.noRippleClickable
-import com.weave.home.profile.SnackBarViewModel
 import com.weave.home.profile.UserInfo
+import com.weave.home.profile.main.SnackBarViewModel
 import com.weave.model.domain.myprofile.Company
 import com.weave.utils.Keyboard
 import com.weave.utils.keyboardAsState
@@ -61,6 +61,7 @@ fun EditCompanyScreen(
     val focusManager = LocalFocusManager.current
     val isKeyboardVisible by keyboardAsState()
     val lazyListState = rememberLazyListState()
+    var showBottomSheetState by remember { mutableStateOf(false) }
 
     var inputText by remember { mutableStateOf("") }
 
@@ -79,6 +80,10 @@ fun EditCompanyScreen(
                     navigateToProfile(effect.isSuccess)
                 }
 
+                is EditCompanyEffect.ShowBottomSheet -> {
+                    showBottomSheetState = true
+                }
+
                 is EditCompanyEffect.ShowToast -> {
                     snackBarViewModel.showSnackBar(
                         message = effect.message,
@@ -93,6 +98,7 @@ fun EditCompanyScreen(
         uiState = viewModel.uiState,
         isKeyboardVisible = isKeyboardVisible,
         focusManager = focusManager,
+        showBottomSheetState = showBottomSheetState,
         snackState = snackBarViewModel.snackBarHostState,
         lazyListState = lazyListState,
         inputText = inputText,
@@ -108,7 +114,12 @@ fun EditCompanyScreen(
             viewModel.setAction(EditCompanyAction.SelectCompany(it))
         },
         requestUpdate = {
-            viewModel.setAction(EditCompanyAction.ValidateInput(true))
+            viewModel.setAction(EditCompanyAction.ValidateInput)
+        },
+        onBottomSheetCanceled = { showBottomSheetState = false },
+        onClickBottomSheetConfirm = {
+            showBottomSheetState = false
+            viewModel.setAction(EditCompanyAction.UpdateData(it))
         }
     )
 }
@@ -118,6 +129,7 @@ private fun EditCompanyScreenContent(
     uiState: EditCompanyState,
     isKeyboardVisible: Keyboard,
     focusManager: FocusManager,
+    showBottomSheetState: Boolean,
     snackState: SnackbarHostState,
     lazyListState: LazyListState,
     inputText: String,
@@ -125,7 +137,9 @@ private fun EditCompanyScreenContent(
     onCheckChanged: () -> Unit,
     navigateToProfile: (Boolean) -> Unit,
     onCompanyChanged: (Company) -> Unit,
-    requestUpdate: () -> Unit
+    requestUpdate: () -> Unit,
+    onBottomSheetCanceled: () -> Unit,
+    onClickBottomSheetConfirm: (Boolean) -> Unit
 ) {
     val snackBarPadding = if (isKeyboardVisible == Keyboard.Closed) 110.dp else 36.dp
 
@@ -191,6 +205,14 @@ private fun EditCompanyScreenContent(
                 isEnabled = uiState.isChecked || uiState.selectedCompany != null,
                 padding = innerPadding,
                 onClick = requestUpdate
+            )
+        }
+
+        if (showBottomSheetState) {
+            CompanyMatchOptionSheet(
+                onClickCancel = onBottomSheetCanceled,
+                onClickConfirmTrue = { onClickBottomSheetConfirm(true) },
+                onClickConfirmFalse = { onClickBottomSheetConfirm(false) }
             )
         }
     }
@@ -310,18 +332,24 @@ private fun EditCompanyScreenPreview() {
     val focusManager = LocalFocusManager.current
     val lazyListState = rememberLazyListState()
     val inputText by remember { mutableStateOf("") }
+    var showBottomSheetState by remember { mutableStateOf(false) }
 
     EditCompanyScreenContent(
         focusManager = focusManager,
         uiState = EditCompanyState(),
         isKeyboardVisible = Keyboard.Closed,
         snackState = SnackbarHostState(),
+        showBottomSheetState = showBottomSheetState,
         lazyListState = lazyListState,
         inputText = inputText,
         onTextChanged = {},
         onCheckChanged = {},
         navigateToProfile = {},
         onCompanyChanged = {},
-        requestUpdate = {}
+        requestUpdate = {},
+        onBottomSheetCanceled = { showBottomSheetState = false },
+        onClickBottomSheetConfirm = {
+            showBottomSheetState = false
+        }
     )
 }

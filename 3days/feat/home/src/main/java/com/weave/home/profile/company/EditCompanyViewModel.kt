@@ -27,7 +27,8 @@ sealed class EditCompanyAction : UIAction {
     data class GetNextPage(val keyword: String) : EditCompanyAction()
     data class SelectCompany(val company: Company) : EditCompanyAction()
     data class SetChecked(val isChecked: Boolean) : EditCompanyAction()
-    data class ValidateInput(val allowSameCompany: Boolean) : EditCompanyAction()
+    data object ValidateInput : EditCompanyAction()
+    data class UpdateData(val allowSameCompany: Boolean) : EditCompanyAction()
 }
 
 sealed class EditCompanyIntent : UIIntent {
@@ -36,7 +37,8 @@ sealed class EditCompanyIntent : UIIntent {
     data class GetNextPage(val keyword: String) : EditCompanyIntent()
     data class SelectCompany(val company: Company) : EditCompanyIntent()
     data class SetChecked(val isChecked: Boolean) : EditCompanyIntent()
-    data class ValidateInput(val allowSameCompany: Boolean) : EditCompanyIntent()
+    data object ValidateInput : EditCompanyIntent()
+    data class UpdateData(val allowSameCompany: Boolean) : EditCompanyIntent()
 }
 
 data class EditCompanyState(
@@ -51,6 +53,7 @@ data class EditCompanyState(
 sealed class EditCompanyEffect : UIEffect {
     data class NavigateToProfile(val isSuccess: Boolean) : EditCompanyEffect()
     data class ShowToast(val message: String, val type: SnackBarType) : EditCompanyEffect()
+    data object ShowBottomSheet : EditCompanyEffect()
 }
 
 @HiltViewModel
@@ -69,7 +72,8 @@ class EditCompanyViewModel @Inject constructor(
             is EditCompanyAction.GetNextPage -> EditCompanyIntent.GetNextPage(action.keyword)
             is EditCompanyAction.SelectCompany -> EditCompanyIntent.SelectCompany(action.company)
             is EditCompanyAction.SetChecked -> EditCompanyIntent.SetChecked(action.isChecked)
-            is EditCompanyAction.ValidateInput -> EditCompanyIntent.ValidateInput(action.allowSameCompany)
+            is EditCompanyAction.ValidateInput -> EditCompanyIntent.ValidateInput
+            is EditCompanyAction.UpdateData -> EditCompanyIntent.UpdateData(action.allowSameCompany)
         }
     }
 
@@ -80,7 +84,8 @@ class EditCompanyViewModel @Inject constructor(
             is EditCompanyIntent.GetNextPage -> search(intent.keyword)
             is EditCompanyIntent.SelectCompany -> selectCompany(intent.company)
             is EditCompanyIntent.SetChecked -> setChecked(intent.isChecked)
-            is EditCompanyIntent.ValidateInput -> validateInput(intent.allowSameCompany)
+            is EditCompanyIntent.ValidateInput -> validateInput()
+            is EditCompanyIntent.UpdateData -> updateData(intent.allowSameCompany)
         }
     }
 
@@ -144,40 +149,44 @@ class EditCompanyViewModel @Inject constructor(
         search(keyword = query)
     }
 
-    private fun validateInput(allowSameCompany: Boolean) {
+    private fun validateInput() {
         if (uiState.isChecked || uiState.selectedCompany != null) {
-            viewModelScope.launch {
-                updateMyInfoUseCase.invoke(
-                    name = uiState.userInfo?.name ?: "",
-                    jobOccupation = uiState.userInfo?.jobOccupation ?: JobOccupation.OTHER,
-                    locationIds = uiState.userInfo?.locations?.map { it.first } ?: emptyList(),
-                    companyId = uiState.selectedCompany?.id,
-                    allowSameCompany = allowSameCompany
-                ).mapMerge().collect { result ->
-                    if (result != null) {
-                        setEffect {
-                            EditCompanyEffect.ShowToast(
-                                message = "내 회사가 변경되었어요",
-                                type = SnackBarType.DEFAULT
-                            )
-                        }
-                        setEffect { EditCompanyEffect.NavigateToProfile(true) }
-                    } else if (!isLoading) {
-                        setEffect {
-                            EditCompanyEffect.ShowToast(
-                                message = "다시 시도해 주세요",
-                                type = SnackBarType.ERROR
-                            )
-                        }
-                    }
-                }
-            }
+            setEffect { EditCompanyEffect.ShowBottomSheet }
         } else {
             setEffect {
                 EditCompanyEffect.ShowToast(
                     context.getString(R.string.my_profile_company_not_selected_error_message),
                     SnackBarType.ERROR
                 )
+            }
+        }
+    }
+
+    private fun updateData(allowSameCompany: Boolean) {
+        viewModelScope.launch {
+            updateMyInfoUseCase.invoke(
+                name = uiState.userInfo?.name ?: "",
+                jobOccupation = uiState.userInfo?.jobOccupation ?: JobOccupation.OTHER,
+                locationIds = uiState.userInfo?.locations?.map { it.first } ?: emptyList(),
+                companyId = uiState.selectedCompany?.id,
+                allowSameCompany = allowSameCompany
+            ).mapMerge().collect { result ->
+                if (result != null) {
+                    setEffect {
+                        EditCompanyEffect.ShowToast(
+                            message = "내 회사가 변경되었어요",
+                            type = SnackBarType.DEFAULT
+                        )
+                    }
+                    setEffect { EditCompanyEffect.NavigateToProfile(true) }
+                } else if (!isLoading) {
+                    setEffect {
+                        EditCompanyEffect.ShowToast(
+                            message = "다시 시도해 주세요",
+                            type = SnackBarType.ERROR
+                        )
+                    }
+                }
             }
         }
     }

@@ -49,8 +49,8 @@ import com.weave.design_system.component.DaysSnackBarHost
 import com.weave.design_system.component.NextButton
 import com.weave.design_system.extension.applyShadow
 import com.weave.design_system.extension.noRippleClickable
-import com.weave.home.profile.SnackBarViewModel
 import com.weave.home.profile.UserInfo
+import com.weave.home.profile.main.SnackBarViewModel
 import com.weave.model.domain.myprofile.Location
 import com.weave.utils.Keyboard
 

@@ -33,9 +33,9 @@ import com.weave.design_system.component.DaysSnackBarHost
 import com.weave.design_system.extension.noRippleClickable
 import com.weave.home.home.HomeScreen
 import com.weave.home.profile.ProfileEditType
-import com.weave.home.profile.ProfileScreen
-import com.weave.home.profile.SnackBarViewModel
 import com.weave.home.profile.UserInfo
+import com.weave.home.profile.main.ProfileScreen
+import com.weave.home.profile.main.SnackBarViewModel
 import com.weave.utils.Keyboard
 import com.weave.utils.keyboardAsState
 
@@ -188,7 +188,7 @@ private fun TabContent(
         TabType.PROFILE -> ProfileScreen(
             snackBarViewModel = snackBarViewModel,
             innerPadding = innerPadding,
-            moveToMyProfileEdit = { type, item ->
+            moveToProfileEdit = { type, item ->
                 moveToMyProfileEdit(type, item)
             }
         )

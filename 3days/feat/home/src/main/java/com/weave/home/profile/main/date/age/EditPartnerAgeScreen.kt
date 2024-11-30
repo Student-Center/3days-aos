@@ -1,6 +1,7 @@
-package com.weave.my_profile.partner.age
+package com.weave.home.profile.main.date.age
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -22,11 +22,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,7 +36,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -49,113 +48,173 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.weave.design_system.DaysTheme
+import com.weave.design_system.R
 import com.weave.design_system.component.DaysBackgroundTextureImage
-import com.weave.design_system.component.DaysOnlyBackAppbar
-import com.weave.design_system.component.DaysStepIndicator
+import com.weave.design_system.component.DaysEditTopBar
+import com.weave.design_system.component.DaysSnackBarHost
 import com.weave.design_system.component.NextButton
 import com.weave.design_system.component.Picker
 import com.weave.design_system.component.PickerState
 import com.weave.design_system.component.rememberPickerState
 import com.weave.design_system.component.tooltip.DaysTooltip
 import com.weave.design_system.component.tooltip.TooltipDirection
-import com.weave.design_system.extension.addFocusCleaner
 import com.weave.design_system.extension.applyShadow
 import com.weave.design_system.extension.noRippleClickable
-import com.weave.my_profile.MyProfileSharedViewModel
-import com.weave.my_profile.R
+import com.weave.home.profile.UserInfo
+import com.weave.home.profile.main.SnackBarViewModel
 import com.weave.utils.Keyboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.Year
-import com.weave.design_system.R as design
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PartnerAgeScreen(
-    viewModel: PartnerAgeViewModel = hiltViewModel(),
-    sharedViewModel: MyProfileSharedViewModel = hiltViewModel(),
-    onBackBtnClicked: () -> Unit,
-    onNextBtnClicked: () -> Unit
+fun EditPartnerAgeScreen(
+    snackBarViewModel: SnackBarViewModel = hiltViewModel(),
+    viewModel: EditPartnerAgeViewModel = hiltViewModel(),
+    userInfo: UserInfo,
+    navigateToProfile: (Boolean) -> Unit
 ) {
-    val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
-    val uiState by remember { derivedStateOf { viewModel.uiState } }
-
-    var isUnderTextFieldFocus by remember { mutableStateOf(false) }
-    var isUpperTextFieldFocus by remember { mutableStateOf(false) }
-
-    val itemsUpperPickerState = rememberPickerState()
-    val itemsUnderPickerState = rememberPickerState()
-    val ageRange = (0..15).map { it.toString() }
-
+    var isStartTextFieldFocus by remember { mutableStateOf(false) }
+    var isEndTextFieldFocus by remember { mutableStateOf(false) }
+    val itemsEndPickerState = rememberPickerState()
+    val itemsStartPickerState = rememberPickerState()
     val tooltipState = remember { TooltipState() }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        sharedViewModel.underAge?.let { viewModel.setAction(PartnerAgeAction.SetUnderAge(it.toString())) }
-        sharedViewModel.upperAge?.let { viewModel.setAction(PartnerAgeAction.SetUpperAge(it.toString())) }
+        viewModel.setAction(EditPartnerAgeAction.FetchData(userInfo))
+        userInfo.desiredPartner?.birthYearRange?.let {
+            itemsStartPickerState.selectedItem = it.start?.toString() ?: "상관없어요"
+            itemsEndPickerState.selectedItem = it.end?.toString() ?: "상관없어요"
+        }
     }
 
-    LaunchedEffect(isUnderTextFieldFocus, isUpperTextFieldFocus) {
-        scrollState.animateScrollTo(if (isUnderTextFieldFocus || isUpperTextFieldFocus) scrollState.maxValue / 2 else 0)
+    LaunchedEffect(isStartTextFieldFocus, isEndTextFieldFocus) {
+        scrollState.animateScrollTo(if (isStartTextFieldFocus || isEndTextFieldFocus) scrollState.maxValue / 2 else 0)
     }
 
-    LaunchedEffect(itemsUpperPickerState.selectedItem) {
-        if (isUpperTextFieldFocus) viewModel.setAction(
-            PartnerAgeAction.SetUpperAge(
-                itemsUpperPickerState.selectedItem
+    LaunchedEffect(itemsEndPickerState.selectedItem) {
+        if (isEndTextFieldFocus) viewModel.setAction(
+            EditPartnerAgeAction.SetUpperAge(
+                itemsEndPickerState.selectedItem
             )
         )
     }
 
-    LaunchedEffect(itemsUnderPickerState.selectedItem) {
-        if (isUnderTextFieldFocus) viewModel.setAction(
-            PartnerAgeAction.SetUnderAge(
-                itemsUnderPickerState.selectedItem
+    LaunchedEffect(itemsStartPickerState.selectedItem) {
+        if (isStartTextFieldFocus) viewModel.setAction(
+            EditPartnerAgeAction.SetUnderAge(
+                itemsStartPickerState.selectedItem
             )
         )
     }
+
+    LaunchedEffect(viewModel.uiEffect) {
+        viewModel.uiEffect.collect { effect ->
+            when (effect) {
+                is EditPartnerAgeEffect.NavigateToProfile -> {
+                    navigateToProfile(true)
+                }
+
+                is EditPartnerAgeEffect.ShowToast -> {
+                    snackBarViewModel.showSnackBar(
+                        message = effect.message,
+                        type = effect.type
+                    )
+                }
+            }
+        }
+    }
+
+    EditPartnerAgeScreenContent(
+        uiState = viewModel.uiState,
+        snackState = snackBarViewModel.snackBarHostState,
+        scrollState = scrollState,
+        tooltipState = tooltipState,
+        scope = scope,
+        itemsStartPickerState = itemsStartPickerState,
+        itemsEndPickerState = itemsEndPickerState,
+        isStartTextFieldFocus = isStartTextFieldFocus,
+        isEndTextFieldFocus = isEndTextFieldFocus,
+        onStartTextFieldFocusChange = { isStartTextFieldFocus = it },
+        onEndTextFieldFocusChange = { isEndTextFieldFocus = it },
+        onStartValueChange = { viewModel.setAction(EditPartnerAgeAction.SetUnderAge(it)) },
+        onEndValueChange = { viewModel.setAction(EditPartnerAgeAction.SetUpperAge(it)) },
+        navigateToProfile = navigateToProfile,
+        requestUpdate = { viewModel.setAction(EditPartnerAgeAction.UpdateData) }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun EditPartnerAgeScreenContent(
+    uiState: EditPartnerAgeState,
+    snackState: SnackbarHostState,
+    scrollState: ScrollState,
+    tooltipState: TooltipState,
+    scope: CoroutineScope,
+    itemsStartPickerState: PickerState,
+    itemsEndPickerState: PickerState,
+    isStartTextFieldFocus: Boolean,
+    isEndTextFieldFocus: Boolean,
+    onStartTextFieldFocusChange: (Boolean) -> Unit,
+    onEndTextFieldFocusChange: (Boolean) -> Unit,
+    onStartValueChange: (String) -> Unit,
+    onEndValueChange: (String) -> Unit,
+    navigateToProfile: (Boolean) -> Unit,
+    requestUpdate: () -> Unit
+) {
+    val ageRange = (0..15).map { it.toString() }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { DaysOnlyBackAppbar(onBackPressed = onBackBtnClicked) },
+        topBar = {
+            DaysEditTopBar(
+                title = "선호 연령 수정",
+                onBackPressed = { navigateToProfile(false) }
+            )
+        },
+        snackbarHost = {
+            DaysSnackBarHost(
+                snackState = snackState,
+                modifier = Modifier
+                    .padding(bottom = 110.dp)
+            )
+        }
     ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .addFocusCleaner(focusManager)
                 .padding(top = innerPadding.calculateTopPadding())
-                .verticalScroll(scrollState)
-                .imePadding()
         ) {
             DaysBackgroundTextureImage()
 
             Column(
                 modifier = Modifier
                     .matchParentSize()
-                    .padding(horizontal = 26.dp),
+                    .verticalScroll(scrollState)
+                    .padding(horizontal = 32.dp)
             ) {
-
-                PartnerAgeHeader()
-
-                Spacer(modifier = Modifier.height(48.dp))
+                Spacer(modifier = Modifier.height(41.dp))
 
                 PartnerAgeTextField(
                     isUnderType = false,
-                    value = uiState.upperAge,
-                    isFocus = isUpperTextFieldFocus,
-                    onValueChange = { viewModel.setAction(PartnerAgeAction.SetUpperAge(it)) },
-                    onFocusChange = { isUpperTextFieldFocus = it }
+                    value = itemsEndPickerState.selectedItem,
+                    isFocus = isEndTextFieldFocus,
+                    onValueChange = onEndValueChange,
+                    onFocusChange = onEndTextFieldFocusChange
                 )
 
-                Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(64.dp))
 
                 PartnerAgeTextField(
                     isUnderType = true,
-                    value = uiState.underAge,
-                    isFocus = isUnderTextFieldFocus,
-                    onValueChange = { viewModel.setAction(PartnerAgeAction.SetUnderAge(it)) },
-                    onFocusChange = { isUnderTextFieldFocus = it }
+                    value = itemsStartPickerState.selectedItem,
+                    isFocus = isStartTextFieldFocus,
+                    onValueChange = onStartValueChange,
+                    onFocusChange = onStartTextFieldFocusChange
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
@@ -164,55 +223,26 @@ fun PartnerAgeScreen(
                     scope = scope,
                     tooltipState = tooltipState
                 )
+
+                Spacer(modifier = Modifier.height(20.dp))
             }
-        }
 
-        if (isUpperTextFieldFocus) {
-            AgeRangePicker(ageRange, itemsUpperPickerState)
-        }
-
-        if (isUnderTextFieldFocus) {
-            AgeRangePicker(ageRange, itemsUnderPickerState)
-        }
-
-        NextButton(
-            isKeyboardVisible = Keyboard.Closed,
-            isEnabled = true,
-            padding = innerPadding,
-            onClick = {
-                sharedViewModel.upperAge = uiState.upperAge.toIntOrNull()
-                sharedViewModel.underAge = uiState.underAge.toIntOrNull()
-                onNextBtnClicked()
+            if (isEndTextFieldFocus) {
+                AgeRangePicker(ageRange, itemsEndPickerState)
             }
-        )
+
+            if (isStartTextFieldFocus) {
+                AgeRangePicker(ageRange, itemsStartPickerState)
+            }
+
+            NextButton(
+                isKeyboardVisible = Keyboard.Closed,
+                isEnabled = uiState.initAgeRange != uiState.ageRange,
+                padding = innerPadding,
+                onClick = requestUpdate
+            )
+        }
     }
-}
-
-@Composable
-private fun PartnerAgeHeader() {
-    Spacer(modifier = Modifier.height(12.dp))
-
-    DaysStepIndicator(
-        currentStep = 1,
-        totalStep = 3,
-        pointColor = Color(0xFFFF8BAC)
-    )
-
-    Spacer(modifier = Modifier.height(20.dp))
-
-    Text(
-        text = stringResource(id = design.string.partner_age_sub_title),
-        style = DaysTheme.typography.regular14.toTextStyle(),
-        color = DaysTheme.colors.grey200
-    )
-
-    Spacer(modifier = Modifier.height(4.dp))
-
-    Text(
-        text = stringResource(id = design.string.partner_age_title),
-        style = DaysTheme.typography.semiBold24.toTextStyle(),
-        color = DaysTheme.colors.grey500
-    )
 }
 
 @Composable
@@ -252,21 +282,23 @@ private fun PartnerAgeTextField(
     val textColor = if (isUnderType) DaysTheme.colors.pink500 else DaysTheme.colors.green500
     val shape = RoundedCornerShape(16.dp)
 
-    val icon = if (isUnderType) com.weave.design_system.R.drawable.ic_pointing_down else com.weave.design_system.R.drawable.ic_pointing_up
+    val icon = if (isUnderType) R.drawable.ic_pointing_down else R.drawable.ic_pointing_up
     val text = buildAnnotatedString {
         append("내 나이보다 ")
         withStyle(style = SpanStyle(color = textColor)) { append(if (isUnderType) "아래" else "위") }
         append("로")
     }
 
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 18.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.Start
     ) {
-        Row {
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Image(
                 modifier = Modifier.size(24.dp),
                 painter = painterResource(id = icon),
@@ -282,7 +314,7 @@ private fun PartnerAgeTextField(
             )
         }
 
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             BasicTextField(
@@ -327,7 +359,7 @@ private fun PartnerAgeTextField(
             Spacer(modifier = Modifier.width(8.dp))
 
             Text(
-                text = "살",
+                text = "살까지 괜찮아요",
                 style = DaysTheme.typography.semiBold18.toTextStyle(),
                 color = DaysTheme.colors.grey300
             )
@@ -355,15 +387,15 @@ private fun BirthYearTooltip(
             ) {
                 Icon(
                     modifier = Modifier.size(18.dp),
-                    painter = painterResource(id = com.weave.design_system.R.drawable.ic_question_mark),
+                    painter = painterResource(id = R.drawable.ic_question_mark),
                     tint = DaysTheme.colors.grey200,
-                    contentDescription = stringResource(id = com.weave.design_system.R.string.my_profile_birth_year_tooltip_description)
+                    contentDescription = stringResource(id = R.string.my_profile_birth_year_tooltip_description)
                 )
 
                 Spacer(modifier = Modifier.width(4.dp))
 
                 Text(
-                    text = stringResource(id = com.weave.design_system.R.string.my_profile_birth_year_description),
+                    text = stringResource(id = R.string.my_profile_birth_year_description),
                     style = DaysTheme.typography.regular14.toTextStyle(),
                     color = DaysTheme.colors.grey200
                 )
@@ -388,11 +420,33 @@ private fun boldBirthYearMessage(): AnnotatedString {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-private fun PartnerAgeScreenPreview() {
-    PartnerAgeScreen(
-        onBackBtnClicked = {},
-        onNextBtnClicked = {}
+private fun EditPartnerAgeScreenPreview() {
+    val scrollState = rememberScrollState()
+    var isStartTextFieldFocus by remember { mutableStateOf(false) }
+    var isEndTextFieldFocus by remember { mutableStateOf(false) }
+    val itemsEndPickerState = rememberPickerState()
+    val itemsStartPickerState = rememberPickerState()
+    val tooltipState = remember { TooltipState() }
+    val scope = rememberCoroutineScope()
+
+    EditPartnerAgeScreenContent(
+        uiState = EditPartnerAgeState(),
+        snackState = SnackbarHostState(),
+        scrollState = scrollState,
+        navigateToProfile = { },
+        tooltipState = tooltipState,
+        scope = scope,
+        itemsStartPickerState = itemsStartPickerState,
+        itemsEndPickerState = itemsEndPickerState,
+        isStartTextFieldFocus = isStartTextFieldFocus,
+        isEndTextFieldFocus = isEndTextFieldFocus,
+        onStartTextFieldFocusChange = { isStartTextFieldFocus = it },
+        onEndTextFieldFocusChange = { isEndTextFieldFocus = it },
+        onStartValueChange = { },
+        onEndValueChange = { },
+        requestUpdate = { }
     )
 }
