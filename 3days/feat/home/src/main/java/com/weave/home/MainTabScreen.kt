@@ -188,7 +188,7 @@ private fun TabContent(
         TabType.PROFILE -> ProfileScreen(
             snackBarViewModel = snackBarViewModel,
             innerPadding = innerPadding,
-            moveToMyProfileEdit = { type, item ->
+            moveToProfileEdit = { type, item ->
                 moveToMyProfileEdit(type, item)
             }
         )

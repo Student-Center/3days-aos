@@ -77,7 +77,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
     snackBarViewModel: SnackBarViewModel = hiltViewModel(),
     innerPadding: PaddingValues,
-    moveToMyProfileEdit: (ProfileEditType, UserInfo?) -> Unit
+    moveToProfileEdit: (ProfileEditType, UserInfo?) -> Unit
 ) {
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -196,30 +196,49 @@ fun ProfileScreen(
         onWidgetDelete = { type ->
             viewModel.setAction(ProfileAction.DeleteProfileWidget(type))
         },
-        moveToMyProfileEdit = { type ->
+        moveToProfileEdit = { type ->
             when (type) {
                 ProfileEditType.JOB_OCCUPATION -> {
-                    moveToMyProfileEdit(
+                    moveToProfileEdit(
                         ProfileEditType.JOB_OCCUPATION,
                         viewModel.uiState.userInfo
                     )
                 }
 
                 ProfileEditType.COMPANY -> {
-                    moveToMyProfileEdit(
+                    moveToProfileEdit(
                         ProfileEditType.COMPANY,
                         viewModel.uiState.userInfo
                     )
                 }
 
                 ProfileEditType.LOCATION -> {
-                    moveToMyProfileEdit(
+                    moveToProfileEdit(
                         ProfileEditType.LOCATION,
                         viewModel.uiState.userInfo
                     )
                 }
 
-                else -> {}
+                ProfileEditType.PARTNER_AGE -> {
+                    moveToProfileEdit(
+                        ProfileEditType.PARTNER_AGE,
+                        viewModel.uiState.userInfo
+                    )
+                }
+
+                ProfileEditType.PARTNER_JOB_OCCUPATION -> {
+                    moveToProfileEdit(
+                        ProfileEditType.PARTNER_JOB_OCCUPATION,
+                        viewModel.uiState.userInfo
+                    )
+                }
+
+                ProfileEditType.PARTNER_DISTANCE -> {
+                    moveToProfileEdit(
+                        ProfileEditType.PARTNER_DISTANCE,
+                        viewModel.uiState.userInfo
+                    )
+                }
             }
         }
     )
@@ -242,7 +261,7 @@ private fun ProfileScreenContent(
     onAddType: (ProfileWidgetType) -> Unit,
     onEditWidget: (ProfileWidget) -> Unit,
     onDismissSheetRequest: (Int) -> Unit,
-    moveToMyProfileEdit: (ProfileEditType) -> Unit,
+    moveToProfileEdit: (ProfileEditType) -> Unit,
     onWidgetAdd: (ProfileWidgetType, String) -> Unit,
     onWidgetEdit: (ProfileWidgetType, String) -> Unit,
     onWidgetDelete: (ProfileWidgetType) -> Unit
@@ -261,11 +280,11 @@ private fun ProfileScreenContent(
                 Spacer(modifier = Modifier.height(32.dp))
             }
 
-            if(uiState.userInfo != null){
+            if (uiState.userInfo != null) {
                 item {
                     DateProfileSection(
                         userInfo = uiState.userInfo,
-                        onEditPartnerInfo = { }
+                        onEditPartnerInfo = moveToProfileEdit
                     )
 
                     Spacer(modifier = Modifier.height(80.dp))
@@ -283,7 +302,7 @@ private fun ProfileScreenContent(
             item {
                 ProfileSection(
                     uiState = uiState,
-                    moveToMyProfileEdit = { moveToMyProfileEdit(it) }
+                    moveToMyProfileEdit = { moveToProfileEdit(it) }
                 )
             }
 
@@ -774,7 +793,7 @@ private fun ProfileScreenPreview() {
                     }
                 }
         },
-        moveToMyProfileEdit = { type ->
+        moveToProfileEdit = { type ->
             when (type) {
                 ProfileEditType.JOB_OCCUPATION -> {}
                 ProfileEditType.COMPANY -> {}

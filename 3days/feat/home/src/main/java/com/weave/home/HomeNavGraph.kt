@@ -21,8 +21,8 @@ import com.weave.home.profile.company.EditCompanyScreen
 import com.weave.home.profile.job.EditJobScreen
 import com.weave.home.profile.location.EditLocationScreen
 import com.weave.home.profile.main.SnackBarViewModel
+import com.weave.home.profile.main.date.age.EditPartnerAgeScreen
 import com.weave.model.domain.myprofile.JobOccupation
-import com.weave.model.domain.user.UserDesiredPartner
 import com.weave.utils.navigation.navigateWithClearBackStack
 
 private const val USER_INFO_KEY = "user_info"
@@ -35,7 +35,10 @@ enum class Route(val routeName: String) {
     Profile("profile"),
     ProfileEditJob("edit_job/{$USER_INFO_KEY}"),
     ProfileEditCompany("edit_company/{$USER_INFO_KEY}"),
-    ProfileEditLocation("edit_location/{$USER_INFO_KEY}");
+    ProfileEditLocation("edit_location/{$USER_INFO_KEY}"),
+    DateProfileEditAge("date_edit_age/{$USER_INFO_KEY}"),
+    DateProfileEditJob("date_edit_job/{$USER_INFO_KEY}"),
+    DateProfileEditPreferDistance("date_edit_prefer_distance/{$USER_INFO_KEY}"), ;
 
     fun withArgs(vararg args: String): String {
         return buildString {
@@ -82,9 +85,17 @@ fun NavGraphBuilder.navGraphHome(navController: NavController) {
                             Route.ProfileEditLocation.createEditProfileRoute(item)
                         }
 
-                        ProfileEditType.PARTNER_AGE -> {Route.ProfileEditJob.createEditProfileRoute(item)}
-                        ProfileEditType.PARTNER_JOB_OCCUPATION -> {Route.ProfileEditJob.createEditProfileRoute(item)}
-                        ProfileEditType.PARTNER_DISTANCE -> {Route.ProfileEditJob.createEditProfileRoute(item)}
+                        ProfileEditType.PARTNER_AGE -> {
+                            Route.DateProfileEditAge.createEditProfileRoute(item)
+                        }
+
+                        ProfileEditType.PARTNER_JOB_OCCUPATION -> {
+                            Route.ProfileEditJob.createEditProfileRoute(item)
+                        }
+
+                        ProfileEditType.PARTNER_DISTANCE -> {
+                            Route.ProfileEditJob.createEditProfileRoute(item)
+                        }
                     }
 
                     navController.navigateWithClearBackStack(
@@ -144,6 +155,26 @@ fun NavGraphBuilder.navGraphHome(navController: NavController) {
             val snackBarViewModel = backStackEntry.sharedViewModel<SnackBarViewModel>(navController)
 
             EditLocationScreen(
+                snackBarViewModel = snackBarViewModel,
+                userInfo = parseMyInfoDisplay(backStackEntry),
+                navigateToProfile = {
+                    navController.navigateWithClearBackStack(
+                        Route.Home.withArgs("1"),
+                        Route.ProfileEditLocation.routeName,
+                    )
+                }
+            )
+        }
+
+        composable(
+            route = Route.DateProfileEditAge.routeName,
+            arguments = listOf(
+                navArgument(USER_INFO_KEY) { type = UserInfoType() }
+            )
+        ) { backStackEntry ->
+            val snackBarViewModel = backStackEntry.sharedViewModel<SnackBarViewModel>(navController)
+
+            EditPartnerAgeScreen(
                 snackBarViewModel = snackBarViewModel,
                 userInfo = parseMyInfoDisplay(backStackEntry),
                 navigateToProfile = {
