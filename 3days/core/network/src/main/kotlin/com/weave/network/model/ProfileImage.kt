@@ -15,26 +15,29 @@
 
 package com.weave.network.model
 
-
 import com.google.gson.annotations.SerializedName
 
 /**
- * 지역 표시 정보
  *
- * @param id 지역 식별자
- * @param display 화면에 표시될 지역명
+ *
+ * @param id 이미지 식별자
+ * @param url 이미지 URL
+ * @param extension
  */
 
 
-data class LocationDisplayInfo (
+data class ProfileImage(
 
-    /* 지역 식별자 */
+    /* 이미지 식별자 */
     @SerializedName("id")
     val id: java.util.UUID,
 
-    /* 화면에 표시될 지역명 */
-    @SerializedName("display")
-    val display: kotlin.String
+    /* 이미지 URL */
+    @SerializedName("url")
+    val url: java.net.URI,
+
+    @SerializedName("extension")
+    val extension: ProfileImageExtension
 
 ) {
 

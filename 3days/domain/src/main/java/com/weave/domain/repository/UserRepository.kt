@@ -10,6 +10,7 @@ import com.weave.model.domain.user.RegisterInfo
 import com.weave.model.enum.PreferDistance
 import com.weave.model.network.NetworkResult
 import kotlinx.coroutines.flow.Flow
+import java.io.File
 import java.util.UUID
 
 interface UserRepository {
@@ -38,4 +39,12 @@ interface UserRepository {
         jobOccupations: List<JobOccupation>,
         preferDistance: PreferDistance
     ): Flow<NetworkResult<Boolean>>
+
+    suspend fun getProfileImageUploadUrl(): Flow<NetworkResult<Pair<UUID, String>>>
+
+    suspend fun completeProfileImageUpload(imageId: UUID): Flow<NetworkResult<Unit>>
+
+    suspend fun uploadProfileImage(uploadUrl: String, file: File): Flow<NetworkResult<Unit>>
+
+    suspend fun deleteProfileImage(imageId: UUID): Flow<NetworkResult<Unit>>
 }

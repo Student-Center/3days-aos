@@ -1,5 +1,8 @@
 package com.weave.home.profile.main
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,6 +16,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,7 +27,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.LocationOn
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SheetState
@@ -44,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -55,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import com.weave.design_system.DaysTheme
+import com.weave.design_system.component.SnackBarType
 import com.weave.design_system.extension.applyShadow
 import com.weave.design_system.extension.noRippleClickable
 import com.weave.home.R
@@ -69,7 +74,10 @@ import com.weave.model.domain.myprofile.Company
 import com.weave.model.domain.myprofile.JobOccupation
 import com.weave.model.domain.user.ProfileWidget
 import com.weave.model.domain.user.ProfileWidgetType
+import com.weave.utils.image.ImageUtils
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,6 +87,11 @@ fun ProfileScreen(
     innerPadding: PaddingValues,
     moveToProfileEdit: (ProfileEditType, UserInfo?) -> Unit
 ) {
+    val context = LocalContext.current
+
+    var profileOptionSelectorState by remember { mutableStateOf(false) }
+    var imageConfirmViewState by remember { mutableStateOf<File?>(null) }
+
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberModalBottomSheetState(
@@ -100,6 +113,22 @@ fun ProfileScreen(
 
     var widgetType by remember { mutableStateOf<ProfileWidgetType?>(null) }
     var widget by remember { mutableStateOf<ProfileWidget?>(null) }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let { selectedUri ->
+            val imageFile = ImageUtils.createImageFile(context, selectedUri)
+            imageFile?.let {
+                imageConfirmViewState = it
+            } ?: viewModel.setEffect {
+                ProfileEffect.ShowToast(
+                    message = "5MB 이하 이미지만 가능해요",
+                    type = SnackBarType.ERROR
+                )
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
         if (viewModel.uiState.name.isBlank()) viewModel.setAction(ProfileAction.FetchData)
@@ -130,8 +159,11 @@ fun ProfileScreen(
 
     ProfileScreenContent(
         uiState = viewModel.uiState,
+        launcher = launcher,
         type = widgetType,
         widget = widget,
+        profileOptionSelectorState = profileOptionSelectorState,
+        imageConfirmViewState = imageConfirmViewState,
         sheetState = bottomSheetState,
         openBottomSheet = openBottomSheet,
         sheetState2 = bottomSheetState2,
@@ -196,6 +228,18 @@ fun ProfileScreen(
         onWidgetDelete = { type ->
             viewModel.setAction(ProfileAction.DeleteProfileWidget(type))
         },
+        onClickImageSelector = {
+            profileOptionSelectorState = it
+        },
+        onDeleteProfileImage = {
+            viewModel.setAction(ProfileAction.DeleteProfileImage)
+        },
+        onChangeProfileImage = {
+            viewModel.setAction(ProfileAction.UploadProfileImage(it))
+        },
+        onDismissConfirmView = {
+            imageConfirmViewState = null
+        },
         moveToProfileEdit = { type ->
             when (type) {
                 ProfileEditType.JOB_OCCUPATION -> {
@@ -249,8 +293,11 @@ fun ProfileScreen(
 private fun ProfileScreenContent(
     innerPadding: PaddingValues,
     uiState: ProfileState,
+    launcher: ActivityResultLauncher<String>,
     type: ProfileWidgetType?,
     widget: ProfileWidget?,
+    profileOptionSelectorState: Boolean,
+    imageConfirmViewState: File?,
     sheetState: SheetState,
     openBottomSheet: Boolean,
     sheetState2: SheetState,
@@ -264,7 +311,11 @@ private fun ProfileScreenContent(
     moveToProfileEdit: (ProfileEditType) -> Unit,
     onWidgetAdd: (ProfileWidgetType, String) -> Unit,
     onWidgetEdit: (ProfileWidgetType, String) -> Unit,
-    onWidgetDelete: (ProfileWidgetType) -> Unit
+    onWidgetDelete: (ProfileWidgetType) -> Unit,
+    onClickImageSelector: (Boolean) -> Unit,
+    onDismissConfirmView: () -> Unit,
+    onDeleteProfileImage: () -> Unit,
+    onChangeProfileImage: (File) -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -300,7 +351,8 @@ private fun ProfileScreenContent(
             item {
                 ProfileSection(
                     uiState = uiState,
-                    moveToMyProfileEdit = { moveToProfileEdit(it) }
+                    moveToMyProfileEdit = { moveToProfileEdit(it) },
+                    onClickImageSelector = { onClickImageSelector(true) }
                 )
             }
 
@@ -337,6 +389,38 @@ private fun ProfileScreenContent(
                 )
         )
 
+        if (imageConfirmViewState != null) {
+            val scope = rememberCoroutineScope()
+
+            ProfileConfirmDialog(
+                imageFile = imageConfirmViewState,
+                onConfirm = {
+                    onChangeProfileImage(it)
+                    scope.launch {
+                        delay(1000)
+                        onDismissConfirmView()
+                    }
+                },
+                onDismiss = onDismissConfirmView
+            )
+        }
+
+        if (profileOptionSelectorState) {
+            ImageOptionDialog(
+                onClickChange = {
+                    onClickImageSelector(false)
+                    launcher.launch("image/*")
+                },
+                onClickDelete = {
+                    onClickImageSelector(false)
+                    onDeleteProfileImage()
+                },
+                onDismiss = {
+                    onClickImageSelector(false)
+                }
+            )
+        }
+
         if (openBottomSheet) {
             ProfileWidgetSelectSheet(
                 sheetState = sheetState,
@@ -369,7 +453,8 @@ private fun ProfileScreenContent(
 @Composable
 private fun ProfileSection(
     uiState: ProfileState,
-    moveToMyProfileEdit: (ProfileEditType) -> Unit
+    moveToMyProfileEdit: (ProfileEditType) -> Unit,
+    onClickImageSelector: () -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -454,13 +539,17 @@ private fun ProfileSection(
             )
         }
 
-        ProfileImage(profileImage = uiState.profileUrl)
+        ProfileImage(
+            profileImage = uiState.profileImages.firstOrNull()?.url?.toString() ?: "",
+            onClickImageSelector = onClickImageSelector
+        )
     }
 }
 
 @Composable
 private fun ProfileImage(
-    profileImage: String
+    profileImage: String,
+    onClickImageSelector: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -471,20 +560,8 @@ private fun ProfileImage(
         SubcomposeAsyncImage(
             model = profileImage,
             contentDescription = "",
-            loading = {
-                CircularProgressIndicator()
-            },
-            error = {
-                Image(
-                    painter = painterResource(id = R.drawable.png_profile_bg),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(102.dp)
-                        .applyShadow(
-                            shape = RoundedCornerShape(42.95.dp)
-                        )
-                )
-            },
+            loading = { ProfileImageContent() },
+            error = { ProfileImageContent() },
             success = { state ->
                 Image(
                     painter = state.painter,
@@ -500,12 +577,50 @@ private fun ProfileImage(
             }
         )
 
-        Image(
-            painter = painterResource(id = R.drawable.png_profile_bg_deco),
-            contentDescription = "",
-            modifier = Modifier.size(102.dp)
-        )
+        Box(
+            modifier = Modifier,
+            contentAlignment = Alignment.TopEnd
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.png_profile_bg_deco),
+                contentDescription = "",
+                modifier = Modifier.size(102.dp)
+            )
+
+            Box(
+                modifier = Modifier
+                    .offset(x = 6.dp, y = (-6).dp)
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .applyShadow(CircleShape)
+                    .background(Color.White)
+                    .noRippleClickable {
+                        onClickImageSelector()
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(id = com.weave.design_system.R.drawable.ic_camera),
+                    contentDescription = "",
+                    tint = DaysTheme.colors.grey300,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
     }
+}
+
+@Composable
+private fun ProfileImageContent() {
+    Image(
+        painter = painterResource(id = R.drawable.png_profile_bg),
+        contentDescription = "",
+        modifier = Modifier
+            .size(102.dp)
+            .applyShadow(
+                shape = RoundedCornerShape(42.95.dp)
+            )
+    )
 }
 
 @Composable
@@ -744,18 +859,19 @@ private fun ProfileScreenPreview() {
         confirmValueChange = { it != SheetValue.Hidden }
     )
 
-    val openBottomSheet3 by rememberSaveable { mutableStateOf(false) }
-    val bottomSheetState3 = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true,
-        confirmValueChange = { it != SheetValue.Hidden }
-    )
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) {}
 
     val widgetType by remember { mutableStateOf<ProfileWidgetType?>(null) }
     val widget by remember { mutableStateOf<ProfileWidget?>(null) }
 
     ProfileScreenContent(
         uiState = uiState,
+        launcher = launcher,
         type = widgetType,
+        profileOptionSelectorState = false,
+        imageConfirmViewState = null,
         widget = widget,
         sheetState = bottomSheetState,
         openBottomSheet = openBottomSheet,
@@ -791,6 +907,10 @@ private fun ProfileScreenPreview() {
                     }
                 }
         },
+        onChangeProfileImage = {},
+        onDismissConfirmView = {},
+        onDeleteProfileImage = {},
+        onClickImageSelector = {},
         moveToProfileEdit = { type ->
             when (type) {
                 ProfileEditType.JOB_OCCUPATION -> {}

@@ -26,7 +26,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 
-data class CompanyDisplayInfo(
+data class CompanyDisplayInfo (
 
     /* 회사 식별자 */
     @SerializedName("id")

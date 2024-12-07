@@ -10,4 +10,5 @@ data class MyInfo(
     val profile: MyInfoDisplay,
     val desiredPartner: UserDesiredPartner,
     val profileWidgets: List<ProfileWidget>,
+    val profileImages: List<ProfileImage>
 )

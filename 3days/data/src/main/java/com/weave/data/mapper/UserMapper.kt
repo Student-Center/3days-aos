@@ -7,8 +7,10 @@ import com.weave.model.domain.user.RegisterInfo
 import com.weave.network.model.BirthYearRange
 import com.weave.network.model.Gender
 import com.weave.network.model.GetMyUserInfoResponse
+import com.weave.network.model.GetProfileImageUploadUrlResponse
 import com.weave.network.model.JobOccupation
 import com.weave.network.model.PreferDistance
+import com.weave.network.model.ProfileImage
 import com.weave.network.model.ProfileWidget
 import com.weave.network.model.ProfileWidgetType
 import com.weave.network.model.RegisterUserRequest
@@ -23,7 +25,13 @@ val GetMyUserInfoResponse.toDomain
         phoneNumber = phoneNumber,
         profile = profile.toDomain,
         desiredPartner = desiredPartner.toDomain,
-        profileWidgets = profileWidgets.map { it.toDomain }
+        profileWidgets = profileWidgets.map { it.toDomain },
+        profileImages = profileImages?.map { it.toDomain } ?: listOf()
+    )
+
+val ProfileImage.toDomain
+    get() = com.weave.model.domain.user.ProfileImage(
+        id = id, url = url
     )
 
 val UserProfileDisplayInfo.toDomain
@@ -123,3 +131,6 @@ val com.weave.model.domain.user.ProfileWidget.toDTO
 val com.weave.model.domain.user.ProfileWidgetType.toDTO
     get() = ProfileWidgetType.entries.find { it.value == this.value }
         ?: ProfileWidgetType.HOBBY
+
+val GetProfileImageUploadUrlResponse.toDomain
+    get() = Pair(imageId, url)
