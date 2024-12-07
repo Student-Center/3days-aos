@@ -4,6 +4,8 @@ import com.weave.data.datasource.AuthRemoteDataSource
 import com.weave.data.datasource.AuthRemoteDataSourceImpl
 import com.weave.data.datasource.CompanyRemoteDataSource
 import com.weave.data.datasource.CompanyRemoteDataSourceImpl
+import com.weave.data.datasource.ImageRemoteDataSource
+import com.weave.data.datasource.ImageRemoteDataSourceImpl
 import com.weave.data.datasource.LocationRemoteDataSource
 import com.weave.data.datasource.LocationRemoteDataSourceImpl
 import com.weave.data.datasource.RegisterRemoteDataSource
@@ -45,4 +47,8 @@ abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindsRegisterRemoteDataSource(impl: RegisterRemoteDataSourceImpl): RegisterRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindsImageRemoteDataSource(impl: ImageRemoteDataSourceImpl): ImageRemoteDataSource
 }

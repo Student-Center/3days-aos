@@ -1,11 +1,13 @@
 package com.weave.data.repository
 
+import com.weave.data.datasource.ImageRemoteDataSource
 import com.weave.data.datasource.RegisterRemoteDataSource
 import com.weave.data.datasource.TokenLocalDataSource
 import com.weave.data.datasource.UserRemoteDataSource
 import com.weave.data.extension.handleNetworkCall
 import com.weave.data.mapper.toDTO
 import com.weave.data.mapper.toDomain
+import com.weave.data.utils.FileUtils.toRequestBody
 import com.weave.domain.repository.UserRepository
 import com.weave.model.auth.AuthToken
 import com.weave.model.domain.myprofile.JobOccupation
@@ -16,14 +18,18 @@ import com.weave.model.domain.user.ProfileWidgetType
 import com.weave.model.domain.user.RegisterInfo
 import com.weave.model.enum.PreferDistance
 import com.weave.model.network.NetworkResult
+import com.weave.network.model.CompleteProfileImageUploadRequest
+import com.weave.network.model.ProfileImageExtension
 import com.weave.network.model.UpdateMyUserInfoRequest
 import com.weave.network.model.UpdateUserDesiredPartnerRequest
 import kotlinx.coroutines.flow.Flow
+import java.io.File
 import java.util.UUID
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
     private val dataSource: UserRemoteDataSource,
+    private val imageDataSource: ImageRemoteDataSource,
     private val registerDataSource: RegisterRemoteDataSource,
     private val tokenLocalDataSource: TokenLocalDataSource
 ) : UserRepository {
@@ -108,4 +114,40 @@ class UserRepositoryImpl @Inject constructor(
         },
         mapToDomain = { true }
     )
+
+    override suspend fun getProfileImageUploadUrl(): Flow<NetworkResult<Pair<UUID, String>>> =
+        handleNetworkCall(
+            networkCall = {
+                dataSource.getProfileImageUploadUrl(ProfileImageExtension.PNG)
+            },
+            mapToDomain = {
+                it.toDomain
+            }
+        )
+
+    override suspend fun completeProfileImageUpload(imageId: UUID): Flow<NetworkResult<Unit>> =
+        handleNetworkCall(
+            networkCall = {
+                dataSource.completeProfileImageUpload(
+                    CompleteProfileImageUploadRequest(imageId, ProfileImageExtension.PNG)
+                )
+            },
+            mapToDomain = {}
+        )
+
+    override suspend fun uploadProfileImage(
+        uploadUrl: String,
+        file: File
+    ): Flow<NetworkResult<Unit>> = handleNetworkCall(
+        networkCall = {
+            imageDataSource.uploadProfileImage(uploadUrl, file.toRequestBody())
+        },
+        mapToDomain = {}
+    )
+
+    override suspend fun deleteProfileImage(imageId: UUID): Flow<NetworkResult<Unit>> =
+        handleNetworkCall(
+            networkCall = { dataSource.deleteProfileImage(imageId) },
+            mapToDomain = {}
+        )
 }
