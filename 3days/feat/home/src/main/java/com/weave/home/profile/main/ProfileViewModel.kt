@@ -6,11 +6,14 @@ import com.weave.home.profile.UserInfo
 import com.weave.model.domain.myprofile.Company
 import com.weave.model.domain.myprofile.JobOccupation
 import com.weave.model.domain.user.MyInfo
+import com.weave.model.domain.user.ProfileImage
 import com.weave.model.domain.user.ProfileWidget
 import com.weave.model.domain.user.ProfileWidgetType
+import com.weave.user.DeleteProfileImageUseCase
 import com.weave.user.DeleteProfileWidgetUseCase
 import com.weave.user.GetMyInfoUseCase
 import com.weave.user.PutProfileWidgetUseCase
+import com.weave.user.UploadProfileImageUseCase
 import com.weave.utils.base.BaseViewModel
 import com.weave.utils.base.UIAction
 import com.weave.utils.base.UIEffect
@@ -18,6 +21,7 @@ import com.weave.utils.base.UIIntent
 import com.weave.utils.base.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.UUID
 import javax.inject.Inject
 
@@ -26,6 +30,8 @@ sealed class ProfileAction : UIAction {
     data class EditProfileWidget(val type: ProfileWidgetType, val content: String) : ProfileAction()
     data class AddProfileWidget(val type: ProfileWidgetType, val content: String) : ProfileAction()
     data class DeleteProfileWidget(val type: ProfileWidgetType) : ProfileAction()
+    data class UploadProfileImage(val file: File) : ProfileAction()
+    data object DeleteProfileImage : ProfileAction()
 }
 
 sealed class ProfileIntent : UIIntent {
@@ -33,13 +39,15 @@ sealed class ProfileIntent : UIIntent {
     data class EditProfileWidget(val type: ProfileWidgetType, val content: String) : ProfileIntent()
     data class AddProfileWidget(val type: ProfileWidgetType, val content: String) : ProfileIntent()
     data class DeleteProfileWidget(val type: ProfileWidgetType) : ProfileIntent()
+    data class UploadProfileImage(val file: File) : ProfileIntent()
+    data object DeleteProfileImage : ProfileIntent()
 }
 
 data class ProfileState(
     val userInfo: UserInfo? = null,
     val name: String = "",
     val birthYear: Int? = null,
-    val profileUrl: String = "",
+    val profileImages: List<ProfileImage> = listOf(),
     val occupation: JobOccupation? = null,
     val company: Company? = null,
     val locations: List<Pair<UUID, String>> = listOf(),
@@ -55,7 +63,9 @@ sealed class ProfileEffect : UIEffect {
 class ProfileViewModel @Inject constructor(
     private val getMyInfoUseCase: GetMyInfoUseCase,
     private val putProfileWidgetUseCase: PutProfileWidgetUseCase,
-    private val deleteProfileWidgetUseCase: DeleteProfileWidgetUseCase
+    private val deleteProfileWidgetUseCase: DeleteProfileWidgetUseCase,
+    private val uploadProfileImageUseCase: UploadProfileImageUseCase,
+    private val deleteProfileImageUseCase: DeleteProfileImageUseCase
 ) : BaseViewModel<ProfileAction, ProfileIntent, ProfileState, ProfileEffect>(initialState = ProfileState()) {
 
     override fun actionPredicate(action: ProfileAction): ProfileIntent {
@@ -72,6 +82,8 @@ class ProfileViewModel @Inject constructor(
             )
 
             is ProfileAction.DeleteProfileWidget -> ProfileIntent.DeleteProfileWidget(action.type)
+            is ProfileAction.UploadProfileImage -> ProfileIntent.UploadProfileImage(action.file)
+            is ProfileAction.DeleteProfileImage -> ProfileIntent.DeleteProfileImage
         }
     }
 
@@ -81,6 +93,8 @@ class ProfileViewModel @Inject constructor(
             is ProfileIntent.AddProfileWidget -> addProfileWidget(intent.type, intent.content)
             is ProfileIntent.EditProfileWidget -> editProfileWidget(intent.type, intent.content)
             is ProfileIntent.DeleteProfileWidget -> deleteProfileWidget(intent.type)
+            is ProfileIntent.UploadProfileImage -> uploadProfileImage(intent.file)
+            is ProfileIntent.DeleteProfileImage -> deleteProfileImage()
         }
     }
 
@@ -93,7 +107,7 @@ class ProfileViewModel @Inject constructor(
                             userInfo = myInfo.toUserInfo,
                             name = myInfo.name,
                             birthYear = myInfo.profile.birthYear,
-                            profileUrl = "",
+                            profileImages = myInfo.profileImages,
                             occupation = myInfo.profile.jobOccupation,
                             company = myInfo.profile.company,
                             locations = myInfo.profile.locations,
@@ -224,4 +238,54 @@ class ProfileViewModel @Inject constructor(
             company = this.profile.company,
             desiredPartner = this.desiredPartner
         )
+
+    private fun uploadProfileImage(file: File) {
+        viewModelScope.launch {
+            uploadProfileImageUseCase.invoke(file).mapMerge().collect { result ->
+                if (result != null) {
+                    setAction(ProfileAction.FetchData)
+
+                    setEffect {
+                        ProfileEffect.ShowToast(
+                            message = "프로필 사진이 변경되었어요",
+                            type = SnackBarType.DEFAULT
+                        )
+                    }
+                } else if (!isLoading) {
+                    setEffect {
+                        ProfileEffect.ShowToast(
+                            message = "사진 업로드에 실패했습니다",
+                            type = SnackBarType.ERROR
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun deleteProfileImage() {
+        uiState.profileImages.firstOrNull()?.id?.let {
+            viewModelScope.launch {
+                deleteProfileImageUseCase.invoke(it).mapMerge().collect { result ->
+                    if (result != null) {
+                        setAction(ProfileAction.FetchData)
+
+                        setEffect {
+                            ProfileEffect.ShowToast(
+                                message = "프로필 사진이 변경되었어요",
+                                type = SnackBarType.DEFAULT
+                            )
+                        }
+                    } else if (!isLoading) {
+                        setEffect {
+                            ProfileEffect.ShowToast(
+                                message = "프로필 사진 변경에 실패했습니다",
+                                type = SnackBarType.ERROR
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
