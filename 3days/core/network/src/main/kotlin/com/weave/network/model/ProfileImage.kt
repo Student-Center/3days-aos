@@ -20,16 +20,21 @@ import com.google.gson.annotations.SerializedName
 /**
  *
  *
- * @param imageId 이미지 ID
+ * @param id 이미지 식별자
+ * @param url 이미지 URL
  * @param extension
  */
 
 
-data class CompleteProfileImageUploadRequest(
+data class ProfileImage(
 
-    /* 이미지 ID */
-    @SerializedName("imageId")
-    val imageId: java.util.UUID,
+    /* 이미지 식별자 */
+    @SerializedName("id")
+    val id: java.util.UUID,
+
+    /* 이미지 URL */
+    @SerializedName("url")
+    val url: java.net.URI,
 
     @SerializedName("extension")
     val extension: ProfileImageExtension

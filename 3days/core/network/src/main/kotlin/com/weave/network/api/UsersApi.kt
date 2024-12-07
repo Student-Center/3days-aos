@@ -39,6 +39,21 @@ interface UsersApi {
     suspend fun completeProfileImageUpload(@Body completeProfileImageUploadRequest: CompleteProfileImageUploadRequest): Response<Unit>
 
     /**
+     * 프로필 이미지 삭제
+     * 특정 프로필 이미지를 삭제합니다.
+     * Responses:
+     *  - 204: 삭제 성공
+     *  - 401: 인증 실패 (토큰 만료 또는 유효하지 않은 토큰)
+     *  - 404: 리소스를 찾을 수 없음
+     *  - 500: 서버 오류
+     *
+     * @param imageId 삭제할 프로필 이미지 ID
+     * @return [Unit]
+     */
+    @DELETE("users/my/profile-images/{imageId}")
+    suspend fun deleteProfileImage(@Path("imageId") imageId: java.util.UUID): Response<Unit>
+
+    /**
      * 프로필 위젯 삭제
      * 현재 사용자의 프로필 위젯을 삭제합니다.
      * Responses:

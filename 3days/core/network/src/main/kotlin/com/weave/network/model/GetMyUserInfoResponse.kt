@@ -26,6 +26,7 @@ import com.google.gson.annotations.SerializedName
  * @param desiredPartner
  * @param profileWidgets
  * @param id 사용자 식별자
+ * @param profileImages 프로필 이미지 목록
  */
 
 
@@ -50,7 +51,11 @@ data class GetMyUserInfoResponse(
 
     /* 사용자 식별자 */
     @SerializedName("id")
-    val id: java.util.UUID? = null
+    val id: java.util.UUID? = null,
+
+    /* 프로필 이미지 목록 */
+    @SerializedName("profileImages")
+    val profileImages: kotlin.collections.List<ProfileImage>? = null
 
 ) {
 

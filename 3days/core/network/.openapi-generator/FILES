@@ -32,6 +32,7 @@ src/main/kotlin/com/weave/network/model/LocationDisplayInfo.kt
 src/main/kotlin/com/weave/network/model/NewUserVerifyCodeResponse.kt
 src/main/kotlin/com/weave/network/model/OSType.kt
 src/main/kotlin/com/weave/network/model/PreferDistance.kt
+src/main/kotlin/com/weave/network/model/ProfileImage.kt
 src/main/kotlin/com/weave/network/model/ProfileImageExtension.kt
 src/main/kotlin/com/weave/network/model/ProfileWidget.kt
 src/main/kotlin/com/weave/network/model/ProfileWidgetType.kt
