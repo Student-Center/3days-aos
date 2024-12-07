@@ -36,7 +36,7 @@ object ImageUtils {
             val extension = when (format) {
                 Bitmap.CompressFormat.JPEG -> "jpg"
                 Bitmap.CompressFormat.PNG -> "png"
-                Bitmap.CompressFormat.WEBP_LOSSLESS -> "webp"
+                Bitmap.CompressFormat.WEBP -> "webp"
                 else -> "png"
             }
 
