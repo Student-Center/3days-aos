@@ -102,9 +102,13 @@ class AuthInterceptor @Inject constructor(
                 }
             }
         } else {
-            logDebug { Log.d(TAG, "No auth token available") }
-            restartApp()
-            this
+            if (this.headers.names().contains("X-Register-Token")) {
+                this
+            } else {
+                logDebug { Log.d(TAG, "No auth token available") }
+                restartApp()
+                this
+            }
         }
     }
 

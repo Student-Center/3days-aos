@@ -131,10 +131,8 @@ class MobileEnterAuthViewModel @Inject constructor(
                     authCodeId = uiState.authCodeId ?: UUID.fromString(""), verifyCode = inputCode
                 ).mapMerge().collect {
                     if (it != null) {
-                        setState { copy(isVerified = true) }
                         setEffect { AuthEffect.NavigateToRegisterFlow(it.registerToken) }
-                    } else {
-                        setState { copy(errorMessage = context.getString(R.string.mobile_auth_verify_error_message)) }
+                    } else if (!isLoading) {
                         setEffect {
                             AuthEffect.ShowToast(
                                 context.getString(R.string.mobile_auth_verify_error_message),
@@ -148,10 +146,8 @@ class MobileEnterAuthViewModel @Inject constructor(
                     authCodeId = uiState.authCodeId ?: UUID.fromString(""), verifyCode = inputCode
                 ).mapMerge().collect {
                     if (it != null) {
-                        setState { copy(isVerified = true) }
                         setEffect { AuthEffect.NavigateToMainScreen }
-                    } else {
-                        setState { copy(errorMessage = context.getString(R.string.mobile_auth_verify_error_message)) }
+                    } else if (!isLoading) {
                         setEffect {
                             AuthEffect.ShowToast(
                                 context.getString(R.string.mobile_auth_verify_error_message),
