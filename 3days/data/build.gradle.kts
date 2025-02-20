@@ -12,7 +12,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 26
+        minSdk = 29
 
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
