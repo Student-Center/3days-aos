@@ -15,6 +15,12 @@
 
 package com.weave.network.model
 
+import com.weave.network.model.ConnectionStatus
+import com.weave.network.model.ProfileImage
+import com.weave.network.model.ProfileWidget
+import com.weave.network.model.UserDesiredPartner
+import com.weave.network.model.UserProfileDisplayInfo
+
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -25,6 +31,7 @@ import com.google.gson.annotations.SerializedName
  * @param profile
  * @param desiredPartner
  * @param profileWidgets
+ * @param status
  * @param id 사용자 식별자
  * @param profileImages 프로필 이미지 목록
  */
@@ -48,6 +55,9 @@ data class GetMyUserInfoResponse(
 
     @SerializedName("profileWidgets")
     val profileWidgets: kotlin.collections.List<ProfileWidget>,
+
+    @SerializedName("status")
+    val status: ConnectionStatus,
 
     /* 사용자 식별자 */
     @SerializedName("id")
