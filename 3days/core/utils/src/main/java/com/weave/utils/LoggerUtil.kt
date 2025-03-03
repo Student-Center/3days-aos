@@ -23,5 +23,5 @@ object LoggerUtil {
 
     fun warning(message: String) = Logger.w(message)
 
-    fun error(message: String, exception: Exception?) = Logger.e(message, exception)
+    fun error(message: String, exception: Exception? = null) = Logger.e(message, exception)
 }

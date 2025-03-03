@@ -45,7 +45,7 @@ data class Message(
     val content: MessageContent,
 
     @SerializedName("createdAt")
-    val createdAt: java.time.OffsetDateTime
+    val createdAt: kotlin.String
 
 ) {
 

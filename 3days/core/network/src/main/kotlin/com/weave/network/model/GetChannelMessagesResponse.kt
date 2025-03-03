@@ -20,14 +20,14 @@ import com.weave.network.model.Message
 import com.google.gson.annotations.SerializedName
 
 /**
+ * 
  *
- *
- * @param messages
+ * @param messages 
  * @param next 다음 페이지를 위한 키, 더 이상 결과가 없으면 null
  */
 
 
-data class GetChannelMessagesResponse(
+data class GetChannelMessagesResponse (
 
     @SerializedName("messages")
     val messages: kotlin.collections.List<Message>? = null,

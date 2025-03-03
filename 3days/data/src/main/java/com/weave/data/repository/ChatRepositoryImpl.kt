@@ -30,7 +30,7 @@ class ChatRepositoryImpl @Inject constructor(
                         MessageContent(
                             text = content.text,
                             cardColor = content.cardColor,
-                            type = content.type.let { type -> MessageContent.Type.entries.find { it.value == type?.value } }
+                            type = content.type.let { type -> MessageContent.Type.entries.find { entry -> entry.value == type?.value } } ?: MessageContent.Type.TEXT
                         )
                     },
                     createdAt = message.createdAt

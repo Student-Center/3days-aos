@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -14,6 +16,10 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "SOCKET_URL", "\"${properties.getProperty("SOCKET_URL")}\"")
     }
 
     buildTypes {
@@ -34,6 +40,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.14"
@@ -47,6 +54,8 @@ dependencies {
     implementation(project(":domain:user"))
     implementation(project(":domain:company"))
     implementation(project(":domain:location"))
+    implementation(project(":domain:chat"))
+    implementation(project(":domain:auth"))
 
     implementation(libs.bundles.compose)
     debugImplementation(libs.bundles.compose.debug)
@@ -59,4 +68,14 @@ dependencies {
 
     implementation(libs.bundles.coil.compose)
     implementation(libs.gson)
+
+    // websocket
+    implementation(libs.krossbow.stomp.core)
+    implementation(libs.krossbow.websocket.okhttp)
+    implementation(libs.krossbow.stomp.moshi)
+
+    // moshi
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+    implementation(libs.okhttp.logging)
 }

@@ -47,4 +47,13 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.hilt.compose.navigation)
     ksp(libs.hilt.android.compiler)
+
+    // websocket
+    implementation(libs.krossbow.stomp.core)
+    implementation(libs.krossbow.websocket.okhttp)
+    implementation(libs.krossbow.stomp.moshi)
+
+    // moshi
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
 }

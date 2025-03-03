@@ -5,5 +5,5 @@ data class Message(
     val channelId: java.util.UUID,
     val senderUserId: java.util.UUID,
     val content: MessageContent,
-    val createdAt: java.time.OffsetDateTime
+    val createdAt: String
 )

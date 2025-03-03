@@ -10,6 +10,10 @@ import javax.inject.Inject
 class GetChannelMessagesUseCase @Inject constructor(
     private val repository: ChatRepository
 ) {
-    suspend operator fun invoke(channelId: UUID, next: UUID, limit: Int? = null): Flow<NetworkResult<Pair<List<Message>, UUID?>>> =
+    suspend operator fun invoke(
+        channelId: UUID,
+        next: UUID? = null,
+        limit: Int? = null
+    ): Flow<NetworkResult<Pair<List<Message>, UUID?>>> =
         repository.getChannelMessages(channelId = channelId, next = next, limit = limit)
 }
