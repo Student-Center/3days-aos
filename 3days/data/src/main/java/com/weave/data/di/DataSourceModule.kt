@@ -2,6 +2,8 @@ package com.weave.data.di
 
 import com.weave.data.datasource.AuthRemoteDataSource
 import com.weave.data.datasource.AuthRemoteDataSourceImpl
+import com.weave.data.datasource.ChatRemoteDataSource
+import com.weave.data.datasource.ChatRemoteDataSourceImpl
 import com.weave.data.datasource.CompanyRemoteDataSource
 import com.weave.data.datasource.CompanyRemoteDataSourceImpl
 import com.weave.data.datasource.ImageRemoteDataSource
@@ -51,4 +53,8 @@ abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindsImageRemoteDataSource(impl: ImageRemoteDataSourceImpl): ImageRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindsChatRemoteDataSource(impl: ChatRemoteDataSourceImpl): ChatRemoteDataSource
 }

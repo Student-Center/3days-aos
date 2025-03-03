@@ -47,7 +47,8 @@ enum class TabType {
 fun MainTabScreen(
     snackBarViewModel: SnackBarViewModel = hiltViewModel(),
     targetScreen: TabType = TabType.HOME,
-    moveToMyProfileEdit: (ProfileEditType, UserInfo?) -> Unit
+    moveToMyProfileEdit: (ProfileEditType, UserInfo?) -> Unit,
+    moveToChat: () -> Unit
 ) {
     var selectedTab by remember { mutableStateOf(targetScreen) }
     val isKeyboardVisible by keyboardAsState()
@@ -57,7 +58,8 @@ fun MainTabScreen(
         isKeyboardVisible = isKeyboardVisible,
         selectedTab = selectedTab,
         onTabSelected = { selectedTab = it },
-        moveToMyProfileEdit = moveToMyProfileEdit
+        moveToMyProfileEdit = moveToMyProfileEdit,
+        moveToChat = moveToChat
     )
 }
 
@@ -68,7 +70,8 @@ private fun MainTabScreenContent(
     selectedTab: TabType,
     onTabSelected: (TabType) -> Unit,
     modifier: Modifier = Modifier,
-    moveToMyProfileEdit: (ProfileEditType, UserInfo?) -> Unit
+    moveToMyProfileEdit: (ProfileEditType, UserInfo?) -> Unit,
+    moveToChat: () -> Unit
 ) {
 //    val snackBarPadding = if (isKeyboardVisible == Keyboard.Closed) 110.dp else 36.dp
 
@@ -103,7 +106,8 @@ private fun MainTabScreenContent(
                     snackBarViewModel = snackBarViewModel,
                     innerPadding = padding,
                     selectedTab = selectedTab,
-                    moveToMyProfileEdit = moveToMyProfileEdit
+                    moveToMyProfileEdit = moveToMyProfileEdit,
+                    moveToChat = moveToChat
                 )
             }
         }
@@ -181,10 +185,11 @@ private fun TabContent(
     snackBarViewModel: SnackBarViewModel,
     innerPadding: PaddingValues,
     selectedTab: TabType,
-    moveToMyProfileEdit: (ProfileEditType, UserInfo?) -> Unit
+    moveToMyProfileEdit: (ProfileEditType, UserInfo?) -> Unit,
+    moveToChat: () -> Unit
 ) {
     when (selectedTab) {
-        TabType.HOME -> HomeScreen()
+        TabType.HOME -> HomeScreen(moveToChat = moveToChat)
         TabType.PROFILE -> ProfileScreen(
             snackBarViewModel = snackBarViewModel,
             innerPadding = innerPadding,
@@ -206,6 +211,7 @@ private fun MainTabScreenPreview() {
         isKeyboardVisible = isKeyboardVisible,
         selectedTab = selectedTab,
         onTabSelected = { selectedTab = it },
-        moveToMyProfileEdit = { type, item -> }
+        moveToMyProfileEdit = { type, item -> },
+        moveToChat = {}
     )
 }

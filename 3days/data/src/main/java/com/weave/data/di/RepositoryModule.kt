@@ -1,11 +1,13 @@
 package com.weave.data.di
 
 import com.weave.data.repository.AuthRepositoryImpl
+import com.weave.data.repository.ChatRepositoryImpl
 import com.weave.data.repository.CompanyRepositoryImpl
 import com.weave.data.repository.LocationRepositoryImpl
 import com.weave.data.repository.TokenRepositoryImpl
 import com.weave.data.repository.UserRepositoryImpl
 import com.weave.domain.repository.AuthRepository
+import com.weave.domain.repository.ChatRepository
 import com.weave.domain.repository.CompanyRepository
 import com.weave.domain.repository.LocationRepository
 import com.weave.domain.repository.TokenRepository
@@ -39,4 +41,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindsTokenRepository(impl: TokenRepositoryImpl): TokenRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsChatRepository(impl: ChatRepositoryImpl): ChatRepository
 }

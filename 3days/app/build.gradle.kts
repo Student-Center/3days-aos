@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "com.weave.a3days"
-        minSdk = 26
+        minSdk = 29
         targetSdk = 34
         versionCode = 1
 

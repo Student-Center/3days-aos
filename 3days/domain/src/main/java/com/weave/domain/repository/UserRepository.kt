@@ -7,6 +7,7 @@ import com.weave.model.domain.user.MyInfo
 import com.weave.model.domain.user.ProfileWidget
 import com.weave.model.domain.user.ProfileWidgetType
 import com.weave.model.domain.user.RegisterInfo
+import com.weave.model.enum.ConnectionStatus
 import com.weave.model.enum.PreferDistance
 import com.weave.model.network.NetworkResult
 import kotlinx.coroutines.flow.Flow
@@ -47,4 +48,8 @@ interface UserRepository {
     suspend fun uploadProfileImage(uploadUrl: String, file: File): Flow<NetworkResult<Unit>>
 
     suspend fun deleteProfileImage(imageId: UUID): Flow<NetworkResult<Unit>>
+
+    suspend fun updateConnectionStatus(status: ConnectionStatus): Flow<NetworkResult<ConnectionStatus>>
+
+    suspend fun deleteMyUser(): Flow<NetworkResult<Unit>>
 }
