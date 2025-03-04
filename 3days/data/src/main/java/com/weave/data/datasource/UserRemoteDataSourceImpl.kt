@@ -9,6 +9,8 @@ import com.weave.network.model.GetProfileImageUploadUrlResponse
 import com.weave.network.model.ProfileImageExtension
 import com.weave.network.model.ProfileWidget
 import com.weave.network.model.ProfileWidgetType
+import com.weave.network.model.UpdateConnectionStatusRequest
+import com.weave.network.model.UpdateConnectionStatusResponse
 import com.weave.network.model.UpdateMyUserInfoRequest
 import com.weave.network.model.UpdateMyUserInfoResponse
 import com.weave.network.model.UpdateUserDesiredPartnerRequest
@@ -65,6 +67,18 @@ class UserRemoteDataSourceImpl @Inject constructor(
     override suspend fun deleteProfileImage(imageId: UUID): NetworkResult<Unit> {
         return handleApiResponse {
             service.deleteProfileImage(imageId)
+        }
+    }
+
+    override suspend fun updateConnectionStatus(body: UpdateConnectionStatusRequest): NetworkResult<UpdateConnectionStatusResponse> {
+        return handleApiResponse {
+            service.updateConnectionStatus(body)
+        }
+    }
+
+    override suspend fun deleteMyUser(): NetworkResult<Unit> {
+        return handleApiResponse {
+            service.deleteMyUser()
         }
     }
 }

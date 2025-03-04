@@ -16,10 +16,12 @@ import com.weave.model.domain.user.MyInfo
 import com.weave.model.domain.user.ProfileWidget
 import com.weave.model.domain.user.ProfileWidgetType
 import com.weave.model.domain.user.RegisterInfo
+import com.weave.model.enum.ConnectionStatus
 import com.weave.model.enum.PreferDistance
 import com.weave.model.network.NetworkResult
 import com.weave.network.model.CompleteProfileImageUploadRequest
 import com.weave.network.model.ProfileImageExtension
+import com.weave.network.model.UpdateConnectionStatusRequest
 import com.weave.network.model.UpdateMyUserInfoRequest
 import com.weave.network.model.UpdateUserDesiredPartnerRequest
 import kotlinx.coroutines.flow.Flow
@@ -148,6 +150,26 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun deleteProfileImage(imageId: UUID): Flow<NetworkResult<Unit>> =
         handleNetworkCall(
             networkCall = { dataSource.deleteProfileImage(imageId) },
+            mapToDomain = {}
+        )
+
+    override suspend fun updateConnectionStatus(status: ConnectionStatus): Flow<NetworkResult<ConnectionStatus>> =
+        handleNetworkCall(
+            networkCall = {
+                dataSource.updateConnectionStatus(UpdateConnectionStatusRequest(
+                    com.weave.network.model.ConnectionStatus.entries.find { entry -> entry.value == status.value }
+                        ?: com.weave.network.model.ConnectionStatus.INACTIVE
+                ))
+            },
+            mapToDomain = {
+                ConnectionStatus.entries.find { entry -> entry.value == it.status.value }
+                    ?: ConnectionStatus.INACTIVE
+            }
+        )
+
+    override suspend fun deleteMyUser(): Flow<NetworkResult<Unit>> =
+        handleNetworkCall(
+            networkCall = { dataSource.deleteMyUser() },
             mapToDomain = {}
         )
 }

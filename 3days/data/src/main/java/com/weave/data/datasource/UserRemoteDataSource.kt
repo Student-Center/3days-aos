@@ -7,6 +7,8 @@ import com.weave.network.model.GetProfileImageUploadUrlResponse
 import com.weave.network.model.ProfileImageExtension
 import com.weave.network.model.ProfileWidget
 import com.weave.network.model.ProfileWidgetType
+import com.weave.network.model.UpdateConnectionStatusRequest
+import com.weave.network.model.UpdateConnectionStatusResponse
 import com.weave.network.model.UpdateMyUserInfoRequest
 import com.weave.network.model.UpdateMyUserInfoResponse
 import com.weave.network.model.UpdateUserDesiredPartnerRequest
@@ -30,4 +32,8 @@ interface UserRemoteDataSource {
     suspend fun completeProfileImageUpload(completeProfileImageUploadRequest: CompleteProfileImageUploadRequest): NetworkResult<Unit>
 
     suspend fun deleteProfileImage(imageId: UUID): NetworkResult<Unit>
+
+    suspend fun updateConnectionStatus(body: UpdateConnectionStatusRequest): NetworkResult<UpdateConnectionStatusResponse>
+
+    suspend fun deleteMyUser(): NetworkResult<Unit>
 }

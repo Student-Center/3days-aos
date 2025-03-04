@@ -2,6 +2,7 @@ package com.weave.data.di
 
 import com.weave.data.service.ImageApi
 import com.weave.network.api.AuthApi
+import com.weave.network.api.ChatApi
 import com.weave.network.api.CompaniesApi
 import com.weave.network.api.LocationsApi
 import com.weave.network.api.UsersApi
@@ -34,4 +35,8 @@ class ServiceModule {
     @Provides
     fun providesImageService(@UnauthorizedClient client: Retrofit): ImageApi =
         client.create(ImageApi::class.java)
+
+    @Provides
+    fun providesChatService(@AuthorizedClient client: Retrofit): ChatApi =
+        client.create(ChatApi::class.java)
 }

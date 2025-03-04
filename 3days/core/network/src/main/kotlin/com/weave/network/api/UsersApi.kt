@@ -1,5 +1,6 @@
 package com.weave.network.api
 
+import retrofit2.Response
 import com.weave.network.model.CompleteProfileImageUploadRequest
 import com.weave.network.model.GetMyUserInfoResponse
 import com.weave.network.model.GetProfileImageUploadUrlResponse
@@ -8,11 +9,12 @@ import com.weave.network.model.ProfileWidget
 import com.weave.network.model.ProfileWidgetType
 import com.weave.network.model.RegisterUserRequest
 import com.weave.network.model.TokenResponse
+import com.weave.network.model.UpdateConnectionStatusRequest
+import com.weave.network.model.UpdateConnectionStatusResponse
 import com.weave.network.model.UpdateMyUserInfoRequest
 import com.weave.network.model.UpdateMyUserInfoResponse
 import com.weave.network.model.UpdateUserDesiredPartnerRequest
 import com.weave.network.model.UpdateUserDesiredPartnerResponse
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -37,6 +39,20 @@ interface UsersApi {
      */
     @POST("users/my/profile-images/upload-complete")
     suspend fun completeProfileImageUpload(@Body completeProfileImageUploadRequest: CompleteProfileImageUploadRequest): Response<Unit>
+
+    /**
+     * 회원 탈퇴
+     * 요청 회원을 탈퇴합니다.
+     * Responses:
+     *  - 204: 회원 탈퇴 성공
+     *  - 400: 잘못된 요청
+     *  - 404: 리소스를 찾을 수 없음
+     *  - 500: 서버 오류
+     *
+     * @return [Unit]
+     */
+    @DELETE("users/my")
+    suspend fun deleteMyUser(): Response<Unit>
 
     /**
      * 프로필 이미지 삭제
@@ -129,6 +145,21 @@ interface UsersApi {
         @Header("X-Register-Token") xRegisterToken: kotlin.String,
         @Body registerUserRequest: RegisterUserRequest
     ): Response<TokenResponse>
+
+    /**
+     * 유저 커넥션 활성화 상태 변경
+     * 현재 로그인한 사용자의 커넥션 상태를 활성화 또는 비활성화합니다.
+     * Responses:
+     *  - 200: 상태 변경 성공
+     *  - 400: 잘못된 요청
+     *  - 401: 인증 실패 (토큰 만료 또는 유효하지 않은 토큰)
+     *  - 500: 서버 오류
+     *
+     * @param updateConnectionStatusRequest
+     * @return [UpdateConnectionStatusResponse]
+     */
+    @PUT("users/my/connection/status")
+    suspend fun updateConnectionStatus(@Body updateConnectionStatusRequest: UpdateConnectionStatusRequest): Response<UpdateConnectionStatusResponse>
 
     /**
      * 내 원하는 파트너 수정

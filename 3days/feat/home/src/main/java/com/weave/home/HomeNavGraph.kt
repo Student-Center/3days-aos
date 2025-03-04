@@ -14,6 +14,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.weave.home.chat.ChatScreen
 import com.weave.home.profile.ProfileEditType
 import com.weave.home.profile.UserInfo
 import com.weave.home.profile.UserInfoType
@@ -40,7 +41,9 @@ enum class Route(val routeName: String) {
     ProfileEditLocation("edit_location/{$USER_INFO_KEY}"),
     DateProfileEditAge("date_edit_age/{$USER_INFO_KEY}"),
     DateProfileEditJob("date_edit_job/{$USER_INFO_KEY}"),
-    DateProfileEditPreferDistance("date_edit_prefer_distance/{$USER_INFO_KEY}"), ;
+    DateProfileEditPreferDistance("date_edit_prefer_distance/{$USER_INFO_KEY}"),
+    Chat("chat"),
+    ;
 
     fun withArgs(vararg args: String): String {
         return buildString {
@@ -74,6 +77,13 @@ fun NavGraphBuilder.navGraphHome(navController: NavController) {
             MainTabScreen(
                 snackBarViewModel = snackBarViewModel,
                 targetScreen = if (targetScreen == 0) TabType.HOME else TabType.PROFILE,
+                moveToChat = {
+                    navController.navigateWithClearBackStack(
+                        destination = Route.Chat.withArgs("33333333-3333-3333-3333-333333333333"),
+                        popUpToRoute = Route.Main.routeName,
+                        launchSingleTop = true
+                    )
+                },
                 moveToMyProfileEdit = { type, item ->
                     val destination = when (type) {
                         ProfileEditType.JOB_OCCUPATION ->
@@ -223,6 +233,28 @@ fun NavGraphBuilder.navGraphHome(navController: NavController) {
                     navController.navigateWithClearBackStack(
                         Route.Home.withArgs("1"),
                         Route.ProfileEditLocation.routeName,
+                    )
+                }
+            )
+        }
+
+        composable(
+            route = Route.Chat.withArgs("{channel_id}"),
+            arguments = listOf(
+                navArgument("channel_id") { NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val snackBarViewModel = backStackEntry.sharedViewModel<SnackBarViewModel>(navController)
+            val channelId = backStackEntry.arguments?.getString("channel_id") ?: ""
+
+            ChatScreen(
+                snackBarViewModel = snackBarViewModel,
+                channelId = channelId,
+                moveToHome = {
+                    navController.navigateWithClearBackStack(
+                        Route.Home.withArgs("0"),
+                        Route.Home.routeName,
+                        launchSingleTop = true
                     )
                 }
             )
