@@ -18,7 +18,6 @@ android {
         applicationId = "com.weave.a3days"
         minSdk = 29
         targetSdk = 34
-        versionCode = 1
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -29,7 +28,7 @@ android {
         versionCode = if (project.hasProperty("versionCode")) {
             project.property("versionCode").toString().toInt()
         } else {
-            1
+            2
         }
     }
 
