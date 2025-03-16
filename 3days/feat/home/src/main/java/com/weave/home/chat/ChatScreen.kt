@@ -1,5 +1,8 @@
 package com.weave.home.chat
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,11 +24,13 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.weave.design_system.component.DaysBackgroundTextureImage
 import com.weave.design_system.component.DaysSnackBarHost
@@ -34,11 +39,11 @@ import com.weave.home.chat.resource.ChatHeader
 import com.weave.home.chat.resource.ChatInput
 import com.weave.home.chat.resource.DayDivider
 import com.weave.home.chat.resource.MessagePosition
+import com.weave.home.chat.resource.card.ExpandedChatCard
 import com.weave.home.chat.resource.getMessagePosition
 import com.weave.home.profile.main.SnackBarViewModel
 import com.weave.model.domain.chat.Message
 import com.weave.model.domain.chat.MessageContent
-import com.weave.utils.DateTimeUtil
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
@@ -55,6 +60,7 @@ fun ChatScreen(
     val trigger by remember { derivedStateOf { listState.firstVisibleItemIndex } }
     val focusManager = LocalFocusManager.current
     val messageState = remember { mutableStateOf("") }
+    var showCard by remember { mutableStateOf<Message?>(null) }
 
     LaunchedEffect(Unit) { viewModel.setAction(ChatAction.FetchData(channelId)) }
 
@@ -89,13 +95,16 @@ fun ChatScreen(
         messageState = messageState.value,
         snackBarHostState = snackBarViewModel.snackBarHostState,
         uiState = uiState,
+        showCard = showCard,
         focusManager = focusManager,
         moveToHome = moveToHome,
         onTextChange = { messageState.value = it },
         onSend = {
             viewModel.setAction(ChatAction.SendMessage(messageState.value))
             messageState.value = ""
-        }
+        },
+        onCardClick = { showCard = it },
+        dismissCard = { showCard = null }
     )
 }
 
@@ -105,10 +114,13 @@ private fun ChatScreenContent(
     messageState: String,
     snackBarHostState: SnackbarHostState,
     uiState: ChatState,
+    showCard: Message?,
     focusManager: FocusManager,
     moveToHome: () -> Unit,
     onTextChange: (String) -> Unit,
-    onSend: () -> Unit
+    onSend: () -> Unit,
+    onCardClick: (Message) -> Unit,
+    dismissCard: () -> Unit
 ) {
     val partnerProfileImage = uiState.userInfo?.profileImages?.firstOrNull()?.url?.toString() ?: ""
 
@@ -126,6 +138,21 @@ private fun ChatScreenContent(
                 .fillMaxSize()
         ) {
             DaysBackgroundTextureImage()
+
+            AnimatedVisibility(
+                modifier = Modifier.zIndex(5f),
+                visible = showCard != null,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                if(showCard != null) {
+                    ExpandedChatCard(
+                        content = showCard.content,
+                        isMyMessage = true,
+                        onDismiss = dismissCard
+                    )
+                }
+            }
 
             Box(
                 modifier = Modifier
@@ -149,7 +176,8 @@ private fun ChatScreenContent(
                             listState = listState,
                             messages = uiState.messages,
                             userId = uiState.userInfo?.id ?: UUID.randomUUID(),
-                            profileImage = partnerProfileImage
+                            profileImage = partnerProfileImage,
+                            onCardClick = onCardClick
                         )
                     }
 
@@ -171,6 +199,7 @@ private fun ChatBoard(
     messages: List<Message>,
     userId: UUID,
     profileImage: String,
+    onCardClick: (Message) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -201,7 +230,8 @@ private fun ChatBoard(
                 message = message,
                 position = position,
                 isMyMessage = message.senderUserId == userId,
-                profileImage = profileImage
+                profileImage = profileImage,
+                onCardClick = onCardClick
             )
 
             if (position == MessagePosition.SINGLE || position == MessagePosition.FIRST) {
@@ -239,7 +269,10 @@ private fun ChatScreenPreview() {
         moveToHome = {},
         focusManager = LocalFocusManager.current,
         onTextChange = { },
-        onSend = { }
+        onSend = { },
+        onCardClick = {},
+        showCard = null,
+        dismissCard = {}
     )
 }
 
@@ -251,6 +284,7 @@ private fun ChatBoardPreview() {
         userId = UUID.fromString("11111111-1111-1111-1111-111111111111"),
         messages = generateDummyMessages(20),
         profileImage = "",
+        onCardClick = {}
     )
 }
 

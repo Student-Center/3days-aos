@@ -1,6 +1,5 @@
 package com.weave.home.chat.resource
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,12 +7,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,11 +21,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.weave.design_system.DaysTheme
 import com.weave.home.chat.generateDummyMessages
+import com.weave.home.chat.resource.card.ChatCard
 import com.weave.model.domain.chat.Message
 import com.weave.model.domain.chat.MessageContent
 import com.weave.utils.DateTimeUtil
@@ -38,7 +35,8 @@ fun ChatBubble(
     message: Message,
     position: MessagePosition,
     isMyMessage: Boolean,
-    profileImage: String
+    profileImage: String,
+    onCardClick: (Message) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -52,7 +50,13 @@ fun ChatBubble(
                 profileImage
             )
 
-            MessageContent.Type.CARD -> CardMessageBubble(message, position, isMyMessage)
+            MessageContent.Type.CARD -> CardMessageBubble(
+                message,
+                profileImage,
+                isMyMessage,
+                onCardClick
+            )
+
 //            MessageType.SYSTEM -> SystemMessageBubble(message)
             null -> {}
         }
@@ -147,11 +151,17 @@ fun TextMessageBubble(
 }
 
 @Composable
-fun CardMessageBubble(message: Message, position: MessagePosition, isMyMessage: Boolean) {
-    Image(
-        modifier = Modifier.height(30.dp).wrapContentWidth(),
-        painter = painterResource(com.weave.design_system.R.drawable.ic_speech),
-        contentDescription = ""
+fun CardMessageBubble(
+    message: Message,
+    profileImage: String,
+    isMyMessage: Boolean,
+    onCardClick: (Message) -> Unit
+) {
+    ChatCard(
+        content = message.content,
+        isMyMessage = isMyMessage,
+        profileImage = profileImage,
+        onCardClick = { onCardClick(message) }
     )
 }
 
@@ -182,13 +192,13 @@ private fun ChatBubblePreview() {
             isMyMessage = true,
             position = MessagePosition.SINGLE,
             profileImage = ""
-        )
+        ) {}
 
         ChatBubble(
             message = generateDummyMessages(1)[0],
             isMyMessage = false,
             position = MessagePosition.SINGLE,
             profileImage = ""
-        )
+        ) {}
     }
 }
