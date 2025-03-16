@@ -172,8 +172,6 @@ private fun ChatBoard(
     userId: UUID,
     profileImage: String,
 ) {
-    val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -190,9 +188,8 @@ private fun ChatBoard(
             val nextMessage = messages.getOrNull(index + 1)
 
             val isNewDay = nextMessage?.let {
-                val currentDate =
-                    LocalDateTime.parse(DateTimeUtil.parseDateTime(message.createdAt).toString(), dateTimeFormatter).toLocalDate()
-                val nextDate = LocalDateTime.parse(DateTimeUtil.parseDateTime(message.createdAt).toString(), dateTimeFormatter).toLocalDate()
+                val currentDate = message.createdAt.take(10).replace("-", "").toIntOrNull()
+                val nextDate = it.createdAt.take(10).replace("-", "").toIntOrNull()
                 currentDate != nextDate
             } ?: true
 
