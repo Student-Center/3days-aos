@@ -81,7 +81,7 @@ class ChatViewModel @Inject constructor(
     private val moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
 
     private val _newChatMessage = MutableSharedFlow<StompMessage>(replay = 1)
-    val newChatMessage: SharedFlow<StompMessage> = _newChatMessage.asSharedFlow()
+    private val newChatMessage: SharedFlow<StompMessage> = _newChatMessage.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -178,6 +178,7 @@ class ChatViewModel @Inject constructor(
             return true
         }
         LoggerUtil.error("웹소켓 연결 실패: ${cause.message}")
+        cause.printStackTrace()
         return false
     }
 

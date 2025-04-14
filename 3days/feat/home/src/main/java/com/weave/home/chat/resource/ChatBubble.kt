@@ -1,5 +1,6 @@
 package com.weave.home.chat.resource
 
+import android.widget.TextView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -7,10 +8,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,12 +26,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.text.util.LocalePreferences.FirstDayOfWeek.Days
 import com.weave.design_system.DaysTheme
 import com.weave.home.chat.generateDummyMessages
 import com.weave.home.chat.resource.card.ChatCard
+import com.weave.home.chat.resource.system.SystemInfoMessage
+import com.weave.home.chat.resource.system.SystemProfile
 import com.weave.model.domain.chat.Message
 import com.weave.model.domain.chat.MessageContent
+import com.weave.model.domain.chat.SystemMessageType
 import com.weave.utils.DateTimeUtil
+import java.util.UUID
 
 @Composable
 fun ChatBubble(
@@ -181,7 +189,16 @@ fun CardMessageBubble(
 
 @Composable
 fun SystemMessageBubble(message: Message) {
-    // 시스템 메시지 UI
+    when (message.content.systemMessageType) {
+        SystemMessageType.INFO -> SystemInfoMessage(message)
+        SystemMessageType.NEXT_CARD -> NextCardMessage(message)
+        else -> {}
+    }
+}
+
+@Composable
+fun NextCardMessage(message: Message) {
+
 }
 
 fun getMessagePosition(
@@ -212,8 +229,72 @@ private fun ChatBubblePreview() {
             isNewMin = true,
         ) {}
 
+        Spacer(Modifier.height(8.dp))
+
         ChatBubble(
             message = generateDummyMessages(1)[0],
+            isMyMessage = false,
+            position = MessagePosition.SINGLE,
+            profileImage = "",
+            isNewMin = false,
+        ) {}
+
+        Spacer(Modifier.height(8.dp))
+
+        ChatBubble(
+            message = Message(
+                id = UUID.randomUUID(),
+                channelId = UUID.randomUUID(),
+                senderUserId = if ((1..2).random() == 1) UUID.fromString("11111111-1111-1111-1111-111111111111") else UUID.fromString(
+                    "21111111-1111-1111-1111-111111111111"
+                ),
+                content = MessageContent(type = MessageContent.Type.CARD),
+                createdAt = "2025-11-02T05:24:11"
+            ),
+            isMyMessage = false,
+            position = MessagePosition.SINGLE,
+            profileImage = "",
+            isNewMin = false,
+        ) {}
+
+        Spacer(Modifier.height(8.dp))
+
+        ChatBubble(
+            message = Message(
+                id = UUID.randomUUID(),
+                channelId = UUID.randomUUID(),
+                senderUserId = if ((1..2).random() == 1) UUID.fromString("11111111-1111-1111-1111-111111111111") else UUID.fromString(
+                    "21111111-1111-1111-1111-111111111111"
+                ),
+                content = MessageContent(
+                    type = MessageContent.Type.SYSTEM,
+                    systemMessageType = SystemMessageType.INFO,
+                    text = "시스테에엠"
+                ),
+                createdAt = "2025-11-02T05:24:11"
+            ),
+            isMyMessage = false,
+            position = MessagePosition.SINGLE,
+            profileImage = "",
+            isNewMin = false,
+        ) {}
+
+        Spacer(Modifier.height(8.dp))
+
+        ChatBubble(
+            message = Message(
+                id = UUID.randomUUID(),
+                channelId = UUID.randomUUID(),
+                senderUserId = if ((1..2).random() == 1) UUID.fromString("11111111-1111-1111-1111-111111111111") else UUID.fromString(
+                    "21111111-1111-1111-1111-111111111111"
+                ),
+                content = MessageContent(
+                    type = MessageContent.Type.SYSTEM,
+                    systemMessageType = SystemMessageType.NEXT_CARD,
+                    text = "시스테에엠"
+                ),
+                createdAt = "2025-11-02T05:24:11"
+            ),
             isMyMessage = false,
             position = MessagePosition.SINGLE,
             profileImage = "",
