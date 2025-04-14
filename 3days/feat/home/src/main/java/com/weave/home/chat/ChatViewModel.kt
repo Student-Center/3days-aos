@@ -67,6 +67,7 @@ data class ChatState(
 sealed class ChatEffect : UIEffect {
     data class ShowToast(val message: String, val type: SnackBarType) : ChatEffect()
 }
+
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val getMyInfoUseCase: GetMyInfoUseCase,
@@ -198,8 +199,12 @@ class ChatViewModel @Inject constructor(
 
     private suspend fun handleIncomingMessage(frame: StompFrame) {
         runCatching {
+            LoggerUtil.info(frame.bodyAsText)
             moshi.adapter(StompMessage::class.java).fromJson(frame.bodyAsText)?.let { _newChatMessage.emit(it) }
-        }.onFailure { LoggerUtil.error("JSON 파싱 오류: ${it.message}") }
+        }.onFailure {
+            it.printStackTrace()
+            LoggerUtil.error("JSON 파싱 오류: ${it.message}")
+        }
     }
 
     private fun sendMessage(message: String) {

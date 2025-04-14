@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.LifecycleCoroutineScope
 import com.weave.design_system.component.DaysBackgroundTextureImage
 import com.weave.design_system.component.DaysSnackBarHost
 import com.weave.home.chat.resource.ChatBubble
@@ -44,6 +45,7 @@ import com.weave.home.chat.resource.getMessagePosition
 import com.weave.home.profile.main.SnackBarViewModel
 import com.weave.model.domain.chat.Message
 import com.weave.model.domain.chat.MessageContent
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
@@ -213,23 +215,27 @@ private fun ChatBoard(
         }
 
         itemsIndexed(messages) { index, message ->
-            val position = getMessagePosition(messages, index)
             val nextMessage = messages.getOrNull(index + 1)
 
-            val isNewDay = nextMessage?.let {
-                val currentDate = message.createdAt.take(10).replace("-", "").toIntOrNull()
-                val nextDate = it.createdAt.take(10).replace("-", "").toIntOrNull()
-                currentDate != nextDate
+            val isNewMin = nextMessage?.let {
+                val currentMin = message.createdAt.filterCreateAt(16)
+                val nextMin = it.createdAt.filterCreateAt(16)
+                currentMin != nextMin
             } ?: true
 
-            if (isNewDay) {
-                DayDivider(value = message.createdAt)
-            }
+            val position = getMessagePosition(messages, index)
+
+            val isNewDay = nextMessage?.let {
+                val currentDate = message.createdAt.filterCreateAt(10)
+                val nextDate = it.createdAt.filterCreateAt(10)
+                currentDate != nextDate
+            } ?: true
 
             ChatBubble(
                 message = message,
                 position = position,
                 isMyMessage = message.senderUserId == userId,
+                isNewMin = isNewMin,
                 profileImage = profileImage,
                 onCardClick = onCardClick
             )
@@ -249,12 +255,20 @@ private fun ChatBoard(
                         .height(2.dp)
                 )
             }
+
+            if (isNewDay) {
+                DayDivider(value = message.createdAt)
+            }
         }
 
         item {
             Spacer(modifier = Modifier.height(100.dp))
         }
     }
+}
+
+fun String.filterCreateAt(n: Int): String? {
+    return this.take(n).replace(Regex("[-T:]"), "")
 }
 
 

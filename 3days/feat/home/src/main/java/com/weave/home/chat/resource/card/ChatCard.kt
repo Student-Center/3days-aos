@@ -1,6 +1,6 @@
 package com.weave.home.chat.resource.card
 
-import CardColor
+import StompCardColor
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -48,7 +48,7 @@ fun ChatCard(
         }
 
         ChatCardContent(
-            cardColor = CardColor.entries.find { it.name == content.cardColor } ?: CardColor.BLUE,
+            stompCardColor = StompCardColor.entries.find { it.name == content.cardColor?.name } ?: StompCardColor.BLUE,
             isMyMessage = isMyMessage,
             onCardClick = onCardClick
         )
@@ -57,13 +57,13 @@ fun ChatCard(
 
 @Composable
 private fun ChatCardContent(
-    cardColor: CardColor,
+    stompCardColor: StompCardColor,
     isMyMessage: Boolean,
     onCardClick: () -> Unit
 ) {
     val shape = RoundedCornerShape(8.dp)
     val cardRes =
-        if (cardColor == CardColor.BLUE) {
+        if (stompCardColor == StompCardColor.BLUE) {
             com.weave.design_system.R.drawable.bg_chat_card_blue
         } else {
             com.weave.design_system.R.drawable.bg_chat_card_pink
@@ -92,7 +92,7 @@ private fun ChatCardContent(
             contentAlignment = Alignment.Center
         ) {
             ChatCardButton(
-                cardColor,
+                stompCardColor,
                 isMyMessage,
                 onCardClick
             )
@@ -102,12 +102,12 @@ private fun ChatCardContent(
 
 @Composable
 private fun ChatCardButton(
-    cardColor: CardColor,
+    stompCardColor: StompCardColor,
     isMyMessage: Boolean,
     onCardClick: () -> Unit
 ) {
     val buttonColors =
-        if (cardColor == CardColor.BLUE) {
+        if (stompCardColor == StompCardColor.BLUE) {
             DaysTheme.colors.blue500 to DaysTheme.colors.blue50
         } else {
             DaysTheme.colors.pink500 to DaysTheme.colors.pink50
@@ -142,7 +142,7 @@ private fun ChatCardPreview() {
             isMyMessage = true,
             profileImage = "",
             content = MessageContent(
-                cardColor = CardColor.BLUE.name,
+                cardColor = MessageContent.CardColor.BLUE,
                 text = "This is Blue Card.",
                 type = MessageContent.Type.CARD
             )
@@ -154,7 +154,7 @@ private fun ChatCardPreview() {
             isMyMessage = false,
             profileImage = "",
             content = MessageContent(
-                cardColor = CardColor.PINK.name,
+                cardColor = MessageContent.CardColor.PINK,
                 text = "This is Pink Card.",
                 type = MessageContent.Type.CARD
             )

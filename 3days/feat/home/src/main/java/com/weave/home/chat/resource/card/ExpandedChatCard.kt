@@ -1,6 +1,6 @@
 package com.weave.home.chat.resource.card
 
-import CardColor
+import StompCardColor
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -36,8 +36,8 @@ fun ExpandedChatCard(
     isMyMessage: Boolean,
     onDismiss: () -> Unit
 ) {
-    val cardColor = CardColor.entries.find { it.name == content.cardColor } ?: CardColor.BLUE
-    val bgColors = if (cardColor == CardColor.BLUE) {
+    val stompCardColor = StompCardColor.entries.find { it.name == content.cardColor?.name } ?: StompCardColor.BLUE
+    val bgColors = if (stompCardColor == StompCardColor.BLUE) {
         listOf(Color(0x00DAE6F1), Color(0xFFDAE6F1))
     } else {
         listOf(Color(0x00F3DDE5), Color(0xFFF3DDE5))
@@ -64,7 +64,7 @@ fun ExpandedChatCard(
 
         BigCard(
             content = content,
-            cardColor = cardColor,
+            stompCardColor = stompCardColor,
             isMyMessage = isMyMessage
         )
     }
@@ -111,10 +111,10 @@ private fun Header(
 @Composable
 private fun BigCard(
     content: MessageContent,
-    cardColor: CardColor,
+    stompCardColor: StompCardColor,
     isMyMessage: Boolean
 ) {
-    val cardRes = if (cardColor == CardColor.BLUE) {
+    val cardRes = if (stompCardColor == StompCardColor.BLUE) {
         com.weave.design_system.R.drawable.bg_chat_card_blue
     } else {
         com.weave.design_system.R.drawable.bg_chat_card_pink
@@ -138,6 +138,21 @@ private fun BigCard(
                 painter = painterResource(cardRes),
                 contentDescription = ""
             )
+
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .padding(top = 26.dp),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    text = content.title ?: "",
+                    style = DaysTheme.typography.semiBold14.toTextStyle(),
+                    color = DaysTheme.colors.grey500
+                )
+            }
 
             Column(
                 modifier = Modifier
@@ -172,8 +187,9 @@ private fun ExpandedChatCardPreview() {
     ExpandedChatCard(
         content = MessageContent(
             type = MessageContent.Type.CARD,
-            cardColor = "BLUE",
-            text = "예시 텍스트를 작성합니다"
+            cardColor = MessageContent.CardColor.BLUE,
+            text = "예시 텍스트를 작성합니다",
+            title = "타이틀 입니다"
         ),
         isMyMessage = true,
         onDismiss = {}

@@ -35,29 +35,32 @@ fun ChatBubble(
     message: Message,
     position: MessagePosition,
     isMyMessage: Boolean,
+    isNewMin: Boolean,
     profileImage: String,
-    onCardClick: (Message) -> Unit
+    onCardClick: (Message) -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = if (isMyMessage) Arrangement.End else Arrangement.Start
+        horizontalArrangement = if (isMyMessage) Arrangement.End else Arrangement.Start,
     ) {
         when (message.content.type) {
-            MessageContent.Type.TEXT -> TextMessageBubble(
-                message,
-                position,
-                isMyMessage,
-                profileImage
-            )
+            MessageContent.Type.TEXT ->
+                TextMessageBubble(
+                    message,
+                    position,
+                    isMyMessage,
+                    profileImage,
+                )
 
-            MessageContent.Type.CARD -> CardMessageBubble(
-                message,
-                profileImage,
-                isMyMessage,
-                onCardClick
-            )
+            MessageContent.Type.CARD ->
+                CardMessageBubble(
+                    message,
+                    profileImage,
+                    isMyMessage,
+                    onCardClick,
+                )
 
-//            MessageType.SYSTEM -> SystemMessageBubble(message)
+            MessageContent.Type.SYSTEM -> SystemMessageBubble(message)
             null -> {}
         }
     }
@@ -68,7 +71,7 @@ fun TextMessageBubble(
     message: Message,
     position: MessagePosition,
     isMyMessage: Boolean,
-    profileImage: String
+    profileImage: String,
 ) {
     var isMultiLine by remember { mutableStateOf(false) }
 
@@ -79,30 +82,34 @@ fun TextMessageBubble(
 
     val (corner1, corner2, corner3, corner4) = if (isMyMessage) myCorners else otherCorners
 
-    val shape = when (position) {
-        MessagePosition.FIRST -> RoundedCornerShape(
-            topStart = corner3,
-            topEnd = corner4,
-            bottomStart = corner2,
-            bottomEnd = corner1
-        )
+    val shape =
+        when (position) {
+            MessagePosition.FIRST ->
+                RoundedCornerShape(
+                    topStart = corner3,
+                    topEnd = corner4,
+                    bottomStart = corner2,
+                    bottomEnd = corner1,
+                )
 
-        MessagePosition.MIDDLE -> RoundedCornerShape(
-            topStart = corner2,
-            topEnd = corner1,
-            bottomStart = corner2,
-            bottomEnd = corner1
-        )
+            MessagePosition.MIDDLE ->
+                RoundedCornerShape(
+                    topStart = corner2,
+                    topEnd = corner1,
+                    bottomStart = corner2,
+                    bottomEnd = corner1,
+                )
 
-        MessagePosition.LAST -> RoundedCornerShape(
-            topStart = if (isMyMessage) corner3 else 4.dp,
-            topEnd = if (isMyMessage) corner1 else 20.dp,
-            bottomStart = if (isMyMessage) corner2 else 20.dp,
-            bottomEnd = if (isMyMessage) corner4 else 20.dp
-        )
+            MessagePosition.LAST ->
+                RoundedCornerShape(
+                    topStart = if (isMyMessage) corner3 else 4.dp,
+                    topEnd = if (isMyMessage) corner1 else 20.dp,
+                    bottomStart = if (isMyMessage) corner2 else 20.dp,
+                    bottomEnd = if (isMyMessage) corner4 else 20.dp,
+                )
 
-        MessagePosition.SINGLE -> RoundedCornerShape(20.dp)
-    }
+            MessagePosition.SINGLE -> RoundedCornerShape(20.dp)
+        }
 
     Row(verticalAlignment = Alignment.Bottom) {
         if (!isMyMessage && (position == MessagePosition.SINGLE || position == MessagePosition.LAST)) {
@@ -114,20 +121,24 @@ fun TextMessageBubble(
             Spacer(modifier = Modifier.size(width = 40.dp, height = 1.dp))
         }
 
-        if(isMyMessage && (position == MessagePosition.SINGLE || position == MessagePosition.LAST)) {
+        if (isMyMessage && (position == MessagePosition.SINGLE || position == MessagePosition.LAST)) {
             Text(
-                style = DaysTheme.typography.regular12.copy(fontSize = 10.dp).toTextStyle(),
+                style =
+                    DaysTheme.typography.regular12
+                        .copy(fontSize = 10.dp)
+                        .toTextStyle(),
                 text = DateTimeUtil.formatChatTime(message.createdAt),
-                color = Color(0x80534C44)
+                color = Color(0x80534C44),
             )
             Spacer(Modifier.width(6.dp))
         }
 
         Box(
-            modifier = Modifier
-                .background(if (isMyMessage) DaysTheme.colors.blue300 else Color.White, shape)
-                .padding(horizontal = 14.dp, vertical = 10.dp)
-                .widthIn(max = 240.dp)
+            modifier =
+                Modifier
+                    .background(if (isMyMessage) DaysTheme.colors.blue300 else Color.White, shape)
+                    .padding(horizontal = 14.dp, vertical = 10.dp)
+                    .widthIn(max = 240.dp),
         ) {
             Text(
                 style = DaysTheme.typography.regular15.toTextStyle(),
@@ -135,16 +146,19 @@ fun TextMessageBubble(
                 color = if (isMyMessage) Color.White else DaysTheme.colors.grey500,
                 onTextLayout = { textLayoutResult ->
                     isMultiLine = textLayoutResult.lineCount > 1
-                }
+                },
             )
         }
 
-        if(!isMyMessage && (position == MessagePosition.SINGLE || position == MessagePosition.LAST)) {
+        if (!isMyMessage && (position == MessagePosition.SINGLE || position == MessagePosition.LAST)) {
             Spacer(Modifier.width(6.dp))
             Text(
-                style = DaysTheme.typography.regular12.copy(fontSize = 10.dp).toTextStyle(),
+                style =
+                    DaysTheme.typography.regular12
+                        .copy(fontSize = 10.dp)
+                        .toTextStyle(),
                 text = DateTimeUtil.formatChatTime(message.createdAt),
-                color = Color(0x80534C44)
+                color = Color(0x80534C44),
             )
         }
     }
@@ -155,13 +169,13 @@ fun CardMessageBubble(
     message: Message,
     profileImage: String,
     isMyMessage: Boolean,
-    onCardClick: (Message) -> Unit
+    onCardClick: (Message) -> Unit,
 ) {
     ChatCard(
         content = message.content,
         isMyMessage = isMyMessage,
         profileImage = profileImage,
-        onCardClick = { onCardClick(message) }
+        onCardClick = { onCardClick(message) },
     )
 }
 
@@ -170,7 +184,10 @@ fun SystemMessageBubble(message: Message) {
     // 시스템 메시지 UI
 }
 
-fun getMessagePosition(messages: List<Message>, index: Int): MessagePosition {
+fun getMessagePosition(
+    messages: List<Message>,
+    index: Int,
+): MessagePosition {
     val prev = messages.getOrNull(index - 1)
     val next = messages.getOrNull(index + 1)
     val current = messages[index]
@@ -191,14 +208,16 @@ private fun ChatBubblePreview() {
             message = generateDummyMessages(1)[0],
             isMyMessage = true,
             position = MessagePosition.SINGLE,
-            profileImage = ""
+            profileImage = "",
+            isNewMin = true,
         ) {}
 
         ChatBubble(
             message = generateDummyMessages(1)[0],
             isMyMessage = false,
             position = MessagePosition.SINGLE,
-            profileImage = ""
+            profileImage = "",
+            isNewMin = false,
         ) {}
     }
 }
