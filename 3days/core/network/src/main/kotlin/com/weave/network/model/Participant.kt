@@ -15,23 +15,28 @@
 
 package com.weave.network.model
 
-import com.weave.network.model.UserDesiredPartner
-import com.weave.network.model.UserProfile
+import com.weave.network.model.ProfileImage
+import com.weave.network.model.ProfileWidget
+import com.weave.network.model.UserProfileDisplayInfo
 
 import com.google.gson.annotations.SerializedName
 
 /**
  * 
  *
+ * @param userId 
  * @param name 사용자 이름
  * @param phoneNumber 사용자의 전화번호 (한국 휴대폰 번호 형식)
  * @param profile 
- * @param desiredPartner 
- * @param id 사용자 식별자
+ * @param profileWidgets 
+ * @param profileImages 프로필 이미지 목록
  */
 
 
-data class UpdateMyUserInfoResponse (
+data class Participant (
+
+    @SerializedName("userId")
+    val userId: java.util.UUID,
 
     /* 사용자 이름 */
     @SerializedName("name")
@@ -42,14 +47,14 @@ data class UpdateMyUserInfoResponse (
     val phoneNumber: kotlin.String,
 
     @SerializedName("profile")
-    val profile: UserProfile,
+    val profile: UserProfileDisplayInfo,
 
-    @SerializedName("desiredPartner")
-    val desiredPartner: UserDesiredPartner,
+    @SerializedName("profileWidgets")
+    val profileWidgets: kotlin.collections.List<ProfileWidget>,
 
-    /* 사용자 식별자 */
-    @SerializedName("id")
-    val id: java.util.UUID? = null
+    /* 프로필 이미지 목록 */
+    @SerializedName("profileImages")
+    val profileImages: kotlin.collections.List<ProfileImage>? = null
 
 ) {
 

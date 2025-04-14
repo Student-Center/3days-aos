@@ -19,7 +19,7 @@ package com.weave.network.model
 import com.google.gson.annotations.SerializedName
 
 /**
- *
+ * 
  *
  * @param time 에러 발생 시각 (ISO 8601)
  * @param type 에러 유형
@@ -28,7 +28,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 
-data class ErrorResponse(
+data class ErrorResponse (
 
     /* 에러 발생 시각 (ISO 8601) */
     @SerializedName("time")

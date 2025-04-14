@@ -19,18 +19,24 @@ package com.weave.network.model
 import com.google.gson.annotations.SerializedName
 
 /**
- * 커넥션 활성화 상태
+ * 커넥션 시도 상태
  *
- * Values: ACTIVE,INACTIVE
+ * Values: CONNECTING,CONNECTED,FAILED,UNKNOWN
  */
 
-enum class ConnectionStatus(val value: kotlin.String) {
+enum class ConnectionAttemptStatus(val value: kotlin.String) {
 
-    @SerializedName(value = "ACTIVE")
-    ACTIVE("ACTIVE"),
+    @SerializedName(value = "CONNECTING")
+    CONNECTING("CONNECTING"),
 
-    @SerializedName(value = "INACTIVE")
-    INACTIVE("INACTIVE");
+    @SerializedName(value = "CONNECTED")
+    CONNECTED("CONNECTED"),
+
+    @SerializedName(value = "FAILED")
+    FAILED("FAILED"),
+
+    @SerializedName(value = "UNKNOWN")
+    UNKNOWN("UNKNOWN");
 
     /**
      * Override [toString()] to avoid using the enum variable name as the value, and instead use
@@ -45,12 +51,12 @@ enum class ConnectionStatus(val value: kotlin.String) {
         /**
          * Converts the provided [data] to a [String] on success, null otherwise.
          */
-        fun encode(data: kotlin.Any?): kotlin.String? = if (data is ConnectionStatus) "$data" else null
+        fun encode(data: kotlin.Any?): kotlin.String? = if (data is ConnectionAttemptStatus) "$data" else null
 
         /**
-         * Returns a valid [ConnectionStatus] for [data], null otherwise.
+         * Returns a valid [ConnectionAttemptStatus] for [data], null otherwise.
          */
-        fun decode(data: kotlin.Any?): ConnectionStatus? = data?.let {
+        fun decode(data: kotlin.Any?): ConnectionAttemptStatus? = data?.let {
           val normalizedData = "$it".lowercase()
           values().firstOrNull { value ->
             it == value || normalizedData == "$value".lowercase()

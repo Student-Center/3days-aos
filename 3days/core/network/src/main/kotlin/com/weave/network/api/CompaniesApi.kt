@@ -20,7 +20,9 @@ interface CompaniesApi {
      * @return [GetCompanyDetailsResponse]
      */
     @GET("companies/{companyId}")
-    suspend fun getCompanyDetails(@Path("companyId") companyId: java.util.UUID): Response<GetCompanyDetailsResponse>
+    suspend fun getCompanyDetails(
+        @Path("companyId") companyId: java.util.UUID,
+    ): Response<GetCompanyDetailsResponse>
 
     /**
      * 직장명 검색
@@ -38,7 +40,6 @@ interface CompaniesApi {
     suspend fun searchCompanies(
         @Query("name") name: kotlin.String,
         @Query("next") next: java.util.UUID? = null,
-        @Query("limit") limit: kotlin.Int? = 20
+        @Query("limit") limit: kotlin.Int? = 20,
     ): Response<SearchCompaniesResponse>
-
 }

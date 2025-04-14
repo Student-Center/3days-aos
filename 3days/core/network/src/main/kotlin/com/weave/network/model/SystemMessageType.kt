@@ -19,18 +19,18 @@ package com.weave.network.model
 import com.google.gson.annotations.SerializedName
 
 /**
- * 커넥션 활성화 상태
+ * 시스템 메시지 타입
  *
- * Values: ACTIVE,INACTIVE
+ * Values: INFO,NEXT_CARD
  */
 
-enum class ConnectionStatus(val value: kotlin.String) {
+enum class SystemMessageType(val value: kotlin.String) {
 
-    @SerializedName(value = "ACTIVE")
-    ACTIVE("ACTIVE"),
+    @SerializedName(value = "INFO")
+    INFO("INFO"),
 
-    @SerializedName(value = "INACTIVE")
-    INACTIVE("INACTIVE");
+    @SerializedName(value = "NEXT_CARD")
+    NEXT_CARD("NEXT_CARD");
 
     /**
      * Override [toString()] to avoid using the enum variable name as the value, and instead use
@@ -45,12 +45,12 @@ enum class ConnectionStatus(val value: kotlin.String) {
         /**
          * Converts the provided [data] to a [String] on success, null otherwise.
          */
-        fun encode(data: kotlin.Any?): kotlin.String? = if (data is ConnectionStatus) "$data" else null
+        fun encode(data: kotlin.Any?): kotlin.String? = if (data is SystemMessageType) "$data" else null
 
         /**
-         * Returns a valid [ConnectionStatus] for [data], null otherwise.
+         * Returns a valid [SystemMessageType] for [data], null otherwise.
          */
-        fun decode(data: kotlin.Any?): ConnectionStatus? = data?.let {
+        fun decode(data: kotlin.Any?): SystemMessageType? = data?.let {
           val normalizedData = "$it".lowercase()
           values().firstOrNull { value ->
             it == value || normalizedData == "$value".lowercase()

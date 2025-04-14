@@ -30,6 +30,7 @@ interface LocationsApi {
      * @return [kotlin.collections.List<Location>]
      */
     @GET("locations/{regionName}")
-    suspend fun getLocationsByRegion(@Path("regionName") regionName: kotlin.String): Response<kotlin.collections.List<Location>>
-
+    suspend fun getLocationsByRegion(
+        @Path("regionName") regionName: kotlin.String,
+    ): Response<kotlin.collections.List<Location>>
 }

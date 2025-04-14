@@ -15,20 +15,25 @@
 
 package com.weave.network.model
 
+import com.weave.network.model.CompanyDisplayInfo
+import com.weave.network.model.Gender
+import com.weave.network.model.JobOccupationDisplayInfo
+import com.weave.network.model.LocationDisplayInfo
+
 import com.google.gson.annotations.SerializedName
 
 /**
  * 사용자 프로필 표시 정보
  *
- * @param gender
+ * @param gender 
  * @param birthYear 사용자의 출생년도
- * @param jobOccupation
+ * @param jobOccupation 
  * @param locations 활동 지역 정보 목록
- * @param company
+ * @param company 
  */
 
 
-data class UserProfileDisplayInfo(
+data class UserProfileDisplayInfo (
 
     @SerializedName("gender")
     val gender: Gender,

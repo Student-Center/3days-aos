@@ -1,6 +1,5 @@
 package com.weave.network.api
 
-import retrofit2.Response
 import com.weave.network.model.CompleteProfileImageUploadRequest
 import com.weave.network.model.GetMyUserInfoResponse
 import com.weave.network.model.GetProfileImageUploadUrlResponse
@@ -15,6 +14,7 @@ import com.weave.network.model.UpdateMyUserInfoRequest
 import com.weave.network.model.UpdateMyUserInfoResponse
 import com.weave.network.model.UpdateUserDesiredPartnerRequest
 import com.weave.network.model.UpdateUserDesiredPartnerResponse
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -38,7 +38,9 @@ interface UsersApi {
      * @return [Unit]
      */
     @POST("users/my/profile-images/upload-complete")
-    suspend fun completeProfileImageUpload(@Body completeProfileImageUploadRequest: CompleteProfileImageUploadRequest): Response<Unit>
+    suspend fun completeProfileImageUpload(
+        @Body completeProfileImageUploadRequest: CompleteProfileImageUploadRequest,
+    ): Response<Unit>
 
     /**
      * 회원 탈퇴
@@ -67,7 +69,9 @@ interface UsersApi {
      * @return [Unit]
      */
     @DELETE("users/my/profile-images/{imageId}")
-    suspend fun deleteProfileImage(@Path("imageId") imageId: java.util.UUID): Response<Unit>
+    suspend fun deleteProfileImage(
+        @Path("imageId") imageId: java.util.UUID,
+    ): Response<Unit>
 
     /**
      * 프로필 위젯 삭제
@@ -82,7 +86,9 @@ interface UsersApi {
      * @return [Unit]
      */
     @DELETE("users/profileWidgets/{type}")
-    suspend fun deleteProfileWidget(@Path("type") type: ProfileWidgetType): Response<Unit>
+    suspend fun deleteProfileWidget(
+        @Path("type") type: ProfileWidgetType,
+    ): Response<Unit>
 
     /**
      * 내 프로필 조회
@@ -110,7 +116,9 @@ interface UsersApi {
      * @return [GetProfileImageUploadUrlResponse]
      */
     @GET("users/my/profile-images/upload-url")
-    suspend fun getProfileImageUploadUrl(@Query("extension") extension: ProfileImageExtension): Response<GetProfileImageUploadUrlResponse>
+    suspend fun getProfileImageUploadUrl(
+        @Query("extension") extension: ProfileImageExtension,
+    ): Response<GetProfileImageUploadUrlResponse>
 
     /**
      * 프로필 위젯 추가 및 수정
@@ -125,7 +133,9 @@ interface UsersApi {
      * @return [ProfileWidget]
      */
     @PUT("users/profileWidgets")
-    suspend fun putProfileWidget(@Body body: ProfileWidget): Response<ProfileWidget>
+    suspend fun putProfileWidget(
+        @Body body: ProfileWidget,
+    ): Response<ProfileWidget>
 
     /**
      * 회원 가입
@@ -143,7 +153,7 @@ interface UsersApi {
     @POST("users")
     suspend fun registerUser(
         @Header("X-Register-Token") xRegisterToken: kotlin.String,
-        @Body registerUserRequest: RegisterUserRequest
+        @Body registerUserRequest: RegisterUserRequest,
     ): Response<TokenResponse>
 
     /**
@@ -159,7 +169,9 @@ interface UsersApi {
      * @return [UpdateConnectionStatusResponse]
      */
     @PUT("users/my/connection/status")
-    suspend fun updateConnectionStatus(@Body updateConnectionStatusRequest: UpdateConnectionStatusRequest): Response<UpdateConnectionStatusResponse>
+    suspend fun updateConnectionStatus(
+        @Body updateConnectionStatusRequest: UpdateConnectionStatusRequest,
+    ): Response<UpdateConnectionStatusResponse>
 
     /**
      * 내 원하는 파트너 수정
@@ -174,7 +186,9 @@ interface UsersApi {
      * @return [UpdateUserDesiredPartnerResponse]
      */
     @PUT("users/my/desiredPartner")
-    suspend fun updateMyDesiredPartner(@Body updateUserDesiredPartnerRequest: UpdateUserDesiredPartnerRequest): Response<UpdateUserDesiredPartnerResponse>
+    suspend fun updateMyDesiredPartner(
+        @Body updateUserDesiredPartnerRequest: UpdateUserDesiredPartnerRequest,
+    ): Response<UpdateUserDesiredPartnerResponse>
 
     /**
      * 내 프로필 수정
@@ -189,6 +203,7 @@ interface UsersApi {
      * @return [UpdateMyUserInfoResponse]
      */
     @PUT("users/my")
-    suspend fun updateMyUserInfo(@Body updateMyUserInfoRequest: UpdateMyUserInfoRequest): Response<UpdateMyUserInfoResponse>
-
+    suspend fun updateMyUserInfo(
+        @Body updateMyUserInfoRequest: UpdateMyUserInfoRequest,
+    ): Response<UpdateMyUserInfoResponse>
 }

@@ -15,6 +15,9 @@
 
 package com.weave.network.model
 
+import com.weave.network.model.UserDesiredPartner
+import com.weave.network.model.UserProfile
+
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -22,12 +25,12 @@ import com.google.gson.annotations.SerializedName
  *
  * @param name 사용자 이름
  * @param phoneNumber 사용자 전화번호
- * @param profile
- * @param desiredPartner
+ * @param profile 
+ * @param desiredPartner 
  */
 
 
-data class RegisterUserRequest(
+data class RegisterUserRequest (
 
     /* 사용자 이름 */
     @SerializedName("name")

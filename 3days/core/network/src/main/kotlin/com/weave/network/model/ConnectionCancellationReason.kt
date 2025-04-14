@@ -19,18 +19,33 @@ package com.weave.network.model
 import com.google.gson.annotations.SerializedName
 
 /**
- * 커넥션 활성화 상태
+ * 커넥션 취소 사유
  *
- * Values: ACTIVE,INACTIVE
+ * Values: NO_RESPONSE,FIRST_MESSAGE_TIMEOUT,DUPLICATED,REPORTED,ADMIN_CANCELLATION,ETC,UNKNOWN
  */
 
-enum class ConnectionStatus(val value: kotlin.String) {
+enum class ConnectionCancellationReason(val value: kotlin.String) {
 
-    @SerializedName(value = "ACTIVE")
-    ACTIVE("ACTIVE"),
+    @SerializedName(value = "NO_RESPONSE")
+    NO_RESPONSE("NO_RESPONSE"),
 
-    @SerializedName(value = "INACTIVE")
-    INACTIVE("INACTIVE");
+    @SerializedName(value = "FIRST_MESSAGE_TIMEOUT")
+    FIRST_MESSAGE_TIMEOUT("FIRST_MESSAGE_TIMEOUT"),
+
+    @SerializedName(value = "DUPLICATED")
+    DUPLICATED("DUPLICATED"),
+
+    @SerializedName(value = "REPORTED")
+    REPORTED("REPORTED"),
+
+    @SerializedName(value = "ADMIN_CANCELLATION")
+    ADMIN_CANCELLATION("ADMIN_CANCELLATION"),
+
+    @SerializedName(value = "ETC")
+    ETC("ETC"),
+
+    @SerializedName(value = "UNKNOWN")
+    UNKNOWN("UNKNOWN");
 
     /**
      * Override [toString()] to avoid using the enum variable name as the value, and instead use
@@ -45,12 +60,12 @@ enum class ConnectionStatus(val value: kotlin.String) {
         /**
          * Converts the provided [data] to a [String] on success, null otherwise.
          */
-        fun encode(data: kotlin.Any?): kotlin.String? = if (data is ConnectionStatus) "$data" else null
+        fun encode(data: kotlin.Any?): kotlin.String? = if (data is ConnectionCancellationReason) "$data" else null
 
         /**
-         * Returns a valid [ConnectionStatus] for [data], null otherwise.
+         * Returns a valid [ConnectionCancellationReason] for [data], null otherwise.
          */
-        fun decode(data: kotlin.Any?): ConnectionStatus? = data?.let {
+        fun decode(data: kotlin.Any?): ConnectionCancellationReason? = data?.let {
           val normalizedData = "$it".lowercase()
           values().firstOrNull { value ->
             it == value || normalizedData == "$value".lowercase()

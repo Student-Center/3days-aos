@@ -15,19 +15,21 @@
 
 package com.weave.network.model
 
+import com.weave.network.model.ProfileImageExtension
+
 import com.google.gson.annotations.SerializedName
 
 /**
- *
+ * 
  *
  * @param imageId 이미지 ID
  * @param url 업로드 URL
- * @param extension
+ * @param extension 
  * @param uploadExpiresIn 업로드 유효 시간 (초 단위)
  */
 
 
-data class GetProfileImageUploadUrlResponse(
+data class GetProfileImageUploadUrlResponse (
 
     /* 이미지 ID */
     @SerializedName("imageId")

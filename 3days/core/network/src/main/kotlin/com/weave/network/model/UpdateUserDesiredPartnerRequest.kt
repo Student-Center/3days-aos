@@ -15,18 +15,22 @@
 
 package com.weave.network.model
 
+import com.weave.network.model.BirthYearRange
+import com.weave.network.model.JobOccupation
+import com.weave.network.model.PreferDistance
+
 import com.google.gson.annotations.SerializedName
 
 /**
  * 사용자가 원하는 파트너의 조건
  *
- * @param birthYearRange
- * @param jobOccupations
- * @param preferDistance
+ * @param birthYearRange 
+ * @param jobOccupations 
+ * @param preferDistance 
  */
 
 
-data class UpdateUserDesiredPartnerRequest(
+data class UpdateUserDesiredPartnerRequest (
 
     @SerializedName("birthYearRange")
     val birthYearRange: BirthYearRange,

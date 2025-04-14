@@ -15,20 +15,22 @@
 
 package com.weave.network.model
 
+import com.weave.network.model.JobOccupation
+
 import com.google.gson.annotations.SerializedName
 
 /**
  * 현재 사용자 프로필 수정 요청 (이름, 직군, 직장, 활동 지역)
  *
  * @param name 사용자 이름
- * @param jobOccupation
+ * @param jobOccupation 
  * @param locationIds 사용자의 활동 지역 목록 ID 리스트
  * @param companyId 사용자의 회사 ID
  * @param allowSameCompany 같은 회사에 근무하는 파트너를 허용하는지 여부 (companyID가 없을 경우 null)
  */
 
 
-data class UpdateMyUserInfoRequest(
+data class UpdateMyUserInfoRequest (
 
     /* 사용자 이름 */
     @SerializedName("name")

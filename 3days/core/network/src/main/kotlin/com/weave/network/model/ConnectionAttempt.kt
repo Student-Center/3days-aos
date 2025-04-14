@@ -15,7 +15,8 @@
 
 package com.weave.network.model
 
-import com.weave.network.model.MessageContent
+import com.weave.network.model.Connection
+import com.weave.network.model.ConnectionAttemptStatus
 
 import com.google.gson.annotations.SerializedName
 
@@ -23,29 +24,33 @@ import com.google.gson.annotations.SerializedName
  * 
  *
  * @param id 
- * @param channelId 
- * @param content 
+ * @param userId 
+ * @param status 
+ * @param attemptDate 
  * @param createdAt 
- * @param senderUserId 
+ * @param connection 
  */
 
 
-data class Message (
+data class ConnectionAttempt (
 
     @SerializedName("id")
     val id: java.util.UUID,
 
-    @SerializedName("channelId")
-    val channelId: java.util.UUID,
+    @SerializedName("userId")
+    val userId: java.util.UUID,
 
-    @SerializedName("content")
-    val content: MessageContent,
+    @SerializedName("status")
+    val status: ConnectionAttemptStatus,
+
+    @SerializedName("attemptDate")
+    val attemptDate: kotlin.String,
 
     @SerializedName("createdAt")
     val createdAt: kotlin.String,
 
-    @SerializedName("senderUserId")
-    val senderUserId: java.util.UUID? = null
+    @SerializedName("connection")
+    val connection: Connection? = null
 
 ) {
 

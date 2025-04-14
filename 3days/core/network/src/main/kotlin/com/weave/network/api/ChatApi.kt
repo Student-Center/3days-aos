@@ -1,7 +1,7 @@
 package com.weave.network.api
 
-import retrofit2.Response
 import com.weave.network.model.GetChannelMessagesResponse
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -25,7 +25,6 @@ interface ChatApi {
     suspend fun getChannelMessages(
         @Path("channelId") channelId: java.util.UUID,
         @Query("next") next: java.util.UUID? = null,
-        @Query("limit") limit: kotlin.Int? = 20
+        @Query("limit") limit: kotlin.Int? = 20,
     ): Response<GetChannelMessagesResponse>
-
 }

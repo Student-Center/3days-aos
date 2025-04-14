@@ -2,14 +2,13 @@ package com.weave.network.infrastructure
 
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
-import com.google.gson.stream.JsonToken.NULL
 import com.google.gson.stream.JsonWriter
+import com.google.gson.stream.JsonToken.NULL
 import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class LocalDateTimeAdapter(private val formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME) :
-    TypeAdapter<LocalDateTime>() {
+class LocalDateTimeAdapter(private val formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME) : TypeAdapter<LocalDateTime>() {
     @Throws(IOException::class)
     override fun write(out: JsonWriter?, value: LocalDateTime?) {
         if (value == null) {
@@ -28,7 +27,6 @@ class LocalDateTimeAdapter(private val formatter: DateTimeFormatter = DateTimeFo
                 out.nextNull()
                 return null
             }
-
             else -> {
                 return LocalDateTime.parse(out.nextString(), formatter)
             }

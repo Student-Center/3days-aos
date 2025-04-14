@@ -15,26 +15,21 @@
 
 package com.weave.network.model
 
-import com.weave.network.model.JobOccupation
+import com.weave.network.model.ConnectionAttempt
 
 import com.google.gson.annotations.SerializedName
 
 /**
- * 직군 표시 정보
+ * 
  *
- * @param code 
- * @param display 화면에 표시될 직군명
+ * @param connectionAttempt 
  */
 
 
-data class JobOccupationDisplayInfo (
+data class GetMyConnectionResponse (
 
-    @SerializedName("code")
-    val code: JobOccupation,
-
-    /* 화면에 표시될 직군명 */
-    @SerializedName("display")
-    val display: kotlin.String
+    @SerializedName("connectionAttempt")
+    val connectionAttempt: ConnectionAttempt
 
 ) {
 

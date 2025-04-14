@@ -15,16 +15,18 @@
 
 package com.weave.network.model
 
+import com.weave.network.model.UserDesiredPartner
+
 import com.google.gson.annotations.SerializedName
 
 /**
+ * 
  *
- *
- * @param desiredPartner
+ * @param desiredPartner 
  */
 
 
-data class UpdateUserDesiredPartnerResponse(
+data class UpdateUserDesiredPartnerResponse (
 
     @SerializedName("desiredPartner")
     val desiredPartner: UserDesiredPartner

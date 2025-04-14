@@ -15,42 +15,64 @@
 
 package com.weave.network.model
 
+import com.weave.network.model.SystemMessageType
 
 import com.google.gson.annotations.SerializedName
 
 /**
+ * 
  *
- *
- * @param type
- * @param text
- * @param cardColor
+ * @param type 
+ * @param text 
+ * @param title Title for CARD type messages
+ * @param cardColor 
+ * @param systemMessageType 
+ * @param nextCardTitle Next card title (only for SYSTEM message with NEXT_CARD type)
  */
 
 
-data class MessageContent(
+data class MessageContent (
 
     @SerializedName("type")
-    val type: MessageContent.Type? = null,
+    val type: MessageContent.Type,
 
     @SerializedName("text")
-    val text: kotlin.String? = null,
+    val text: kotlin.String,
+
+    /* Title for CARD type messages */
+    @SerializedName("title")
+    val title: kotlin.String? = null,
 
     @SerializedName("cardColor")
-    val cardColor: kotlin.String? = null
+    val cardColor: MessageContent.CardColor? = null,
+
+    @SerializedName("systemMessageType")
+    val systemMessageType: SystemMessageType? = null,
+
+    /* Next card title (only for SYSTEM message with NEXT_CARD type) */
+    @SerializedName("nextCardTitle")
+    val nextCardTitle: kotlin.String? = null
 
 ) {
 
     /**
+     * 
      *
-     *
-     * Values: TEXT,CARD
+     * Values: TEXT,CARD,SYSTEM
      */
     enum class Type(val value: kotlin.String) {
-        @SerializedName(value = "TEXT")
-        TEXT("TEXT"),
-
-        @SerializedName(value = "CARD")
-        CARD("CARD");
+        @SerializedName(value = "TEXT") TEXT("TEXT"),
+        @SerializedName(value = "CARD") CARD("CARD"),
+        @SerializedName(value = "SYSTEM") SYSTEM("SYSTEM");
+    }
+    /**
+     * 
+     *
+     * Values: BLUE,PINK
+     */
+    enum class CardColor(val value: kotlin.String) {
+        @SerializedName(value = "BLUE") BLUE("BLUE"),
+        @SerializedName(value = "PINK") PINK("PINK");
     }
 
 }

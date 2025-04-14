@@ -15,16 +15,18 @@
 
 package com.weave.network.model
 
+import com.weave.network.model.Company
+
 import com.google.gson.annotations.SerializedName
 
 /**
+ * 
  *
- *
- * @param company
+ * @param company 
  */
 
 
-data class GetCompanyDetailsResponse(
+data class GetCompanyDetailsResponse (
 
     @SerializedName("company")
     val company: Company

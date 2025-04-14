@@ -15,31 +15,34 @@
 
 package com.weave.network.model
 
-import com.weave.network.model.ProfileImageExtension
+import com.weave.network.model.ConnectionCancellation
+import com.weave.network.model.Participant
 
 import com.google.gson.annotations.SerializedName
 
 /**
  * 
  *
- * @param id 이미지 식별자
- * @param url 이미지 URL
- * @param extension 
+ * @param id 
+ * @param partner 
+ * @param connectedAt 
+ * @param cancellation 
  */
 
 
-data class ProfileImage (
+data class Connection (
 
-    /* 이미지 식별자 */
     @SerializedName("id")
     val id: java.util.UUID,
 
-    /* 이미지 URL */
-    @SerializedName("url")
-    val url: java.net.URI,
+    @SerializedName("partner")
+    val partner: Participant? = null,
 
-    @SerializedName("extension")
-    val extension: ProfileImageExtension
+    @SerializedName("connectedAt")
+    val connectedAt: kotlin.String? = null,
+
+    @SerializedName("cancellation")
+    val cancellation: ConnectionCancellation? = null
 
 ) {
 

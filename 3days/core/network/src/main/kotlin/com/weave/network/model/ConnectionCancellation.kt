@@ -15,7 +15,7 @@
 
 package com.weave.network.model
 
-import com.weave.network.model.MessageContent
+import com.weave.network.model.ConnectionCancellationReason
 
 import com.google.gson.annotations.SerializedName
 
@@ -23,29 +23,29 @@ import com.google.gson.annotations.SerializedName
  * 
  *
  * @param id 
- * @param channelId 
- * @param content 
+ * @param userId 
+ * @param reason 
  * @param createdAt 
- * @param senderUserId 
+ * @param detail 
  */
 
 
-data class Message (
+data class ConnectionCancellation (
 
     @SerializedName("id")
     val id: java.util.UUID,
 
-    @SerializedName("channelId")
-    val channelId: java.util.UUID,
+    @SerializedName("userId")
+    val userId: java.util.UUID,
 
-    @SerializedName("content")
-    val content: MessageContent,
+    @SerializedName("reason")
+    val reason: ConnectionCancellationReason,
 
     @SerializedName("createdAt")
     val createdAt: kotlin.String,
 
-    @SerializedName("senderUserId")
-    val senderUserId: java.util.UUID? = null
+    @SerializedName("detail")
+    val detail: kotlin.String? = null
 
 ) {
 

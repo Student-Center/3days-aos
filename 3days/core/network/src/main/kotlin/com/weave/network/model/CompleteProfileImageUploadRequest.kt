@@ -10,12 +10,13 @@
     "ArrayInDataClass",
     "EnumEntryName",
     "RemoveRedundantQualifierName",
-    "UnusedImport"
+    "UnusedImport",
 )
 
 package com.weave.network.model
 
 import com.google.gson.annotations.SerializedName
+import com.weave.network.model.ProfileImageExtension
 
 /**
  *
@@ -24,18 +25,10 @@ import com.google.gson.annotations.SerializedName
  * @param extension
  */
 
-
 data class CompleteProfileImageUploadRequest(
-
-    /* 이미지 ID */
+    // 이미지 ID
     @SerializedName("imageId")
     val imageId: java.util.UUID,
-
     @SerializedName("extension")
-    val extension: ProfileImageExtension
-
-) {
-
-
-}
-
+    val extension: ProfileImageExtension,
+)

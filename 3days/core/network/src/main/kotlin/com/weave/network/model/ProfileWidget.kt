@@ -15,17 +15,19 @@
 
 package com.weave.network.model
 
+import com.weave.network.model.ProfileWidgetType
+
 import com.google.gson.annotations.SerializedName
 
 /**
+ * 
  *
- *
- * @param type
+ * @param type 
  * @param content 위젯 내용
  */
 
 
-data class ProfileWidget(
+data class ProfileWidget (
 
     @SerializedName("type")
     val type: ProfileWidgetType,

@@ -20,13 +20,13 @@ import com.weave.network.model.ConnectionStatus
 import com.google.gson.annotations.SerializedName
 
 /**
+ * 
  *
- *
- * @param status
+ * @param status 
  */
 
 
-data class UpdateConnectionStatusRequest(
+data class UpdateConnectionStatusRequest (
 
     @SerializedName("status")
     val status: ConnectionStatus
